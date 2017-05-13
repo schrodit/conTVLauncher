@@ -131,7 +131,7 @@ function closeExtApp(cmd) {
 
 // spotify
 function startSpotifyService() {
-    let cmd = 'bin/spotify/librespot --name RaspTV --cache bin/spotify/cache';
+    let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
     require('child_process').spawn(cmd, {
         detached: true
     });
