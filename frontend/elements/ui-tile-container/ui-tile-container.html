@@ -1,0 +1,20 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="ui-tile-container">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: flex;
+       flex-direction: row;
+     }
+    </style>
+
+    <slot></slot>
+  
+  </template>
+
+  <script src="ui-tile-container.js"></script>
+</dom-module>

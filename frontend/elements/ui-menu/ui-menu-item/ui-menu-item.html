@@ -1,0 +1,64 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/places-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+
+<link rel="import" href="../../../styles/styles.html">
+
+<dom-module id="ui-menu-item">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: block;
+       transition: all ease-out 0.3s;
+
+       padding: 16px 5px;
+       min-width: 112px;
+       height: 28px;
+       line-height: 28px;
+       background: var(--menu-bg);
+       color: var(--menu-text);
+     }
+     :host(:hover) {
+        background: var(--menu-selected-bg);
+        cursor: pointer;
+     }
+
+     :host(.red) {
+       color: var(--negative-action);
+     }
+     :host(:hover.red) {
+       background: var(--negative-action-bg);
+     }
+
+     .icon {
+       height: 28px;
+       width: 28px;
+       padding-right: 16px;
+       fill: var(--menu-text);
+     }
+     .show {
+      display: block;
+     }
+     .hide {
+       display: none;
+     }
+    </style>
+
+    <iron-icon class$="{{setIconClass(icon)}}" icon="{{icon}}"></iron-icon>
+    <slot></slot>
+  
+  </template>
+    
+
+  <script src="ui-menu-item.js"></script>
+</dom-module>

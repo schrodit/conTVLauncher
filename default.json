@@ -1,0 +1,48 @@
+{
+    "tiles": [
+        [
+            {
+                "title": "Youtube",
+                "img": "img/youtubeTile.png",
+                "type": "shell",
+                "cmd": "youtubetv"
+            },
+            {
+                "title": "Spotify",
+                "img": "",
+                "type": "shell",
+                "cmd": ""
+            }
+        ],
+        [
+            {
+                "title": "Kodi",
+                "img": "",
+                "type": "shell",
+                "cmd": ""
+            },
+            {
+                "title": "Netflix",
+                "img": "",
+                "type": "web",
+                "cmd": "https://www.netflix.com"
+            }
+        ],
+        [
+            {
+                "title": "ZDF",
+                "img": "",
+                "type": "web",
+                "cmd": ""
+            }
+        ],
+        [
+            {
+                "title": "Erste",
+                "img": "",
+                "type": "web",
+                "cmd": ""
+            }
+        ]
+    ]
+}
