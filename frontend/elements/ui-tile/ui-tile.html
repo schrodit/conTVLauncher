@@ -59,7 +59,7 @@
     </style>
 
       <img class="tileImage" alt="[[title]]" src="[[src]]" />
-      <span class="tileTitle">[[title]]</span>
+      <template is="dom-if" if="{{showTitle()}}" as="tile"><span class="tileTitle">[[title]]</span></template>
 
   
   </template>

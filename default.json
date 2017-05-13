@@ -15,13 +15,13 @@
             },
             {
                 "title": "Kodi",
-                "img": "",
+                "img": "img/kodiTile.png",
                 "type": "shell",
-                "cmd": ""
+                "cmd": "kodi"
             },
             {
                 "title": "Netflix",
-                "img": "",
+                "img": "img/netflixTile.png",
                 "type": "web",
                 "url": "https://www.netflix.com"
             }
@@ -29,15 +29,13 @@
         [
             {
                 "title": "ZDF",
-                "img": "",
+                "img": "img/zdfTile.png",
                 "type": "web",
                 "url": "https://www.zdf.de/"
-            }
-        ],
-        [
+            },
             {
                 "title": "Erste",
-                "img": "",
+                "img": "img/dasersteTile.png",
                 "type": "web",
                 "url": "http://www.daserste.de/"
             }

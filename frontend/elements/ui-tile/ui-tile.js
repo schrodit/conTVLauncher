@@ -46,6 +46,10 @@ class uiTile extends Polymer.Element {
         var left = elem.documentOffsetLeft() - ( window.innerWidth / 2 );
         window.scrollTo( left, window.screenY );
     }
+
+    showTitle() {
+        return this.src === 'img/DefaultTile.png' ? true : false;
+    }
 }
 
 function cumulativeOffset(element) {

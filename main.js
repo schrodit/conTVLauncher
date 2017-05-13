@@ -11,6 +11,7 @@ let win;
 let home;
 let cfg;
 let appWin;
+let extApp;
 
 function createWindow () {
     // Create the browser window.
@@ -44,12 +45,14 @@ function createWindow () {
             case 'web':
                 newApp(app.url);
                 break;
+            case 'shell':
+                if(app.title === 'Spotify') startSpotifyService();
+                break;
             default:
                 throwError('Unknown protocol')
                 break;
         }
     });
-
     
     win.loadURL(url.format({
         protocol: 'file',
@@ -67,10 +70,8 @@ function createWindow () {
 app.on('ready', ()=> {
     //get home dir
     home = app.getPath('home');
-
     //load cfg
     cfg = readCfg();
-
     createWindow();
 });
 
@@ -115,6 +116,25 @@ function newApp(url) {
         appWin.show();
     });
     
+}
+
+// open external programm
+function openExtApp(cmd) {
+    extApp = cmd;
+    cmd = 'bin/startscript.sh start ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
+    require('child_process').exec(cmd);
+}
+function closeExtApp(cmd) {
+    cmd = 'bin/startscript.sh stop ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
+    require('child_process').exec(cmd);
+}
+
+// spotify
+function startSpotifyService() {
+    let cmd = 'bin/spotify/librespot --name RaspTV --cache bin/spotify/cache';
+    require('child_process').spawn(cmd, {
+        detached: true
+    });
 }
 
 // connection to fontend
