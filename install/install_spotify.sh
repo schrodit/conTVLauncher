@@ -5,8 +5,10 @@
 #source $HOME/.cargo/env
 
 git clone https://github.com/plietar/librespot.git
+cd librespot
 cargo build --release
+cd ..
 
 mkdir -p bin/spotify/cache
 cp librespot/target/release/* /bin/spotify
-rm -r librespot
+sudo rm -r librespot
