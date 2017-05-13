@@ -10,5 +10,5 @@ cargo build --release
 cd ..
 
 mkdir -p bin/spotify/cache
-cp librespot/target/release/* /bin/spotify
+sudo cp -r librespot/target/release/* /bin/spotify
 sudo rm -r librespot
