@@ -45,7 +45,7 @@ class uiToast extends Polymer.Element {
         if(this.open) {
             this.adjustTriangle();
             this.classList.add('open');
-            if (this.stick) this.timeoutClose();
+            if (!this.stick) this.timeoutClose();
         }
         else this.classList.remove('open');
     }

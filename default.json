@@ -4,17 +4,15 @@
             {
                 "title": "Youtube",
                 "img": "img/youtubeTile.png",
-                "type": "shell",
-                "cmd": "youtubetv"
+                "type": "web",
+                "url": "https://youtube.com/TV#/"
             },
             {
                 "title": "Spotify",
-                "img": "",
+                "img": "img/spotifyTile.png",
                 "type": "shell",
                 "cmd": ""
-            }
-        ],
-        [
+            },
             {
                 "title": "Kodi",
                 "img": "",
@@ -25,7 +23,7 @@
                 "title": "Netflix",
                 "img": "",
                 "type": "web",
-                "cmd": "https://www.netflix.com"
+                "url": "https://www.netflix.com"
             }
         ],
         [
@@ -33,7 +31,7 @@
                 "title": "ZDF",
                 "img": "",
                 "type": "web",
-                "cmd": ""
+                "url": "https://www.zdf.de/"
             }
         ],
         [
@@ -41,7 +39,7 @@
                 "title": "Erste",
                 "img": "",
                 "type": "web",
-                "cmd": ""
+                "url": "http://www.daserste.de/"
             }
         ]
     ]

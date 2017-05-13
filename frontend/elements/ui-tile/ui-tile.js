@@ -25,17 +25,41 @@ class uiTile extends Polymer.Element {
 
     onSelected() {
         this.selected ? this.classList.add('selected') : this.classList.remove('selected');
-        if(this.selected) this.onScrollY(this);
+        if(this.selected) {
+            this.onScrollY(this);
+            this.onScrollX(this);
+        }
     }
     onScrollY(elem) {
-        let elemTop = elem.getBoundingClientRect().top;
-        let scrollHeight = document.body.offsetHeight / 2;
+        Element.prototype.documentOffsetTop = function () {
+            return this.offsetTop + ( this.offsetParent ? this.offsetParent.documentOffsetTop() : 0 );
+        };
 
-        let scroll = elemTop - scrollHeight;
+        var top = elem.documentOffsetTop() - ( window.innerHeight / 2 );
+        window.scrollTo( window.screenX, top );
+    }
+    onScrollX(elem) {
+        Element.prototype.documentOffsetLeft = function () {
+            return this.offsetLeft + ( this.offsetParent ? this.offsetParent.documentOffsetLeft() : 0 );
+        };
 
-        if(scroll > 0) window.scrollTo(0, scroll);
-        else window.scrollTo(0, 0);
+        var left = elem.documentOffsetLeft() - ( window.innerWidth / 2 );
+        window.scrollTo( left, window.screenY );
     }
 }
+
+function cumulativeOffset(element) {
+    let top = 0, left = 0;
+    do {
+        top += element.offsetTop  || 0;
+        left += element.offsetLeft || 0;
+        element = element.offsetParent;
+    } while(element);
+
+    return {
+        top: top,
+        left: left
+    };
+};
 
 window.customElements.define(uiTile.is, uiTile);

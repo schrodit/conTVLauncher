@@ -10,6 +10,7 @@ const defaultCfg = require('./default.json');
 let win;
 let home;
 let cfg;
+let appWin;
 
 function createWindow () {
     // Create the browser window.
@@ -23,6 +24,12 @@ function createWindow () {
     });
 
     // register shortcuts
+    globalShortcut.register('Home', () => {
+        if(appWin) appWin.close();
+    });
+    globalShortcut.register('CommandOrControl+Z', () => {
+        if(appWin) appWin.close();
+    });
     globalShortcut.register('CommandOrControl+F4', () => {
         win.close();
     });
@@ -31,6 +38,16 @@ function createWindow () {
     //register events
     ipcMain.on('get-cfg', (event) => {
         event.returnValue = cfg;
+    });
+    ipcMain.on('open-App', (event, app) => {
+        switch(app.type) {
+            case 'web':
+                newApp(app.url);
+                break;
+            default:
+                throwError('Unknown protocol')
+                break;
+        }
     });
 
     
@@ -43,7 +60,6 @@ function createWindow () {
     // register events
     win.on('close', () => {
         app.quit();
-        return false;
     });
 
 }
@@ -74,6 +90,38 @@ app.on('activate', () => {
         createWindow();
     }
 });
+
+
+// new Window
+function newApp(url) {
+
+    appWin = new BrowserWindow({
+        frame: false,
+        fullscreen: true
+    });
+
+    appWin.loadURL(url);
+
+    // catch errors
+    appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+        if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
+            throwError('No Internet connection');
+        } else {
+            throwError('Failed connecting to ' + url);
+        }
+    });
+
+    appWin.once('ready-to-show', () => {
+        appWin.show();
+    });
+    
+}
+
+// connection to fontend
+function throwError(msg) {
+    win.webContents.send('on-error' ,msg);
+    console.log(msg);
+}
 
 
 // config functions

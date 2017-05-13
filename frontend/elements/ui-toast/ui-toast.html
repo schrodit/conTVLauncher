@@ -48,7 +48,7 @@
     </style>
 
     <div class="wrapper">
-      <template is="dom-if" if="{{!stick}}">
+      <template is="dom-if" if="{{stick}}">
         <iron-icon class="icon closeIcon" icon="icons:highlight-off" on-click="onClose"></iron-icon>
       </template>
       <iron-icon class="icon" icon="{{setIcon(type)}}"></iron-icon>

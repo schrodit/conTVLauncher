@@ -11,16 +11,31 @@ class conveyApp extends Polymer.Element {
             },
             selected: {
                 type: Array
+            },
+            toast: {
+                type: Object,
+                notify: true,
+                value: {open: false}
             }
         };
     }
 
     constructor() {
         super();
+        //register electron events
+        ipcRenderer.on('on-error', (event, arg) => {
+            this.set('toast.type', 'error');
+            this.set('toast.msg', arg);
+            this.set('toast.open', 'true');
+        });
+        
         // register navigation shortcuts
         window.addEventListener('keydown', (event) => {
             event.preventDefault();
             switch(event.keyCode) {
+                case 13:
+                    this._onOpenApp();
+                    break;
                 case 37:
                     this._navLeft();
                     break;
@@ -46,6 +61,13 @@ class conveyApp extends Polymer.Element {
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
     }
+
+    // execute App
+    _onOpenApp() {
+        let selTile = this.tiles[this.selected[1]][this.selected[0]];
+        ipcRenderer.send('open-App', selTile);
+    }
+
 
     // Navigation
     goTo(aNewTile) {
