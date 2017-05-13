@@ -16,10 +16,10 @@ let extApp;
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-        //frame: false,
-        //fullscreen: true
+        frame: false,
+        fullscreen: true
     });
-    //win.maximize();
+    win.maximize();
     win.once('ready-to-show', () => {
         win.show();
     });
@@ -100,7 +100,7 @@ function newApp(url) {
         frame: false,
         fullscreen: true
     });
-
+    appWin.maximize();
     appWin.loadURL(url);
 
     // catch errors
