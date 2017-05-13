@@ -85,10 +85,10 @@ class conveyApp extends Polymer.Element {
     }
 
     checkSysTiles(tile) {
-        return tile.type === "sys" ? true : false;
+        return tile.type === 'sys' ? true : false;
     }
     checkTiles(tile) {
-        return tile.type !== "sys" ? true : false;
+        return tile.type !== 'sys' ? true : false;
     }
     
 }
@@ -99,24 +99,24 @@ function setAttribute(tiles) {
     tiles.forEach((con) => {
         con.forEach((tile) => {
             tile.selected = false;
-        })
+        });
     });
 }
 function addSystemTiles(tiles) {
     let sysTiles = [
         {
-                "title": "Close",
-                "icon": "icons:close",
-                "type": "sys",
-                "cmd": "",
-                "selected": false
+                'title': 'Close',
+                'icon': 'icons:close',
+                'type': 'sys',
+                'cmd': '',
+                'selected': false
         },
         {
-                "title": "Poweroff",
-                "icon": "icons:power-settings-new",
-                "type": "sys",
-                "cmd": "",
-                "selected": false
+                'title': 'Poweroff',
+                'icon': 'icons:power-settings-new',
+                'type': 'sys',
+                'cmd': '',
+                'selected': false
         },
     ];
     tiles.push(sysTiles);

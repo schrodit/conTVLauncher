@@ -12,7 +12,7 @@ class uiAccordionItem extends Polymer.Element {
             },
             type: {
                 type: String,
-                value: ""
+                value: ''
             },
             showExpand: {
                 type: Boolean,

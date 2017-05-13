@@ -1,5 +1,5 @@
 module.exports =  {
     sort: function() {
-        return "Hola";
+        return 'Hola';
     }
-}
+};
