@@ -79,7 +79,7 @@ class uiToast extends Polymer.Element {
     }
 
     timeoutClose() {
-        setTimeout( () => this.open = false, 3000);
+        setTimeout( () => this.set('open',  false), 3000);
     }
 
 }

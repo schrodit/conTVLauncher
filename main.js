@@ -45,13 +45,16 @@ function createWindow () {
             case 'web':
                 newApp(app.url);
                 break;
-            case 'shell':
-                if(app.title === 'Spotify') startSpotifyService();
-                break;
+            // case 'shell':
+            //     if(app.title === 'Spotify') startSpotifyService();
+            //     break;
             default:
-                throwError('Unknown protocol')
+                throwError('Unknown protocol');
                 break;
         }
+    });
+    ipcMain.on('close-launcher', () => {
+        win.close();
     });
     
     win.loadURL(url.format({

@@ -12,3 +12,4 @@ cd ..
 mkdir -p bin/spotify/cache
 sudo cp -r librespot/target/release/* /bin/spotify
 sudo rm -r librespot
+sudo rm -r .git

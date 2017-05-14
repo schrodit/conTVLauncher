@@ -65,7 +65,16 @@ class conveyApp extends Polymer.Element {
     // execute App
     _onOpenApp() {
         let selTile = this.tiles[this.selected[1]][this.selected[0]];
-        ipcRenderer.send('open-App', selTile);
+        if (selTile.type === 'sys') this._onEvalSys(selTile);
+        else ipcRenderer.send('open-App', selTile);
+    }
+
+    _onEvalSys(tile) {
+        switch(tile.cmd) {
+            case 'close':
+                ipcRenderer.send('close-launcher');
+                break;
+        }
     }
 
 
@@ -130,14 +139,14 @@ function addSystemTiles(tiles) {
                 'title': 'Close',
                 'icon': 'icons:close',
                 'type': 'sys',
-                'cmd': '',
+                'cmd': 'close',
                 'selected': false
         },
         {
                 'title': 'Poweroff',
                 'icon': 'icons:power-settings-new',
                 'type': 'sys',
-                'cmd': '',
+                'cmd': 'shutdown',
                 'selected': false
         },
     ];
