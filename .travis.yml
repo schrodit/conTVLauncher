@@ -23,4 +23,4 @@ deploy:
   on:
     tags: true
     branch: master
-    repo: sp-convey/conYoutubeTV
+    repo: sp-convey/conTVLauncher
