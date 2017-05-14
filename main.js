@@ -36,7 +36,7 @@ function createWindow () {
         if(appWin) appWin.close();
     });
     globalShortcut.register('F4', () => {
-        win.close();
+        app.quit();
     });
 
 
@@ -61,7 +61,7 @@ function createWindow () {
         }
     });
     ipcMain.on('close-launcher', () => {
-        win.close();
+        app.quit();
     });
     
     win.loadURL(url.format({
@@ -96,8 +96,13 @@ app.on('activate', () => {
 function newApp(url) {
 
     appWin = new BrowserWindow({
+        parent: win,
+        modal: true,
         frame: false,
-        fullscreen: true
+        fullscreen: true,
+        webPreferences: {
+            nodeIntegration: false
+        }
     });
     appWin.maximize();
     appWin.loadURL(url);
