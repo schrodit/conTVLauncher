@@ -1,4 +1,4 @@
-const {ipcMain, ipcRenderer} = require('electron');
+const ipcRenderer = require('electron');
 
 class conveyApp extends Polymer.Element {
     static get is() { return 'convey-app'; }
@@ -31,22 +31,28 @@ class conveyApp extends Polymer.Element {
         
         // register navigation shortcuts
         window.addEventListener('keydown', (event) => {
-            event.preventDefault();
             switch(event.keyCode) {
                 case 13:
+                    event.preventDefault();
                     this._onOpenApp();
                     break;
                 case 37:
+                    event.preventDefault();
                     this._navLeft();
                     break;
                 case 38:
+                    event.preventDefault();
                     this._navTop();
                     break;
                 case 39:
+                    event.preventDefault();
                     this._navRight();
                     break;
                 case 40:
+                    event.preventDefault();
                     this._navDown();
+                    break;
+                default:
                     break;
             }
         });

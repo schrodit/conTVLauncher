@@ -108,7 +108,7 @@ function newApp(url) {
     appWin.loadURL(url);
 
     // catch errors
-    appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
         if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
             throwError('No Internet connection');
         } else {
@@ -197,7 +197,6 @@ function openSettingsWin () {
 // connection to fontend
 function throwError(msg) {
     win.webContents.send('on-error' ,msg);
-    console.log(msg);
 }
 
 
@@ -205,6 +204,7 @@ function throwError(msg) {
 
 function updateSettings() {    
     writeCfg(cfg);
+    app.relaunch();
 };
 
 function readCfg() {
@@ -277,7 +277,7 @@ function addSystemTiles(tiles) {
 
 function removeSystemTiles(tiles) {
     tiles.forEach((con, i1) => {
-        con.forEach((tile, i2) => {
+        con.forEach((tile) => {
             if(tile.type === 'sys') {
                 tiles.splice(i1, 1);
             }
