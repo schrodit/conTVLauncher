@@ -56,8 +56,6 @@ class conveyApp extends Polymer.Element {
     connectedCallback() {
         super.connectedCallback();
         this.tiles = ipcRenderer.sendSync('get-cfg').tiles;
-        setAttribute(this.tiles);
-        addSystemTiles(this.tiles);
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
     }
@@ -65,16 +63,7 @@ class conveyApp extends Polymer.Element {
     // execute App
     _onOpenApp() {
         let selTile = this.tiles[this.selected[1]][this.selected[0]];
-        if (selTile.type === 'sys') this._onEvalSys(selTile);
-        else ipcRenderer.send('open-App', selTile);
-    }
-
-    _onEvalSys(tile) {
-        switch(tile.cmd) {
-            case 'close':
-                ipcRenderer.send('close-launcher');
-                break;
-        }
+        ipcRenderer.send('open-App', selTile);
     }
 
 
@@ -116,39 +105,12 @@ class conveyApp extends Polymer.Element {
     }
 
     checkSysTiles(tile) {
-        return tile.type === 'sys' ? true : false;
+        return tile.type === 'sys' && tile.show ? true : false;
     }
     checkTiles(tile) {
-        return tile.type !== 'sys' ? true : false;
+        return tile.type !== 'sys' && tile.show ? true : false;
     }
     
 }
 
 window.customElements.define(conveyApp.is, conveyApp);
-
-function setAttribute(tiles) {
-    tiles.forEach((con) => {
-        con.forEach((tile) => {
-            tile.selected = false;
-        });
-    });
-}
-function addSystemTiles(tiles) {
-    let sysTiles = [
-        {
-                'title': 'Close',
-                'icon': 'icons:close',
-                'type': 'sys',
-                'cmd': 'close',
-                'selected': false
-        },
-        {
-                'title': 'Poweroff',
-                'icon': 'icons:power-settings-new',
-                'type': 'sys',
-                'cmd': 'shutdown',
-                'selected': false
-        },
-    ];
-    tiles.push(sysTiles);
-}

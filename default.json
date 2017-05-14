@@ -1,29 +1,34 @@
 {
+    "zoomFactor": 0.75,
     "tiles": [
         [
             {
                 "title": "Youtube",
                 "img": "img/youtubeTile.png",
                 "type": "web",
-                "url": "https://youtube.com/TV#/"
+                "url": "https://youtube.com/TV#/",
+                "show": true
             },
             {
                 "title": "Spotify",
                 "img": "img/spotifyTile.png",
                 "type": "shell",
-                "cmd": ""
+                "cmd": "",
+                "show": false
             },
             {
                 "title": "Kodi",
                 "img": "img/kodiTile.png",
                 "type": "shell",
-                "cmd": "kodi"
+                "cmd": "kodi",
+                "show": false
             },
             {
                 "title": "Netflix",
                 "img": "img/netflixTile.png",
                 "type": "web",
-                "url": "https://www.netflix.com"
+                "url": "https://www.netflix.com",
+                "show": true
             }
         ],
         [
@@ -31,13 +36,15 @@
                 "title": "ZDF",
                 "img": "img/zdfTile.png",
                 "type": "web",
-                "url": "https://www.zdf.de/"
+                "url": "https://www.zdf.de/",
+                "show": true
             },
             {
                 "title": "Erste",
                 "img": "img/dasersteTile.png",
                 "type": "web",
-                "url": "http://www.daserste.de/"
+                "url": "http://www.daserste.de/",
+                "show": true
             }
         ]
     ]

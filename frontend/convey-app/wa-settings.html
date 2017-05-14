@@ -1,0 +1,84 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../styles/styles.html">
+
+<dom-module id="wa-settings">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: block;
+       padding: 24px;
+     }
+
+
+     .actions {
+       position: absolute;
+       bottom: 0;
+       margin-bottom: 24px;
+     }
+
+     .green {
+       background: var(--positive-action);
+     }
+
+     .red {
+       background: var(--negative-action);
+     }
+
+     .defaults {
+       margin-left: 24px;
+     }
+
+    </style>
+
+
+    <paper-input label="Zoom Factor" value="{{cfg.zoomFactor}}" ></paper-input>
+
+    
+    <div class="actions">
+      <paper-button class="green" raised on-click="onSave">Save</paper-button>
+      <paper-button class="red" raised on-click="onCancel">Cancel</paper-button>
+      <paper-button class="defaults" raised on-click="onRestoreDefaults">Restore defaults</paper-button>
+    </div>
+  
+  </template>
+
+  <script>
+  const {ipcMain, ipcRenderer} = require('electron');
+  class waSettings extends Polymer.Element {
+    static get is() { return 'wa-settings'; }
+    static get properties() {
+      return {
+        cfg: {
+          type: Object,
+          notify: true
+        }
+      };
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this.cfg = ipcRenderer.sendSync('settings-get-cfg');
+    }
+
+    onRestoreDefaults() {
+      this.cfg = ipcRenderer.sendSync('settings-restore-cfg');
+    }
+
+    onSave() {
+      this.cfg.zoomFactor = Number(this.cfg.zoomFactor);
+      ipcRenderer.send('settings-save-cfg', this.cfg);
+    }
+
+    onCancel() {
+      ipcRenderer.send('settings-close', true);
+    }
+  }
+
+  window.customElements.define(waSettings.is, waSettings);
+</script>
+</dom-module>
