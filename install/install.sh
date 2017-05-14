@@ -3,8 +3,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-sh install_spotify.sh
-electron-packager ./ conTVLauncher --platform=linux --arch=x64
+#sh install_spotify.sh
+#electron-packager ./ conTVLauncher --platform=linux --arch=x64
 
 sudo mkdir -p /usr/share/conTVLauncher
 

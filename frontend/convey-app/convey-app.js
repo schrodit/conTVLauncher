@@ -1,4 +1,4 @@
-const ipcRenderer = require('electron');
+const {ipcRenderer} = require('electron');
 
 class conveyApp extends Polymer.Element {
     static get is() { return 'convey-app'; }

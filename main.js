@@ -70,8 +70,6 @@ function createWindow () {
         pathname: path.join(app.getAppPath(), 'frontend/index.html')
     }));
     win.on('close', () => {
-        win.webContents.session.clearCache();
-        win.webContents.session.clearStorageData();
     });
 }
 
