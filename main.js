@@ -7,6 +7,7 @@ const path = require('path');
 const winston = require('winston');
 
 const cfgMgmt = require('./cfgMgmt.js');
+const extAppMgmt = require('./extAppMgmt.js');
 
 let win;
 let home;
@@ -43,19 +44,10 @@ function createWindow () {
         event.returnValue = cfg.getCfg();
     });
     ipcMain.on('open-App', (event, app) => {
-        switch(app.type) {
-            case 'web':
-                newApp(app.url);
-                break;
-            // case 'shell':
-            //     if(app.title === 'Spotify') startSpotifyService();
-            //     break;
-            case 'sys':
-                execSysApp(app);
-                break;
-            default:
-                throwError('Unknown protocol');
-                break;
+        try {
+            extApp.openApp(app);
+        } catch (err) {
+            throwError(err);
         }
     });
     ipcMain.on('close-launcher', () => {
@@ -90,135 +82,15 @@ app.on('ready', ()=> {
     });
     //load cfg
     cfg = new cfgMgmt(home, logger);
-    //initialize extApp object
-    extApp = {
-        'type': String,
-        'cmd': String,
-        'open': false
-    }
 
     winston.info('Creating MainWindow ...');
     createWindow();
+    //initialize extApp object
+    extApp = new extAppMgmt(app, win, cfg, logger);
 });
-
-
-// new Window
-function newApp(url) {
-    extApp.type = 'web';
-    extApp.appWin = new BrowserWindow({
-        parent: win,
-        modal: true,
-        frame: false,
-        fullscreen: true,
-        webPreferences: {
-            nodeIntegration: false
-        }
-    });
-    extApp.appWin.maximize();
-    extApp.appWin.loadURL(url);
-
-    // catch errors
-    extApp.appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
-        if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
-            throwError('No Internet connection');
-        } else {
-            throwError('Failed connecting to ' + url);
-        }
-    });
-
-    extApp.appWin.on('app-command', (e, cmd) => {
-        if (cmd === 'browser-backward' && extApp.appWin.webContents.canGoBack()) {
-            extApp.appWin.webContents.goBack();
-        }
-        if (cmd === 'browser-backward' && !extApp.appWin.webContents.canGoBack()) {
-            extApp.appWin.close();
-        }
-    });
-
-    extApp.appWin.once('ready-to-show', () => {
-        extApp.appWin.show();
-        extApp.open = true;
-    });
-
-    extApp.appWin.on('close', () => {
-        extApp.open = false;
-        extApp.type = '';
-    });
-    
-}
-
-// open external programm
-function openExtApp(cmd) {
-    extApp = cmd;
-    cmd = 'bin/startscript.sh start ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
-    require('child_process').exec(cmd);
-}
-function closeExtApp(cmd) {
-    cmd = 'bin/startscript.sh stop ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
-    require('child_process').exec(cmd);
-}
-
-// spotify
-function startSpotifyService() {
-    let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
-    require('child_process').spawn(cmd, {
-        detached: true
-    });
-}
-
-// systemControls
-
-function execSysApp(tile) {
-    switch(tile.cmd) {
-        case 'close':
-            app.quit();
-            break;
-        case 'shutdown':
-            app.quit();
-            break;
-        case 'settings':
-            openSettingsWin();
-            break;
-        default:
-            throwError('Unknown System App');
-            break;
-    }
-}
-
-function openSettingsWin () {
-    settingsWin = new BrowserWindow({ parent: win, frame: false, width: 500, height: 300, modal: true });
-    settingsWin.loadURL(url.format({
-        protocol: 'file',
-        slashes: true,
-        pathname: path.join(app.getAppPath(), 'frontend/settings.html')
-    }));
-
-    //register events
-    ipcMain.on('settings-get-cfg', (event) => {
-        event.returnValue = cfg.getCfg();
-    });
-    ipcMain.on('settings-close', () => {
-        settingsWin.close();
-    });
-    ipcMain.on('settings-save-cfg', (event, arg) => {
-        cfg.setCfg(arg);
-        updateSettings();
-        settingsWin.close();
-    });
-    ipcMain.on('settings-restore-cfg', (event) => {
-        event.returnValue = cfg.restoreDefaultCfg();
-    });
-}
 
 // connection to fontend
 function throwError(msg) {
     logger.error(msg);
     win.webContents.send('on-error' ,msg);
 }
-
-
-// config functions
-function updateSettings() {    
-    cfg.writeCfg(cfg);
-    win.webContents.send('recieve-cfg', cfg.getCfg());
-};
