@@ -14,15 +14,18 @@ class extApp {
     }
 
     openApp(app) {
+        if (this.open) this.closeApp();
         this.type = app.type;
         switch(this.type) {
             case 'web':
                 this.cmd = app.url;
                 this.newWebApp(this.cmd);
                 break;
-            // case 'shell':
-            //     if(app.title === 'Spotify') startSpotifyService();
-            //     break;
+            case 'shell':
+                this.cmd = app.cmd;
+                //if(app.title === 'Spotify') startSpotifyService();
+                openExtApp();
+                break;
             case 'sys':
                 this.cmd = app.cmd;
                 this.execSysApp();
@@ -37,6 +40,9 @@ class extApp {
             case 'web':
                 this.appWin.close();
                 break;
+            case 'shell':
+                this.closeExtApp();
+                break;
             case 'sys':
                 this.appWin.close();
                 break;
@@ -44,7 +50,6 @@ class extApp {
     }
     // new Web Window
     newWebApp(url) {
-        this.type = 'web';
         this.appWin = new BrowserWindow({
             parent: this.win,
             modal: true,
@@ -92,23 +97,25 @@ class extApp {
 
 
     // open external programm
-    openExtApp(cmd) {
-        extApp = cmd;
-        cmd = 'bin/startscript.sh start ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
+    openExtApp() {
+        let cmd = this.app.getAppPath() + '/bin/startscript.sh start ' + (this.home + '/.config/conTVLauncher/extApp.pid') + this.cmd;
         require('child_process').exec(cmd);
+        this.open = true;
     }
-    closeExtApp(cmd) {
-        cmd = 'bin/startscript.sh stop ' + (home + '/.config/conTVLauncher/extApp.pid') + cmd;
-        require('child_process').exec(cmd);
+    closeExtApp() {
+        let cmd = this.app.getAppPath() + '/bin/startscript.sh stop ' + (this.home + '/.config/conTVLauncher/extApp.pid') + this.cmd;
+        require('child_process').exeSync(cmd);
+        this.open = false;
+        this.cmd = '';
     }
 
-    // spotify
-    startSpotifyService() {
-        let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
-        require('child_process').spawn(cmd, {
-            detached: true
-        });
-    }
+    // // spotify
+    // startSpotifyService() {
+    //     let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
+    //     require('child_process').spawn(cmd, {
+    //         detached: true
+    //     });
+    // }
 
 
     // systemControls
