@@ -38,17 +38,22 @@ class cfg {
     };
 
     setupTiles(tiles) {
+        let hide = [];
         tiles = this.addSystemTiles(tiles);
         tiles.forEach((con, i1) => {
             con.forEach((tile, i2) => {
                 if(!tile.show) {
                     this.hiddenTiles.push({'container': i1, 'tile': i2, 'data': tiles[i1][i2]});
-                    tiles[i1].splice(i2, 1);
+                    hide.push(i2);
                 } else {
                     tile.container = i1;
                     tile.selected = false;
                 }
             });
+            hide.forEach((elem, i) => {
+                tiles[i1].splice(elem-i, 1);
+            });
+            hide = [];
         });
 
         return tiles;

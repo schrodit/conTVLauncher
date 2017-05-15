@@ -8,6 +8,7 @@ class extApp {
         this.win = win;
         this.cfg = cfg;
         this.logger = logger;
+        this.home = this.app.getPath('home');
         this.type = String;
         this.cmd = String;
         this.open = Boolean;
@@ -24,7 +25,7 @@ class extApp {
             case 'shell':
                 this.cmd = app.cmd;
                 //if(app.title === 'Spotify') startSpotifyService();
-                openExtApp();
+                this.openExtApp();
                 break;
             case 'sys':
                 this.cmd = app.cmd;
@@ -45,6 +46,11 @@ class extApp {
                 break;
             case 'sys':
                 this.appWin.close();
+                break;
+            default:
+                this.logger.error('Unkown application type ' + this.type);
+                this.type = '';
+                this.cmd = '';
                 break;
         }
     }
@@ -98,13 +104,13 @@ class extApp {
 
     // open external programm
     openExtApp() {
-        let cmd = this.app.getAppPath() + '/bin/startscript.sh start ' + (this.home + '/.config/conTVLauncher/extApp.pid') + this.cmd;
+        let cmd = this.app.getAppPath() + '/bin/startscript.sh start ' + (this.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
         require('child_process').exec(cmd);
         this.open = true;
     }
     closeExtApp() {
-        let cmd = this.app.getAppPath() + '/bin/startscript.sh stop ' + (this.home + '/.config/conTVLauncher/extApp.pid') + this.cmd;
-        require('child_process').exeSync(cmd);
+        let cmd = this.app.getAppPath() + '/bin/startscript.sh stop ' + (this.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
+        require('child_process').execSync(cmd);
         this.open = false;
         this.cmd = '';
     }
