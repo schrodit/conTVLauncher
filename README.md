@@ -28,4 +28,5 @@ Icons made by <a href="http://www.flaticon.com/authors/madebyoliver" title="Made
 
 
 
-##Licence
+## Licence
+https://github.com/sp-convey/conTVLauncher/blob/master/LICENSE
