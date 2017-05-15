@@ -85,6 +85,10 @@ app.on('ready', ()=> {
     extApp = new extAppMgmt(app, win, cfg, logger);
 });
 
+app.commandLine.appendSwitch('widevine-cdm-path', '/path/to/widevinecdmadapter.plugin') //need to be changed
+// The version of plugin can be got from `chrome://plugins` page in Chrome.
+app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.866') // need to be changed
+
 // connection to fontend
 function throwError(msg) {
     logger.error(msg);

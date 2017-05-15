@@ -62,6 +62,7 @@ class extApp {
             frame: false,
             fullscreen: true,
             webPreferences: {
+                plugins: true,
                 nodeIntegration: false
             }
         });
