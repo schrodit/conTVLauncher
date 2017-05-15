@@ -29,6 +29,13 @@
                 "type": "web",
                 "url": "https://www.netflix.com",
                 "show": true
+            },
+            {
+                "title": "Twitch",
+                "img": "img/twitchTile.png",
+                "type": "web",
+                "url": "https://www.twitch.tv",
+                "show": false
             }
         ],
         [

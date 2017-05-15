@@ -1,5 +1,5 @@
 #!/bin/bash
-INSTANZ="Beispiel-Programm"
+INSTANZ="Node"
 APPCMD=$3
 Pidfile=$2
 
