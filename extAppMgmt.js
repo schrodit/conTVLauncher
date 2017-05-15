@@ -29,7 +29,6 @@ class extApp {
                 break;
             default:
                 throw new Error('Unknown application type');
-                break;
         }
         
     }
@@ -128,7 +127,6 @@ class extApp {
                 break;
             default:
                 throw new Error('Unknown System App');
-                break;
         }
     }
 
@@ -158,7 +156,6 @@ class extApp {
             // config functions   
             this.cfg.writeCfg();
             this.win.webContents.send('recieve-cfg', this.cfg.getCfg());
-            console.log(this.appWin);
             if(this.appWin) this.appWin.close();
         });
         ipcMain.on('settings-restore-cfg', (event) => {

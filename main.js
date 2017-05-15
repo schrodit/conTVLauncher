@@ -1,7 +1,6 @@
 'use strict';
 
 const {app, BrowserWindow, globalShortcut, ipcMain} = require('electron');
-const fs = require('fs');
 const url = require('url');
 const path = require('path');
 const winston = require('winston');
@@ -14,7 +13,6 @@ let home;
 let logger;
 let cfg;
 let extApp;
-let settingsWin;
 
 function createWindow () {
     // Create the browser window.
@@ -59,8 +57,6 @@ function createWindow () {
         slashes: true,
         pathname: path.join(app.getAppPath(), 'frontend/index.html')
     }));
-    win.on('close', () => {
-    });
 }
 
 app.on('ready', ()=> {

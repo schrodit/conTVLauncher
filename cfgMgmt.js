@@ -42,7 +42,7 @@ class cfg {
         tiles.forEach((con, i1) => {
             con.forEach((tile, i2) => {
                 if(!tile.show) {
-                    this.hiddenTiles.push({"container": i1, "tile": i2, "data": tiles[i1][i2]});
+                    this.hiddenTiles.push({'container': i1, 'tile': i2, 'data': tiles[i1][i2]});
                     tiles[i1].splice(i2, 1);
                 } else {
                     tile.container = i1;

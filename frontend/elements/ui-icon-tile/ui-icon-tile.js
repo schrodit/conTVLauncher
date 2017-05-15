@@ -36,16 +36,16 @@ class uiIconTile extends Polymer.Element {
             return this.offsetTop + ( this.offsetParent ? this.offsetParent.documentOffsetTop() : 0 );
         };
 
-        var top = elem.documentOffsetTop() - ( window.innerHeight / 2 );
-        window.scrollTo( window.screenX, top );
+        var top = elem.documentOffsetTop() - ( window.screenY / 2 );
+        window.scrollTo( window.scrollX, top );
     }
     onScrollX(elem) {
         Element.prototype.documentOffsetLeft = function () {
             return this.offsetLeft + ( this.offsetParent ? this.offsetParent.documentOffsetLeft() : 0 );
         };
 
-        var left = elem.documentOffsetLeft() - ( window.innerWidth / 2 );
-        window.scrollTo( left, window.screenY );
+        var left = elem.documentOffsetLeft() - ( window.screenX / 2 );
+        window.scrollTo( left, window.scrollY );
     }
 }
 
