@@ -36,7 +36,7 @@
     </style>
 
 
-    <paper-input label="Zoom Factor" value="{{cfg.zoomFactor}}" ></paper-input>
+    <paper-input label="Zoom Factor" value="{{zoomFactor}}"></paper-input>
 
     
     <div class="actions">
@@ -56,6 +56,10 @@
         cfg: {
           type: Object,
           notify: true
+        },
+        zoomFactor: {
+          type: Number,
+          notify: true
         }
       };
     }
@@ -63,6 +67,7 @@
     connectedCallback() {
       super.connectedCallback();
       this.cfg = ipcRenderer.sendSync('settings-get-cfg');
+      this.zoomFactor = this.cfg.zoomFactor;
     }
 
     onRestoreDefaults() {
@@ -70,7 +75,7 @@
     }
 
     onSave() {
-      this.cfg.zoomFactor = Number(this.cfg.zoomFactor);
+      this.cfg.zoomFactor = Number(this.zoomFactor);
       ipcRenderer.send('settings-save-cfg', this.cfg);
     }
 

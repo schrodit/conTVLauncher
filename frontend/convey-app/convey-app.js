@@ -9,6 +9,11 @@ class conveyApp extends Polymer.Element {
                 type: Array,
                 notify: true
             },
+            zoomFactor: {
+                type: Number,
+                notify: true,
+                observer: '_onZoomFactor'
+            },
             selected: {
                 type: Array
             },
@@ -23,6 +28,9 @@ class conveyApp extends Polymer.Element {
     constructor() {
         super();
         //register electron events
+        ipcRenderer.on('recieve-cfg', (event, cfg) => {
+            this._setConfig(cfg);
+        });
         ipcRenderer.on('on-error', (event, arg) => {
             this.set('toast.type', 'error');
             this.set('toast.msg', arg);
@@ -61,7 +69,13 @@ class conveyApp extends Polymer.Element {
 
     connectedCallback() {
         super.connectedCallback();
-        this.tiles = ipcRenderer.sendSync('get-cfg').tiles;
+        let cfg = ipcRenderer.sendSync('get-cfg');
+        this._setConfig(cfg);
+    }
+
+    _setConfig(cfg) {
+        this.zoomFactor = cfg.zoomFactor;
+        this.tiles = cfg.tiles;
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
     }
@@ -108,6 +122,10 @@ class conveyApp extends Polymer.Element {
             if (this.tiles[y].length - 1 < x) x = this.tiles[y].length - 1;
             this.goTo([x, y]);
         }
+    }
+
+    _onZoomFactor() {
+        this.style.zoom = this.zoomFactor;
     }
 
     checkSysTiles(tile) {

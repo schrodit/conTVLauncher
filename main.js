@@ -5,12 +5,13 @@ const fs = require('fs');
 const url = require('url');
 const path = require('path');
 
+const cfgMgmt = require('./cfgMgmt.js');
+
 const defaultCfg = require('./default.json');
 
 let win;
 let home;
 let cfg;
-let appWin;
 let extApp;
 let settingsWin;
 
@@ -19,21 +20,18 @@ function createWindow () {
     win = new BrowserWindow({
         frame: false,
         fullscreen: true,
-        webPreferences: {
-            zoomFactor: cfg.zoomFactor
-        }
     });
-    win.maximize();
+   
     win.once('ready-to-show', () => {
         win.show();
     });
 
     // register shortcuts
     globalShortcut.register('Home', () => {
-        if(appWin) appWin.close();
+        if(extApp.appWin) extApp.appWin.close();
     });
     globalShortcut.register('F3', () => {
-        if(appWin) appWin.close();
+        if(extApp.appWin) extApp.appWin.close();
     });
     globalShortcut.register('F4', () => {
         app.quit();
@@ -42,7 +40,7 @@ function createWindow () {
 
     //register events
     ipcMain.on('get-cfg', (event) => {
-        event.returnValue = cfg;
+        event.returnValue = cfg.getCfg();
     });
     ipcMain.on('open-App', (event, app) => {
         switch(app.type) {
@@ -77,7 +75,14 @@ app.on('ready', ()=> {
     //get home dir
     home = app.getPath('home');
     //load cfg
-    cfg = readCfg();
+    cfg = new cfgMgmt(home);
+    //initialize extApp object
+    extApp = {
+        'type': String,
+        'cmd': String,
+        'open': false
+    }
+
     createWindow();
 });
 
@@ -92,8 +97,8 @@ app.on('activate', () => {
 
 // new Window
 function newApp(url) {
-
-    appWin = new BrowserWindow({
+    extApp.type = 'web';
+    extApp.appWin = new BrowserWindow({
         parent: win,
         modal: true,
         frame: false,
@@ -102,11 +107,11 @@ function newApp(url) {
             nodeIntegration: false
         }
     });
-    appWin.maximize();
-    appWin.loadURL(url);
+    extApp.appWin.maximize();
+    extApp.appWin.loadURL(url);
 
     // catch errors
-    appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    extApp.appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
         if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
             throwError('No Internet connection');
         } else {
@@ -114,17 +119,23 @@ function newApp(url) {
         }
     });
 
-    appWin.on('app-command', (e, cmd) => {
-        if (cmd === 'browser-backward' && appWin.webContents.canGoBack()) {
-            appWin.webContents.goBack();
+    extApp.appWin.on('app-command', (e, cmd) => {
+        if (cmd === 'browser-backward' && extApp.appWin.webContents.canGoBack()) {
+            extApp.appWin.webContents.goBack();
         }
-        if (cmd === 'browser-backward' && !appWin.webContents.canGoBack()) {
-            appWin.close();
+        if (cmd === 'browser-backward' && !extApp.appWin.webContents.canGoBack()) {
+            extApp.appWin.close();
         }
     });
 
-    appWin.once('ready-to-show', () => {
-        appWin.show();
+    extApp.appWin.once('ready-to-show', () => {
+        extApp.appWin.show();
+        extApp.open = true;
+    });
+
+    extApp.appWin.on('close', () => {
+        extApp.open = false;
+        extApp.type = '';
     });
     
 }
@@ -177,18 +188,18 @@ function openSettingsWin () {
 
     //register events
     ipcMain.on('settings-get-cfg', (event) => {
-        event.returnValue = cfg;
+        event.returnValue = cfg.getCfg();
     });
     ipcMain.on('settings-close', () => {
         settingsWin.close();
     });
     ipcMain.on('settings-save-cfg', (event, arg) => {
-        cfg = arg;
+        cfg.setCfg(arg);
         updateSettings();
         settingsWin.close();
     });
     ipcMain.on('settings-restore-cfg', (event) => {
-        event.returnValue = restoreDefaultCfg();
+        event.returnValue = cfg.restoreDefaultCfg();
     });
 }
 
@@ -199,88 +210,10 @@ function throwError(msg) {
 
 
 // config functions
+// config functions
 
 function updateSettings() {    
-    writeCfg(cfg);
-    app.relaunch();
+    cfg.writeCfg(cfg);
+    console.log(JSON.stringify(cfg.getCfg(), null, 1));
+    win.webContents.send('recieve-cfg', cfg.getCfg());
 };
-
-function readCfg() {
-    if (!fs.existsSync(home + '/.config')) fs.mkdirSync(home + '/.config');
-    if (!fs.existsSync(home + '/.config/conTVLauncher')) fs.mkdirSync(home + '/.config/conTVLauncher');
-    if (!fs.existsSync(home + '/.config/conTVLauncher/config.json')) {
-        writeCfg(defaultCfg);
-        let config = defaultCfg;
-        config.tiles = setupTiles(config.tiles);
-        return config;
-    } else {
-        let config = JSON.parse(fs.readFileSync(home + '/.config/conTVLauncher/config.json'));
-        config.tiles = setupTiles(config.tiles);
-        return config;
-    }
-};
-
-
-function writeCfg(oCfg) {
-    oCfg.tiles = removeSystemTiles(oCfg.tiles);
-    fs.writeFileSync(home + '/.config/conTVLauncher/config.json', JSON.stringify(oCfg));
-};
-
-function restoreDefaultCfg() {
-    return defaultCfg;
-};
-
-function setupTiles(tiles) {
-    tiles = addSystemTiles(tiles);
-    tiles.forEach((con, i1) => {
-        con.forEach((tile, i2) => {
-            if(!tile.show) tiles[i1].splice(i2, 1);
-            else tile.selected = false;
-        });
-    });
-
-    return tiles;
-}
-function addSystemTiles(tiles) {
-    let sysTiles = [
-        {
-                'title': 'Settings',
-                'icon': 'icons:settings',
-                'type': 'sys',
-                'cmd': 'settings',
-                'selected': false,
-                'show': true
-        },
-        {
-                'title': 'Close',
-                'icon': 'icons:close',
-                'type': 'sys',
-                'cmd': 'close',
-                'selected': false,
-                'show': true
-        },
-        {
-                'title': 'Poweroff',
-                'icon': 'icons:power-settings-new',
-                'type': 'sys',
-                'cmd': 'shutdown',
-                'selected': false,
-                'show': false
-        },
-    ];
-    tiles.push(sysTiles);
-
-    return tiles;
-}
-
-function removeSystemTiles(tiles) {
-    tiles.forEach((con, i1) => {
-        con.forEach((tile) => {
-            if(tile.type === 'sys') {
-                tiles.splice(i1, 1);
-            }
-        });
-    });
-
-    return tiles;
-}
