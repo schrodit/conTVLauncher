@@ -4,13 +4,13 @@ const {app, BrowserWindow, globalShortcut, ipcMain} = require('electron');
 const fs = require('fs');
 const url = require('url');
 const path = require('path');
+const winston = require('winston');
 
 const cfgMgmt = require('./cfgMgmt.js');
 
-const defaultCfg = require('./default.json');
-
 let win;
 let home;
+let logger;
 let cfg;
 let extApp;
 let settingsWin;
@@ -74,8 +74,22 @@ function createWindow () {
 app.on('ready', ()=> {
     //get home dir
     home = app.getPath('home');
+    //load winston logger
+    logger =  new winston.Logger({
+        transports: [
+            new (winston.transports.Console)(),
+            new (winston.transports.File)({
+                filename: home + '/.config/conTVLauncher/conTVLauncher.log',
+                formatter: (options) => {
+                    // Return string will be passed to logger. 
+                    return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (options.message ? options.message : '') +
+                    (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
+                } 
+            })
+        ]
+    });
     //load cfg
-    cfg = new cfgMgmt(home);
+    cfg = new cfgMgmt(home, logger);
     //initialize extApp object
     extApp = {
         'type': String,
@@ -83,15 +97,8 @@ app.on('ready', ()=> {
         'open': false
     }
 
+    winston.info('Creating MainWindow ...');
     createWindow();
-});
-
-app.on('activate', () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (win === null) {
-        createWindow();
-    }
 });
 
 
@@ -205,15 +212,13 @@ function openSettingsWin () {
 
 // connection to fontend
 function throwError(msg) {
+    logger.error(msg);
     win.webContents.send('on-error' ,msg);
 }
 
 
 // config functions
-// config functions
-
 function updateSettings() {    
     cfg.writeCfg(cfg);
-    console.log(JSON.stringify(cfg.getCfg(), null, 1));
     win.webContents.send('recieve-cfg', cfg.getCfg());
 };

@@ -2,8 +2,9 @@ const fs = require('fs');
 const defaultCfg = require('./default.json');
 
 class cfg {
-    constructor(home) {
+    constructor(home, winston) {
         this.home = home;
+        this.logger = winston;
         this.hiddenTiles = [];
         this.config = this.readCfg();
     }
@@ -14,6 +15,7 @@ class cfg {
     }
 
     readCfg() {
+        this.logger.info('Loading config ...');
         if (!fs.existsSync(this.home + '/.config')) fs.mkdirSync(this.home + '/.config');
         if (!fs.existsSync(this.home + '/.config/conTVLauncher')) fs.mkdirSync(this.home + '/.config/conTVLauncher');
         if (!fs.existsSync(this.home + '/.config/conTVLauncher/config.json')) {
@@ -28,6 +30,7 @@ class cfg {
     }
 
     writeCfg() {
+        this.logger.info('Writing config to ' + this.home + '/.config/conTVLauncher/config.json' + ' ...');
         let config = JSON.parse(JSON.stringify(this.config));
         config.tiles = this.restoreHiddenTiles(config.tiles);
         config.tiles = this.removeSystemTiles(config.tiles);

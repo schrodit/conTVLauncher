@@ -21,5 +21,8 @@
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
     "gulp-if": "2.0.2"
+  },
+  "dependencies": {
+    "winston": "2.3.1"
   }
 }
