@@ -17,8 +17,8 @@ let extApp;
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-        frame: false,
-        fullscreen: true,
+        //frame: false,
+        //fullscreen: true,
     });
    
     win.once('ready-to-show', () => {
@@ -59,6 +59,11 @@ function createWindow () {
     }));
 }
 
+
+app.commandLine.appendSwitch('widevine-cdm-path', app.getAppPath() + '/bin/plugins/libwidevinecdmadapter.so') //need to be changed
+// The version of plugin can be got from `chrome://plugins` page in Chrome.
+app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.903') // need to be changed
+
 app.on('ready', ()=> {
     //get home dir
     home = app.getPath('home');
@@ -84,10 +89,6 @@ app.on('ready', ()=> {
     //initialize extApp object
     extApp = new extAppMgmt(app, win, cfg, logger);
 });
-
-app.commandLine.appendSwitch('widevine-cdm-path', '/path/to/widevinecdmadapter.plugin') //need to be changed
-// The version of plugin can be got from `chrome://plugins` page in Chrome.
-app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.866') // need to be changed
 
 // connection to fontend
 function throwError(msg) {
