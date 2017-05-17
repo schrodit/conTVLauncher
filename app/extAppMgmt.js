@@ -57,7 +57,6 @@ class extApp {
     // new Web Window
     newWebApp(url) {
         this.appWin = new BrowserWindow({
-            parent: this.win,
             modal: true,
             frame: false,
             fullscreen: true,
