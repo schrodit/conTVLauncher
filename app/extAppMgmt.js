@@ -70,9 +70,9 @@ class extApp {
         // catch errors
         this.appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
             if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
-                throwError('No Internet connection');
+                throw Error('No Internet connection');
             } else {
-                throwError('Failed connecting to ' + url);
+                throw Error('Failed connecting to ' + url);
             }
         });
 
