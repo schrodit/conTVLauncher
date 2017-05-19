@@ -13,8 +13,8 @@
 ### END INIT INFO
 
 INSTANZ="Spotify"
-APPCMD="/home/pi/Documents/bin/spotify/librespot --name rpi3TV --cache /home/pi/Documents/bin/spotify/cache"
-Pidfile="/home/pi/Documents/bin/spotify/spotify.pid"
+APPCMD="/opt/spotify-connect/librespot --name rpi3TV --cache /home/alarm/.cache/spotify-connect"
+Pidfile="/opt/spotify-connect/spotify.pid"
 
 if [ -f $Pidfile ]
 then
