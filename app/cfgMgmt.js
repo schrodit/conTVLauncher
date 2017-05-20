@@ -20,12 +20,12 @@ class cfg {
         if (!fs.existsSync(this.home + '/.config/conTVLauncher')) fs.mkdirSync(this.home + '/.config/conTVLauncher');
         if (!fs.existsSync(this.home + '/.config/conTVLauncher/config.json')) {
             let config = defaultCfg;
-            config.tiles = this.setupTiles(config.tiles);
+            config.tiles = this.setupTiles(config);
             this.writeCfg(deepCp(config));
             return config;
         } else {
             let config = JSON.parse(fs.readFileSync(this.home + '/.config/conTVLauncher/config.json'));
-            config.tiles = this.setupTiles(config.tiles);
+            config.tiles = this.setupTiles(config);
             return config;
         }
     }
@@ -38,9 +38,10 @@ class cfg {
         fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', JSON.stringify(config));
     };
 
-    setupTiles(tiles) {
+    setupTiles(cfg) {
+        let tiles = cfg.tiles;
         let hide = [];
-        tiles = this.addSystemTiles(tiles);
+        tiles = this.addSystemTiles(cfg);
         tiles.forEach((con, i1) => {
             con.forEach((tile, i2) => {
                 if(!tile.show) {
@@ -60,7 +61,8 @@ class cfg {
         return tiles;
     }
 
-    addSystemTiles(tiles) {
+    addSystemTiles(cfg) {
+        let tiles = cfg.tiles;
         let sysTiles = [
             {
                     'title': 'Settings',
@@ -84,7 +86,7 @@ class cfg {
                     'type': 'sys',
                     'cmd': 'shutdown',
                     'selected': false,
-                    'show': true
+                    'show': cfg.enableShutdown
             },
         ];
         tiles.push(sysTiles);

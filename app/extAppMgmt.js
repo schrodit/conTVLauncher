@@ -1,7 +1,7 @@
 const {BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
-let powerOff = require('power-off');
+const powerOff = require('power-off');
 
 class extApp {
     constructor(app, win, cfg, logger) {
@@ -138,6 +138,7 @@ class extApp {
                 this.cmd = '';
                 let that = this;
                 powerOff( (err, stderr, stdout) => {
+                    console.log(stdout);
                     if(!err && !stderr) {
                         that.logger.info(stdout);
                     } else {
