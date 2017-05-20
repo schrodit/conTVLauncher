@@ -21,6 +21,7 @@ class cfg {
         if (!fs.existsSync(this.home + '/.config/conTVLauncher/config.json')) {
             let config = defaultCfg;
             config.tiles = this.setupTiles(config.tiles);
+            this.writeCfg(config);
             return config;
         } else {
             let config = JSON.parse(fs.readFileSync(this.home + '/.config/conTVLauncher/config.json'));
@@ -29,9 +30,9 @@ class cfg {
         }
     }
 
-    writeCfg() {
+    writeCfg(cfg) {
         this.logger.info('Writing config to ' + this.home + '/.config/conTVLauncher/config.json' + ' ...');
-        let config = JSON.parse(JSON.stringify(this.config));
+        let config = typeof cfg !== undefined ? JSON.parse(JSON.stringify(this.config)) : cfg;
         config.tiles = this.restoreHiddenTiles(config.tiles);
         config.tiles = this.removeSystemTiles(config.tiles);
         fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', JSON.stringify(config));
