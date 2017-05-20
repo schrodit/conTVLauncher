@@ -134,6 +134,8 @@ class extApp {
                 this.app.quit();
                 break;
             case 'shutdown':
+                this.type = '';
+                this.cmd = '';
                 let that = this;
                 powerOff( (err, stderr, stdout) => {
                     if(!err && !stderr) {

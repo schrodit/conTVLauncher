@@ -45,7 +45,7 @@ function createWindow () {
         try {
             extApp.openApp(app);
         } catch (err) {
-            throwError(err);
+            throwError(err.message);
         }
     });
     ipcMain.on('close-launcher', () => {
