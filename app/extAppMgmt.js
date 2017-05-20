@@ -12,7 +12,7 @@ class extApp {
         this.home = this.app.getPath('home');
         this.type = String;
         this.cmd = String;
-        this.open = Boolean;
+        this.open = false;
     }
 
     openApp(app) {
