@@ -84,7 +84,7 @@ class cfg {
                     'type': 'sys',
                     'cmd': 'shutdown',
                     'selected': false,
-                    'show': false
+                    'show': true
             },
         ];
         tiles.push(sysTiles);
