@@ -23,6 +23,7 @@
     "gulp-if": "2.0.2"
   },
   "dependencies": {
+    "power-off": "1.1.2",
     "winston": "2.3.1"
   }
 }
