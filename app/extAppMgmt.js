@@ -1,6 +1,7 @@
 const {BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
+const powerOff = require('power-off');
 
 class extApp {
     constructor(app, win, cfg, logger) {
@@ -11,7 +12,7 @@ class extApp {
         this.home = this.app.getPath('home');
         this.type = String;
         this.cmd = String;
-        this.open = Boolean;
+        this.open = false;
     }
 
     openApp(app) {
@@ -133,7 +134,16 @@ class extApp {
                 this.app.quit();
                 break;
             case 'shutdown':
-                this.app.quit();
+                this.type = '';
+                this.cmd = '';
+                let that = this;
+                powerOff( (err, stderr, stdout) => {
+                    if(!err && !stderr) {
+                        that.logger.info(stdout);
+                    } else {
+                        throw new Error(stderr);
+                    }
+                });
                 break;
             case 'settings':
                 this.openSettingsWin();

@@ -20,26 +20,28 @@ class cfg {
         if (!fs.existsSync(this.home + '/.config/conTVLauncher')) fs.mkdirSync(this.home + '/.config/conTVLauncher');
         if (!fs.existsSync(this.home + '/.config/conTVLauncher/config.json')) {
             let config = defaultCfg;
-            config.tiles = this.setupTiles(config.tiles);
+            config.tiles = this.setupTiles(config);
+            this.writeCfg(deepCp(config));
             return config;
         } else {
             let config = JSON.parse(fs.readFileSync(this.home + '/.config/conTVLauncher/config.json'));
-            config.tiles = this.setupTiles(config.tiles);
+            config.tiles = this.setupTiles(config);
             return config;
         }
     }
 
-    writeCfg() {
+    writeCfg(cfg) {
         this.logger.info('Writing config to ' + this.home + '/.config/conTVLauncher/config.json' + ' ...');
-        let config = JSON.parse(JSON.stringify(this.config));
+        let config = (cfg === undefined) ? JSON.parse(JSON.stringify(this.config)) : cfg;
         config.tiles = this.restoreHiddenTiles(config.tiles);
         config.tiles = this.removeSystemTiles(config.tiles);
         fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', JSON.stringify(config));
     };
 
-    setupTiles(tiles) {
+    setupTiles(cfg) {
+        let tiles = cfg.tiles;
         let hide = [];
-        tiles = this.addSystemTiles(tiles);
+        tiles = this.addSystemTiles(cfg);
         tiles.forEach((con, i1) => {
             con.forEach((tile, i2) => {
                 if(!tile.show) {
@@ -59,7 +61,8 @@ class cfg {
         return tiles;
     }
 
-    addSystemTiles(tiles) {
+    addSystemTiles(cfg) {
+        let tiles = cfg.tiles;
         let sysTiles = [
             {
                     'title': 'Settings',
@@ -83,7 +86,7 @@ class cfg {
                     'type': 'sys',
                     'cmd': 'shutdown',
                     'selected': false,
-                    'show': false
+                    'show': cfg.enableShutdown
             },
         ];
         tiles.push(sysTiles);
@@ -125,5 +128,6 @@ class cfg {
 
 
 }
+function deepCp(obj) { return JSON.parse(JSON.stringify(obj)); }
 
 module.exports = cfg;

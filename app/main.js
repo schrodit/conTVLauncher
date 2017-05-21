@@ -45,7 +45,7 @@ function createWindow () {
         try {
             extApp.openApp(app);
         } catch (err) {
-            throwError(err);
+            throwError(err.message);
         }
     });
     ipcMain.on('close-launcher', () => {
@@ -60,9 +60,9 @@ function createWindow () {
 }
 
 
-app.commandLine.appendSwitch('widevine-cdm-path', app.getAppPath() + '/bin/plugins/libwidevinecdmadapter.so') //need to be changed
+app.commandLine.appendSwitch('widevine-cdm-path', app.getAppPath() + '/bin/plugins/libwidevinecdmadapter.so'); //need to be changed
 // The version of plugin can be got from `chrome://plugins` page in Chrome.
-app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.962') // need to be changed
+app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.962'); // need to be changed
 
 app.on('ready', ()=> {
     //get home dir
