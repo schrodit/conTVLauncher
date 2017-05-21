@@ -128,6 +128,6 @@ class cfg {
 
 
 }
-function deepCp(obj) { return JSON.parse(JSON.stringify(obj));}
+function deepCp(obj) { return JSON.parse(JSON.stringify(obj)); }
 
 module.exports = cfg;

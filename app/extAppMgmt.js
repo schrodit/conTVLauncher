@@ -138,7 +138,6 @@ class extApp {
                 this.cmd = '';
                 let that = this;
                 powerOff( (err, stderr, stdout) => {
-                    console.log(stdout);
                     if(!err && !stderr) {
                         that.logger.info(stdout);
                     } else {
