@@ -35,7 +35,7 @@ class cfg {
         let config = (cfg === undefined) ? JSON.parse(JSON.stringify(this.config)) : cfg;
         config.tiles = this.restoreHiddenTiles(config.tiles);
         config.tiles = this.removeSystemTiles(config.tiles);
-        fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', JSON.stringify(config));
+        fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', config.prettyprint ? JSON.stringify(config, null, 1) : JSON.stringify(config));
     };
 
     setupTiles(cfg) {
@@ -82,7 +82,7 @@ class cfg {
             },
             {
                     'title': 'Poweroff',
-                    'icon': 'icons:power-settings-new',
+                    'icon': 'icons:settings-power',
                     'type': 'sys',
                     'cmd': 'shutdown',
                     'selected': false,

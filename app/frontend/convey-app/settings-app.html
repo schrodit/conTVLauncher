@@ -15,12 +15,18 @@
        padding: 24px;
      }
 
+     .section {
+       width: 100%;
+       padding: 16px 0;
+     }
+
 
      .actions {
        position: absolute;
        bottom: 0;
        margin-bottom: 24px;
      }
+
 
      .green {
        background: var(--positive-action);
@@ -36,11 +42,16 @@
 
     </style>
 
-
-    <paper-input label="Zoom Factor" value="{{zoomFactor}}"></paper-input>
-    <br />
-    <paper-checkbox checked="{{cfg.enableShutdown}}">Enable shutdown (requires restart)</paper-checkbox>
-
+    
+    <div class="section">
+      <paper-input label="Zoom Factor" value="{{zoomFactor}}"></paper-input>
+    </div>
+    <div class="section">
+      <paper-checkbox checked="{{cfg.enableShutdown}}">Enable shutdown (requires restart)</paper-checkbox>
+    </div>
+    <div class="section">
+      <paper-checkbox checked="{{cfg.prettyprint}}">Pretty print config file</paper-checkbox>
+    </div>
     
     <div class="actions">
       <paper-button class="green" raised on-click="onSave">Save</paper-button>

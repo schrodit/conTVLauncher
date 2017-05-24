@@ -2,6 +2,7 @@ const {BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
 const powerOff = require('power-off');
+const exec = require('child_process').exec;
 
 class extApp {
     constructor(app, win, cfg, logger) {
@@ -134,16 +135,7 @@ class extApp {
                 this.app.quit();
                 break;
             case 'shutdown':
-                this.type = '';
-                this.cmd = '';
-                let that = this;
-                powerOff( (err, stderr, stdout) => {
-                    if(!err && !stderr) {
-                        that.logger.info(stdout);
-                    } else {
-                        throw new Error(stderr);
-                    }
-                });
+                this.openPowerSettingsWin();
                 break;
             case 'settings':
                 this.openSettingsWin();
@@ -183,6 +175,60 @@ class extApp {
         });
         ipcMain.on('settings-restore-cfg', (event) => {
             event.returnValue = this.cfg.restoreDefaultCfg();
+        });
+
+        this.appWin.on('close', () => {
+            this.open = false;
+            this.type = '';
+            this.logger.info('Close web app ...');
+            this.appWin = null;
+        });
+    }
+
+    openPowerSettingsWin () {
+        this.appWin = new BrowserWindow({ 
+            parent: this.win, 
+            show: true, 
+            frame: false, 
+            width: 300, height: 346, 
+            'use-content-size': true,
+            modal: true 
+        });
+        this.appWin.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.app.getAppPath(), 'frontend/powersettings.html')
+        }));
+
+        ipcMain.on('power-shutdown', () => {
+            this.type = '';
+            this.cmd = '';
+            let that = this;
+            powerOff( (err, stderr, stdout) => {
+                if(!err && !stderr) {
+                    that.logger.info(stdout);
+                } else {
+                    throw new Error(stderr);
+                }
+            });
+        });
+        ipcMain.on('power-restart', () => {
+            exec('reboot', (err, stderr, stdout) => {
+                if(!err && !stderr) {
+                    that.logger.info(stdout);
+                } else {
+                    throw new Error(stderr);
+                }
+            });
+        });
+        ipcMain.on('power-reload', () => {
+            this.app.relaunch();
+            this.app.exit(0);
+        });
+
+        this.appWin.on('ready-to-show', () => {
+            this.logger.info('Open power-settings window');
+            this.appWin.show();
         });
 
         this.appWin.on('close', () => {

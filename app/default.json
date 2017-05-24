@@ -1,6 +1,7 @@
 {
     "zoomFactor": 0.75,
     "enableShutdown": false,
+    "prettyprint": false,
     "tiles": [
         [
             {
