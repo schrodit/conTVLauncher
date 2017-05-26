@@ -28,7 +28,7 @@ class spotifyWidget extends Polymer.Element {
     }
 
     setCover() {
-        const spotify_imgurl = "https://i.scdn.co/image/";
+        const spotify_imgurl = 'https://i.scdn.co/image/';
         let covers = this.track.album.cover;
         this.cover = spotify_imgurl + covers[0];
     }
