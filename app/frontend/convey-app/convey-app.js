@@ -14,6 +14,10 @@ class conveyApp extends Polymer.Element {
                 notify: true,
                 observer: '_onZoomFactor'
             },
+            spotify: {
+                type: Boolean,
+                notify: true
+            },
             selected: {
                 type: Array
             },
@@ -75,6 +79,7 @@ class conveyApp extends Polymer.Element {
 
     _setConfig(cfg) {
         this.zoomFactor = cfg.zoomFactor;
+        this.spotify = cfg.enableSpotify;
         this.tiles = cfg.tiles;
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
