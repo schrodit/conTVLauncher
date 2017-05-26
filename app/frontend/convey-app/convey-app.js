@@ -94,7 +94,7 @@ class conveyApp extends Polymer.Element {
 
     // Navigation
     goTo(aNewTile) {
-        if(this.selected[0] === -1) this.querySelector('spotify-widget').selected = false;
+        if(this.selected[1] === -1) this.shadowRoot.querySelector('spotify-widget').selected = false;
         else this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
         this.set('tiles.' + aNewTile[1] + '.' + aNewTile[0] + '.selected', true);
 
@@ -103,20 +103,20 @@ class conveyApp extends Polymer.Element {
 
     gotoSpotify() {
         this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
-        this.querySelector('spotify-widget').selected = true;
+        this.shadowRoot.querySelector('spotify-widget').selected = true;
 
-        this.selected = [-1, 0];
+        this.selected = [0, -1];
     }
 
     _navLeft() {
         let x = this.selected[0], y = this.selected[1];
-        if(x > 0) {
+        if(y > -1 && x > 0) {
             this.goTo([x - 1, y]);
         }
     }
     _navRight() {
         let x = this.selected[0], y = this.selected[1];
-        if((this.tiles[y].length - 1) > x) {
+        if(y > -1 && (this.tiles[y].length - 1) > x) {
             this.goTo([x + 1, y]);
         }
     }
@@ -126,7 +126,7 @@ class conveyApp extends Polymer.Element {
             y = y - 1;
             if (this.tiles[y].length - 1 < x) x = this.tiles[y].length - 1;
             this.goTo([x, y]);
-        } else if(this.spotify) gotoSpotify();
+        } else if(this.spotify && this.shadowRoot.querySelector('spotify-widget').open) this.gotoSpotify();
     }
     _navDown() {
         let x = this.selected[0], y = this.selected[1];

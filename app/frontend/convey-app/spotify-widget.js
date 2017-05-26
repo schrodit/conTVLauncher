@@ -12,7 +12,7 @@ class spotifyWidget extends Polymer.Element {
             selected: {
                 type: Boolean,
                 value: false,
-                observer: '_onSelect()'
+                observer: '_onSelect'
             },
             open: {
                 type: Boolean,
@@ -53,8 +53,10 @@ class spotifyWidget extends Polymer.Element {
     }
 
     _onSelect() {
-        if(this.selected) this.classList.add('selected');
-        else this.classList.add('selected');
+        if(this.selected) {
+            this.classList.add('selected');
+            window.scrollTo( window.scrollX, 0 );
+        } else this.classList.remove('selected');
     }
     
 }

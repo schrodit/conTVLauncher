@@ -19,16 +19,12 @@ let spotify;
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-        frame: false,
-        fullscreen: true,
+        //frame: false,
+        //fullscreen: true,
         show:false
     });
    
     win.once('ready-to-show', () => {
-        if (cfg.getCfg().enableSpotify) { 
-            spotify = new spotifyApp(app, win, logger);
-            spotify.startServer();
-        }
         win.show();
     });
 
@@ -95,6 +91,10 @@ app.on('ready', ()=> {
     createWindow();
     //initialize extApp object
     extApp = new extAppMgmt(app, win, cfg, logger);
+    if (cfg.getCfg().enableSpotify) { 
+        spotify = new spotifyApp(app, win, logger);
+        spotify.startServer();
+    }
 });
 
 // connection to fontend
