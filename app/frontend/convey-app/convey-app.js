@@ -94,10 +94,18 @@ class conveyApp extends Polymer.Element {
 
     // Navigation
     goTo(aNewTile) {
-        this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
+        if(this.selected[0] === -1) this.querySelector('spotify-widget').selected = false;
+        else this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
         this.set('tiles.' + aNewTile[1] + '.' + aNewTile[0] + '.selected', true);
 
         this.selected = aNewTile;
+    }
+
+    gotoSpotify() {
+        this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
+        this.querySelector('spotify-widget').selected = true;
+
+        this.selected = [-1, 0];
     }
 
     _navLeft() {
@@ -118,7 +126,7 @@ class conveyApp extends Polymer.Element {
             y = y - 1;
             if (this.tiles[y].length - 1 < x) x = this.tiles[y].length - 1;
             this.goTo([x, y]);
-        }
+        } else if(this.spotify) gotoSpotify();
     }
     _navDown() {
         let x = this.selected[0], y = this.selected[1];

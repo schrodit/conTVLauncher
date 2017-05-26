@@ -9,6 +9,11 @@ class spotifyWidget extends Polymer.Element {
                 notify: true
             },
             cover: String,
+            selected: {
+                type: Boolean,
+                value: false,
+                observer: '_onSelect()'
+            },
             open: {
                 type: Boolean,
                 value: false
@@ -45,6 +50,11 @@ class spotifyWidget extends Polymer.Element {
             artists += ', ' + artist.name;
         });
         return artists.substr(1);
+    }
+
+    _onSelect() {
+        if(this.selected) this.classList.add('selected');
+        else this.classList.add('selected');
     }
     
 }
