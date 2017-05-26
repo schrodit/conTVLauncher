@@ -12,10 +12,13 @@ class spotify {
 
     startServer() {
         http.createServer( (req, res) => {
-            let json = url.parse(req.url, true).query['t'];
-            console.log(json);
-            this.track = JSON.parse(json);
-
+            try {
+                let json = url.parse(req.url, true).query['t'];
+                this.track = JSON.parse(json);
+                this.sendTrack();
+            } catch(err) {
+                this.logger.error(err.msg);
+            }
             res.writeHead(200, {'Content-Type': 'text/plain'});
             res.end('success');
         }).listen(33003, '127.0.0.1');
