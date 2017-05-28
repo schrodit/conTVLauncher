@@ -19,8 +19,8 @@ let spotify;
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-        //frame: false,
-        //fullscreen: true,
+        frame: false,
+        fullscreen: true,
         show:false
     });
    
@@ -92,7 +92,7 @@ app.on('ready', ()=> {
     //initialize extApp object
     extApp = new extAppMgmt(app, win, cfg, logger);
     if (cfg.getCfg().enableSpotify) { 
-        spotify = new spotifyApp(app, win, logger);
+        spotify = new spotifyApp(app, win, extApp, logger);
         spotify.startServer();
     }
 });

@@ -1,13 +1,19 @@
-const {ipcMain} = require('electron');
+const {ipcMain, BrowserWindow} = require('electron');
 const fs = require('fs');
 const http = require('http');
 const url = require('url');
+const path = require('path');
 
 class spotify {
-    constructor(app, win, winston) {
+    constructor(app, win, extApp, winston) {
         this.app = app;
         this.logger = winston;
         this.win = win;
+        this.extApp = extApp;
+
+        ipcMain.on('spotify-open-menu', () => {
+            this.openMenu();
+        })
     }
 
     startServer() {
@@ -26,7 +32,40 @@ class spotify {
     }
 
     sendTrack() {
-        this.win.webContents.send('new-track', this.track);
+        this.win.webContents.send('spotify-new-track', this.track);
+    }
+
+    openMenu () {
+        this.extApp.appWin = new BrowserWindow({ 
+            parent: this.win, 
+            show: true, 
+            frame: false, 
+            width: 300, height: 346, 
+            'use-content-size': true,
+            modal: true 
+        });
+        this.extApp.appWin.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.app.getAppPath(), 'frontend/spotify-settings.html')
+        }));
+
+        ipcMain.on('spotify-action-close', () => {
+            this.win.webContents.send('spotify-close');
+            this.extApp.appWin.close();
+        });
+
+        this.extApp.appWin.on('ready-to-show', () => {
+            this.logger.info('Open spotify menu');
+            this.extApp.appWin.show();
+        });
+
+        this.extApp.appWin.on('close', () => {
+            this.extApp.open = false;
+            this.extApp.type = '';
+            this.logger.info('Close web app ...');
+            this.extApp.appWin = null;
+        });
     }
 
     testTrack() {

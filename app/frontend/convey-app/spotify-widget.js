@@ -24,12 +24,19 @@ class spotifyWidget extends Polymer.Element {
     constructor() {
         super();
         //register electron events
-        ipcRenderer.on('new-track', (event, arg) => {
+        ipcRenderer.on('spotify-new-track', (event, arg) => {
             this.track = arg;
             this.setCover();
             this.open = true;
         });
+        ipcRenderer.on('spotify-close', () => {
+            this.open = false;
+        });
     
+    }
+
+    openMenu() {
+        ipcRenderer.send('spotify-open-menu');
     }
 
     setCover() {

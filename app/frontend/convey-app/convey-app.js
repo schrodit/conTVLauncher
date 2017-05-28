@@ -40,13 +40,25 @@ class conveyApp extends Polymer.Element {
             this.set('toast.msg', arg);
             this.set('toast.open', 'true');
         });
+        ipcRenderer.on('spotify-close', () => {
+            this.selected = [0, 0];
+            this.set('tiles.0.0.selected', true);
+        });
         
         // register navigation shortcuts
+        this.enterCount = 0;
         window.addEventListener('keydown', (event) => {
             switch(event.keyCode) {
                 case 13:
                     event.preventDefault();
-                    this._onOpenApp();
+                    this.enterCount++;
+                    if(this.enterCount === 1) {
+                        setTimeout(() => {
+                            if(this.enterCount < 2) this._onOpenApp();
+                            else this._openContextMenu();
+                            this.enterCount = 0;
+                        }, 700);
+                    }
                     break;
                 case 37:
                     event.preventDefault();
@@ -146,6 +158,13 @@ class conveyApp extends Polymer.Element {
     }
     checkTiles(tile) {
         return tile.type !== 'sys' && tile.show ? true : false;
+    }
+
+    //context menu
+    _openContextMenu() {
+        if(this.selected[1] === -1) {
+            this.shadowRoot.querySelector('spotify-widget').openMenu();
+        }
     }
     
 }
