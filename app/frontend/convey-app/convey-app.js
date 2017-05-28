@@ -14,6 +14,10 @@ class conveyApp extends Polymer.Element {
                 notify: true,
                 observer: '_onZoomFactor'
             },
+            spotify: {
+                type: Boolean,
+                notify: true
+            },
             selected: {
                 type: Array
             },
@@ -36,13 +40,25 @@ class conveyApp extends Polymer.Element {
             this.set('toast.msg', arg);
             this.set('toast.open', 'true');
         });
+        ipcRenderer.on('spotify-close', () => {
+            this.selected = [0, 0];
+            this.set('tiles.0.0.selected', true);
+        });
         
         // register navigation shortcuts
+        this.enterCount = 0;
         window.addEventListener('keydown', (event) => {
             switch(event.keyCode) {
                 case 13:
                     event.preventDefault();
-                    this._onOpenApp();
+                    this.enterCount++;
+                    if(this.enterCount === 1) {
+                        setTimeout(() => {
+                            if(this.enterCount < 2) this._onOpenApp();
+                            else this._openContextMenu();
+                            this.enterCount = 0;
+                        }, 700);
+                    }
                     break;
                 case 37:
                     event.preventDefault();
@@ -75,6 +91,7 @@ class conveyApp extends Polymer.Element {
 
     _setConfig(cfg) {
         this.zoomFactor = cfg.zoomFactor;
+        this.spotify = cfg.enableSpotify;
         this.tiles = cfg.tiles;
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
@@ -89,21 +106,29 @@ class conveyApp extends Polymer.Element {
 
     // Navigation
     goTo(aNewTile) {
-        this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
+        if(this.selected[1] === -1) this.shadowRoot.querySelector('spotify-widget').selected = false;
+        else this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
         this.set('tiles.' + aNewTile[1] + '.' + aNewTile[0] + '.selected', true);
 
         this.selected = aNewTile;
     }
 
+    gotoSpotify() {
+        this.set('tiles.' + this.selected[1] + '.' + this.selected[0] + '.selected', false);
+        this.shadowRoot.querySelector('spotify-widget').selected = true;
+
+        this.selected = [0, -1];
+    }
+
     _navLeft() {
         let x = this.selected[0], y = this.selected[1];
-        if(x > 0) {
+        if(y > -1 && x > 0) {
             this.goTo([x - 1, y]);
         }
     }
     _navRight() {
         let x = this.selected[0], y = this.selected[1];
-        if((this.tiles[y].length - 1) > x) {
+        if(y > -1 && (this.tiles[y].length - 1) > x) {
             this.goTo([x + 1, y]);
         }
     }
@@ -113,7 +138,7 @@ class conveyApp extends Polymer.Element {
             y = y - 1;
             if (this.tiles[y].length - 1 < x) x = this.tiles[y].length - 1;
             this.goTo([x, y]);
-        }
+        } else if(this.spotify && this.shadowRoot.querySelector('spotify-widget').open) this.gotoSpotify();
     }
     _navDown() {
         let x = this.selected[0], y = this.selected[1];
@@ -133,6 +158,13 @@ class conveyApp extends Polymer.Element {
     }
     checkTiles(tile) {
         return tile.type !== 'sys' && tile.show ? true : false;
+    }
+
+    //context menu
+    _openContextMenu() {
+        if(this.selected[1] === -1) {
+            this.shadowRoot.querySelector('spotify-widget').openMenu();
+        }
     }
     
 }

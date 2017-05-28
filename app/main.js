@@ -7,18 +7,21 @@ const winston = require('winston');
 
 const cfgMgmt = require('./cfgMgmt.js');
 const extAppMgmt = require('./extAppMgmt.js');
+const spotifyApp = require('./spotifyApp.js');
 
 let win;
 let home;
 let logger;
 let cfg;
 let extApp;
+let spotify;
 
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
         frame: false,
         fullscreen: true,
+        show:false
     });
    
     win.once('ready-to-show', () => {
@@ -84,10 +87,14 @@ app.on('ready', ()=> {
     //load cfg
     cfg = new cfgMgmt(home, logger);
 
-    winston.info('Creating MainWindow ...');
+    logger.info('Creating MainWindow ...');
     createWindow();
     //initialize extApp object
     extApp = new extAppMgmt(app, win, cfg, logger);
+    if (cfg.getCfg().enableSpotify) { 
+        spotify = new spotifyApp(app, win, extApp, logger);
+        spotify.startServer();
+    }
 });
 
 // connection to fontend

@@ -7,6 +7,8 @@
 
 <link rel="import" href="../elements/ui-toast/ui-toast.html">
 
+<link rel="import" href="spotify-widget.html">
+
 <link rel="import" href="../styles/styles.html">
 
 <dom-module id="convey-app">
@@ -17,6 +19,7 @@
         display: block;
         height: 100%;
         min-height: 100%;
+        width: 100%;
         padding: 27px 48px;
         box-sizing: border-box;
       }
@@ -24,7 +27,7 @@
       .content {
         position: relative;
         z-index: 2;
-        margin-top: 10%;
+        margin-top: 5%;
       }
 
       .bg {
@@ -46,6 +49,10 @@
     </style>
 
     <div class="content">
+
+      <template is="dom-if" if="{{spotify}}">
+        <spotify-widget></spotify-widget>
+      </template>
       <template is="dom-repeat" items="{{tiles}}" as="tileContainer">
         <ui-tile-container>
 
