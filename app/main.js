@@ -19,8 +19,8 @@ let spotify;
 function createWindow () {
     // Create the browser window.
     win = new BrowserWindow({
-        frame: false,
-        fullscreen: true,
+        //frame: false,
+        //fullscreen: true,
         show:false
     });
    
