@@ -29,7 +29,7 @@ function createWindow () {
     });
 
     // register shortcuts
-    globalShortcut.register('Home', () => {
+    globalShortcut.register('Super+c', () => {
         if(extApp.appWin) extApp.appWin.close();
     });
     globalShortcut.register('F3', () => {
@@ -90,8 +90,10 @@ app.on('ready', ()=> {
     logger.info('Creating MainWindow ...');
     createWindow();
     //initialize extApp object
+    logger.info('Starting ExtApp service ...');
     extApp = new extAppMgmt(app, win, cfg, logger);
     if (cfg.getCfg().enableSpotify) { 
+        logger.info('Starting Spotify service ...');
         spotify = new spotifyApp(app, win, extApp, logger);
         spotify.startServer();
     }

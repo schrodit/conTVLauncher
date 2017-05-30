@@ -23,6 +23,5 @@
     "gulp-if": "2.0.2"
   },
   "dependencies": {
-    "winston": "2.3.1"
   }
 }
