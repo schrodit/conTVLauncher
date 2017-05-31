@@ -117,20 +117,15 @@ class extApp {
         this.cmd = '';
     }
 
-    // // spotify
-    // startSpotifyService() {
-    //     let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
-    //     require('child_process').spawn(cmd, {
-    //         detached: true
-    //     });
-    // }
-
 
     // systemControls
 
     execSysApp() {
         this.type = 'sys';
         switch(this.cmd) {
+            case 'spotify':
+                this.app.quit();
+                break;
             case 'close':
                 this.app.quit();
                 break;
