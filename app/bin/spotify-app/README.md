@@ -1,4 +1,4 @@
-## Integrate extension to librespot classes
+## Integrate extension to librespot
 
 1. 
 
