@@ -15,7 +15,7 @@
             {
                 "title": "Spotify",
                 "img": "img/spotifyTile.png",
-                "type": "sys",
+                "type": "intern",
                 "cmd": "spotify",
                 "show": false
             },

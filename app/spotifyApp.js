@@ -54,6 +54,10 @@ class spotify {
             this.win.webContents.send('spotify-close');
             this.extApp.appWin.close();
         });
+        ipcMain.on('spotify-action-disable', () => {
+            this.win.webContents.send('spotify-toggle-disabled');
+            this.extApp.appWin.close();
+        });
 
         this.extApp.appWin.on('ready-to-show', () => {
             this.logger.info('Open spotify menu');

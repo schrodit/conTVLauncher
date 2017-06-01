@@ -2,6 +2,7 @@
 
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 
 <link rel="import" href="../../styles/styles.html">
 
@@ -45,6 +46,10 @@
     <div role="listbox">
       <paper-item id="close">
         <iron-icon class="icon" icon="icons:close"></iron-icon>
+        Close spotify widget
+      </paper-item>
+      <paper-item id="disable">
+        <iron-icon class="icon" icon="av:not-interested"></iron-icon>
         Close spotify widget
       </paper-item>
     </div>
@@ -96,6 +101,9 @@
       switch(id) {
         case 'close':
           ipcRenderer.send('spotify-action-close');
+          break;
+        case 'disable':
+          ipcRenderer.send('spotify-action-disable');
           break;
       }
     }

@@ -5,11 +5,11 @@ const powerOff = require('power-off');
 const exec = require('child_process').exec;
 
 class extApp {
-    constructor(app, win, cfg, logger) {
+    constructor(app) {
         this.app = app;
-        this.win = win;
-        this.cfg = cfg;
-        this.logger = logger;
+        this.win = app.win;
+        this.cfg = app.cfg;
+        this.logger = app.logger;
         this.home = this.app.getPath('home');
         this.type = String;
         this.cmd = String;
@@ -26,8 +26,11 @@ class extApp {
                 break;
             case 'shell':
                 this.cmd = app.cmd;
-                //if(app.title === 'Spotify') startSpotifyService();
                 this.openExtApp();
+                break;
+            case 'intern':
+                this.cmd = this.app.getAppPath() + "/frontend/" + app.cmd;
+                this.newWebApp(this.cmd);
                 break;
             case 'sys':
                 this.cmd = app.cmd;
@@ -40,13 +43,7 @@ class extApp {
     }
     closeApp() {
         switch(this.type) {
-            case 'web':
-                this.appWin.close();
-                break;
-            case 'shell':
-                this.closeExtApp();
-                break;
-            case 'sys':
+            case 'web': case 'shell': case 'sys': case 'intern':
                 this.appWin.close();
                 break;
             default:
@@ -58,15 +55,23 @@ class extApp {
     }
     // new Web Window
     newWebApp(url) {
-        this.appWin = new BrowserWindow({
-            modal: true,
-            frame: false,
-            fullscreen: true,
-            webPreferences: {
-                plugins: true,
-                nodeIntegration: false
-            }
-        });
+        if (this.type === 'intern') {
+            this.appWin = new BrowserWindow({
+                modal: true,
+                frame: false,
+                fullscreen: true
+            });
+        } else { 
+            this.appWin = new BrowserWindow({
+                modal: true,
+                frame: false,
+                fullscreen: true,
+                webPreferences: {
+                    plugins: true,
+                    nodeIntegration: false
+                }
+            });
+        }        
         this.appWin.loadURL(url);
 
         // catch errors
@@ -121,11 +126,7 @@ class extApp {
     // systemControls
 
     execSysApp() {
-        this.type = 'sys';
         switch(this.cmd) {
-            case 'spotify':
-                this.app.quit();
-                break;
             case 'close':
                 this.app.quit();
                 break;
@@ -159,7 +160,7 @@ class extApp {
             event.returnValue = this.cfg.getCfg();
         });
         ipcMain.on('settings-close', () => {
-            this.appWin.close();
+            if(this.appWin) this.appWin.close();
         });
         ipcMain.on('settings-save-cfg', (event, arg) => {
             this.cfg.setCfg(arg);

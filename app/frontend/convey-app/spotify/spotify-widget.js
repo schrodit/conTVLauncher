@@ -14,6 +14,10 @@ class spotifyWidget extends Polymer.Element {
                 value: false,
                 observer: '_onSelect'
             },
+            disabled: {
+                type: Boolean,
+                value: false
+            },
             open: {
                 type: Boolean,
                 value: false
@@ -25,12 +29,17 @@ class spotifyWidget extends Polymer.Element {
         super();
         //register electron events
         ipcRenderer.on('spotify-new-track', (event, arg) => {
-            this.track = arg;
-            this.setCover();
-            this.open = true;
+            if (!this.disabled) {
+                this.track = arg;
+                this.setCover();
+                this.open = true;
+            }
         });
         ipcRenderer.on('spotify-close', () => {
             this.open = false;
+        });
+        ipcRenderer.on('spotify-toggle-disabled', () => {
+            this.disabled = !this.disabled;
         });
     
     }

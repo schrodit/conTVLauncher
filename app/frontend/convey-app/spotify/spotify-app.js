@@ -1,4 +1,4 @@
-
+const {ipcRenderer} = require('electron');
 class spotifyApp extends Polymer.Element {
     static get is() { return 'spotify-app'; }
 
@@ -6,9 +6,26 @@ class spotifyApp extends Polymer.Element {
         return {
             track: {
                 type: Array,
-                notify: true
+                notify: true,
+                value: {
+                    name: 'Title',
+                    album: {
+                        name: 'Album',
+                        covers: [
+                            '2b8490f45660572fda9732df66adb83fde98a2a2'
+                        ]
+                    },
+                    artists: [
+                        {
+                            name: 'Artist'
+                        }
+                    ]
+                }
             },
-            cover: String
+            cover: {
+                type: String,
+                value: 'https://i.scdn.co/image/2b8490f45660572fda9732df66adb83fde98a2a2'
+            }
         };
     }
 
@@ -24,10 +41,6 @@ class spotifyApp extends Polymer.Element {
             this.open = false;
         });
     
-    }
-
-    openMenu() {
-        ipcRenderer.send('spotify-open-menu');
     }
 
     setCover() {

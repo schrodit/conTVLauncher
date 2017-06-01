@@ -90,7 +90,7 @@ app.on('ready', ()=> {
     createWindow();
     //initialize extApp object
     app.logger.info('Starting ExtApp service ...');
-    app.extApp = new extAppMgmt(app, app.win, app.cfg, app.logger);
+    app.extApp = new extAppMgmt(app);
     if (app.cfg.getCfg().enableSpotify) { 
         app.logger.info('Starting Spotify service ...');
         app.spotify = new spotifyApp(app, app.win, app.extApp, app.logger);
