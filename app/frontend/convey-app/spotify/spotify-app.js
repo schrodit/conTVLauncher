@@ -12,7 +12,7 @@ class spotifyApp extends Polymer.Element {
                     album: {
                         name: 'Album',
                         covers: [
-                            '2b8490f45660572fda9732df66adb83fde98a2a2'
+                            ''
                         ]
                     },
                     artists: [
@@ -24,7 +24,7 @@ class spotifyApp extends Polymer.Element {
             },
             cover: {
                 type: String,
-                value: 'https://i.scdn.co/image/2b8490f45660572fda9732df66adb83fde98a2a2'
+                value: 'img/Spotify_Icon_RGB_White.png'
             }
         };
     }
@@ -39,6 +39,15 @@ class spotifyApp extends Polymer.Element {
         });
         ipcRenderer.on('spotify-close', () => {
             this.open = false;
+        });
+
+        //check if track is already loaded
+        ipcRenderer.send('spotify-get-track', (event, arg) => {
+            if(Object.keys(arg).length === 0 && arg.constructor === Object) {
+                this.track = arg;
+                this.setCover();
+                this.open = true;
+            }
         });
     
     }

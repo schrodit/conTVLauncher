@@ -29,8 +29,8 @@ class extApp {
                 this.openExtApp();
                 break;
             case 'intern':
-                this.cmd = this.app.getAppPath() + "/frontend/" + app.cmd;
-                this.newWebApp(this.cmd);
+                this.cmd = app.cmd
+                this.newInternApp(this.cmd);
                 break;
             case 'sys':
                 this.cmd = app.cmd;
@@ -55,6 +55,7 @@ class extApp {
     }
     // new Web Window
     newWebApp(url) {
+        console.log(url);
         if (this.type === 'intern') {
             this.appWin = new BrowserWindow({
                 modal: true,
@@ -94,6 +95,34 @@ class extApp {
 
         this.appWin.once('ready-to-show', () => {
             this.logger.info('Open new Web Window with url: ' + url);
+            this.appWin.show();
+            this.open = true;
+        });
+
+        this.appWin.on('close', () => {
+            this.open = false;
+            this.type = '';
+            this.logger.info('Close web app ...');
+            this.appWin = null;
+        });
+        
+    }
+
+     newInternApp(iUrl) {
+        this.appWin = new BrowserWindow({
+            modal: true,
+            frame: false,
+            fullscreen: true
+        });       
+        this.appWin.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.app.getAppPath(), 'frontend', iUrl)
+        }));
+        
+
+        this.appWin.once('ready-to-show', () => {
+            this.logger.info('Open new Internal App Window');
             this.appWin.show();
             this.open = true;
         });

@@ -16,7 +16,7 @@
                 "title": "Spotify",
                 "img": "img/spotifyTile.png",
                 "type": "intern",
-                "cmd": "spotify",
+                "cmd": "spotify-app.html",
                 "show": false
             },
             {

@@ -10,28 +10,37 @@ class spotify {
         this.logger = winston;
         this.win = win;
         this.extApp = extApp;
+        this.track = {};
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
         })
+        ipcMain.on('spotify-get-track', () => {
+            this.sendTrack();
+        });
     }
 
     startServer() {
-        http.createServer( (req, res) => {
-            try {
-                let json = url.parse(req.url, true).query['t'];
-                this.track = JSON.parse(json);
-                this.sendTrack();
-            } catch(err) {
-                this.logger.error(err.msg);
-            }
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end('success');
-        }).listen(33003, '127.0.0.1');
-        this.logger.info('Spotify reciever running at http://127.0.0.1:33003/');
+        try {
+            http.createServer( (req, res) => {
+                try {
+                    let json = url.parse(req.url, true).query['t'];
+                    this.track = JSON.parse(json);
+                    this.sendTrack();
+                } catch(err) {
+                    this.logger.error(err.msg);
+                }
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.end('success');
+            }).listen(33003, '127.0.0.1');
+            this.logger.info('Spotify reciever running at http://127.0.0.1:33003/');
+        } catch (err) {
+            this.logger.error(err.msg);
+        }
     }
 
     sendTrack() {
+        if(this.extApp.appWin) this.extApp.appWin.webContents.send('spotify-new-track', this.track);
         this.win.webContents.send('spotify-new-track', this.track);
     }
 
