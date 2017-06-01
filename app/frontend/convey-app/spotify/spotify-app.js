@@ -25,7 +25,8 @@ class spotifyApp extends Polymer.Element {
             cover: {
                 type: String,
                 value: 'img/Spotify_Icon_RGB_White.png'
-            }
+            },
+            status: String
         };
     }
 

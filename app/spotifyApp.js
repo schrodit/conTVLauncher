@@ -10,6 +10,7 @@ class spotify {
         this.win = win;
         this.extApp = extApp;
         this.track = {};
+        this.status = '';
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
@@ -24,8 +25,14 @@ class spotify {
             http.createServer( (req, res) => {
                 try {
                     let json = url.parse(req.url, true).query['t'];
-                    this.track = JSON.parse(json);
-                    this.sendTrack();
+                    let data = JSON.parse(json);
+                    if (data.action) {
+                        this.status = data;
+                        this.sendStatus();
+                    } else {
+                        this.track = data;
+                        this.sendTrack();
+                    }
                 } catch(err) {
                     this.logger.error(err.msg);
                 }
@@ -41,6 +48,10 @@ class spotify {
     sendTrack() {
         if(this.extApp.appWin) this.extApp.appWin.webContents.send('spotify-new-track', this.track);
         this.win.webContents.send('spotify-new-track', this.track);
+    }
+    sendStatus() {
+        if(this.extApp.appWin) this.extApp.appWin.webContents.send('spotify-new-status', this.status);
+        this.win.webContents.send('spotify-new-status', this.track);
     }
 
     openMenu () {
