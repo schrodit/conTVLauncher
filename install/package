@@ -1,3 +1,5 @@
 #! /bin/bash
 
 electron-packager app/ conTVLauncher --platform=linux --overwrite
+tar -zcvf conTVLauncher.tar.gz conTVLauncher-linux-x64
+rm -r conTVLauncher-linux-x64
