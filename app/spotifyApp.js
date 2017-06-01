@@ -1,5 +1,4 @@
 const {ipcMain, BrowserWindow} = require('electron');
-const fs = require('fs');
 const http = require('http');
 const url = require('url');
 const path = require('path');
@@ -14,7 +13,7 @@ class spotify {
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
-        })
+        });
         ipcMain.on('spotify-get-track', () => {
             this.sendTrack();
         });

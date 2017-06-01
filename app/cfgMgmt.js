@@ -105,7 +105,6 @@ class cfg {
                 let i2 = ii - tileCount;
                 let tile = tiles[i1][i2];
                 if(tile.type === 'sys' && this.isSystemTile(tile.cmd)) {
-                    console.log(tile.cmd);
                     tiles[i1].splice(i2, 1);
                     tileCount++;
                     if(tiles[i1].length === 0) {

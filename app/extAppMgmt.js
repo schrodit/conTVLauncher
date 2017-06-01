@@ -29,7 +29,7 @@ class extApp {
                 this.openExtApp();
                 break;
             case 'intern':
-                this.cmd = app.cmd
+                this.cmd = app.cmd;
                 this.newInternApp(this.cmd);
                 break;
             case 'sys':
@@ -55,7 +55,6 @@ class extApp {
     }
     // new Web Window
     newWebApp(url) {
-        console.log(url);
         if (this.type === 'intern') {
             this.appWin = new BrowserWindow({
                 modal: true,
