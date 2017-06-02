@@ -32,7 +32,6 @@ class spotifyApp extends Polymer.Element {
             this.setCover();
         });
         ipcRenderer.on('spotify-new-status', (event, arg) => {
-            console.log(arg);
             if(arg.status !== 'seek') this.status = arg.status;
             if(arg.position > -1) this.position = position;
         });
