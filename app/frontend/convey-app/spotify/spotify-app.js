@@ -7,26 +7,15 @@ class spotifyApp extends Polymer.Element {
             track: {
                 type: Array,
                 notify: true,
-                value: {
-                    name: 'Title',
-                    album: {
-                        name: 'Album',
-                        covers: [
-                            ''
-                        ]
-                    },
-                    artists: [
-                        {
-                            name: 'Artist'
-                        }
-                    ]
-                }
             },
             cover: {
                 type: String,
                 value: 'img/Spotify_Icon_RGB_White.png'
             },
-            status: String
+            status: {
+                type: String,
+                value: ''
+            }
         };
     }
 
@@ -43,29 +32,27 @@ class spotifyApp extends Polymer.Element {
         });
 
         //check if track is already loaded
-        ipcRenderer.send('spotify-get-track', (event, arg) => {
-            if(Object.keys(arg).length === 0 && arg.constructor === Object) {
-                this.track = arg;
-                this.setCover();
-                this.open = true;
-            }
-        });
+        ipcRenderer.send('spotify-get-track');
     
     }
 
     setCover() {
+        if (this.track.album === void 0 || this.track.album.cover === void 0) return 'img/Spotify_Icon_RGB_White.png';
         const spotifyImgUrl = 'https://i.scdn.co/image/';
         let covers = this.track.album.cover;
         this.cover = spotifyImgUrl + covers[0];
     }
 
     getTitle() {
+        if(Object.keys(this.track).length === 0 && this.track.constructor === Object) return 'Title';
         return this.track.name;
     }
     getAlbum() {
-        return this.track.album.name;
+        if (this.track.album === void 0) return 'Album';
+        return this.track.album.name | 'Album';
     }
     getArtist() {
+        if (this.track.artists === void 0) return 'Artist';
         let artists = '';
         this.track.artists.forEach( (artist) => {
             artists += ', ' + artist.name;
@@ -79,7 +66,7 @@ class spotifyApp extends Polymer.Element {
             case 'pause':
                 return 'av:pause-circle-outline';
             default:
-             return 'av:play-circle-outline';
+             return 'av:queue-music';
         }
     }
     

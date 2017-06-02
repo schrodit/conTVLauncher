@@ -21,28 +21,26 @@ class spotify {
     }
 
     startServer() {
-        try {
-            http.createServer( (req, res) => {
-                try {
-                    let json = url.parse(req.url, true).query['t'];
-                    let data = JSON.parse(json);
-                    if (data.status) {
-                        this.status = data;
-                        this.sendStatus();
-                    } else {
-                        this.track = data;
-                        this.sendTrack();
-                    }
-                } catch(err) {
-                    this.logger.error(err.msg);
+        http.createServer( (req, res) => {
+            try {
+                let json = url.parse(req.url, true).query['t'];
+                let data = JSON.parse(json);
+                if (data.status) {
+                    this.status = data;
+                    this.sendStatus();
+                } else {
+                    this.track = data;
+                    this.sendTrack();
                 }
-                res.writeHead(200, {'Content-Type': 'text/plain'});
-                res.end('success');
-            }).listen(33003, '127.0.0.1');
-            this.logger.info('Spotify reciever running at http://127.0.0.1:33003/');
-        } catch (err) {
+            } catch(err) {
+                this.logger.error(err.msg);
+            }
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end('success');
+        }).listen(33003, '127.0.0.1').on('error', (err) => {
             this.logger.error(err.msg);
-        }
+        });
+        this.logger.info('Spotify reciever running at http://127.0.0.1:33003/');
     }
 
     sendTrack() {
