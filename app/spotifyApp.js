@@ -111,13 +111,12 @@ class spotify {
         let that = this;
         this.spotifyApi.clientCredentialsGrant()
         .then(function(data) {
-            console.log('The access token expires in ' + data.body['expires_in']);
-            console.log('The access token is ' + data.body['access_token']);
+            this.logger.info('The access token expires in ' + data.body['expires_in']);
 
             // Save the access token so that it's used in future calls
             that.spotifyApi.setAccessToken(data.body['access_token']);
         }, function(err) {
-                console.log('Something went wrong when retrieving an access token', err);
+                this.logger.error('Something went wrong when retrieving an access token', err);
         });
     }
 
@@ -125,22 +124,20 @@ class spotify {
         let that = this;
         this.spotifyApi.clientCredentialsGrant()
         .then(function(data) {
-            console.log('The access token expires in ' + data.body['expires_in']);
-            console.log('The access token is ' + data.body['access_token']);
+            this.logger.info('The access token expires in ' + data.body['expires_in']);
 
             // Save the access token so that it's used in future calls
             that.spotifyApi.setAccessToken(data.body['access_token']);
         }).then(() => {
-            console.log(that.track.id);
             that.spotifyApi.getTrack(that.track.id)
             .then(function(data) {
                 that.track.duration_ms = data.body.duration_ms;
                 that.sendTrack();
             }).catch(function(error) {
-                console.error(error);
+                this.logger.error(error);
             });
         }).catch(function(error) {
-            console.error(error);
+            this.logger.error(error);
         });
         
     }
