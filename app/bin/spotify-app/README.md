@@ -10,7 +10,7 @@
     Httpplayer::new().send(self.session.clone(), tTrack.into_owned());
     ```
 
-to the end of `fn load_track(&self, track_id: SpotifyId, position: i64) -> Option<Decoder>` function inside the src/player.rs
+to the end of `fn load_track(&self, track_id: SpotifyId, position: i64) -> Option<Decoder>` function inside src/player.rs
 
 4. add 
     ```rust
@@ -43,10 +43,10 @@ to the end of `fn load_track(&self, track_id: SpotifyId, position: i64) -> Optio
                 Httpplayer::new().sendStatus("pause".to_string(), position as i64);
             }
         }
-        ```
+    ```
         and
 
-        ```rust
+    ```rust
     PlayerCommand::Seek(position) => {
         if let Some(decoder) = self.state.decoder() {
             match vorbis_time_seek_ms(decoder, position as i64) {
@@ -99,4 +99,4 @@ to the end of `fn load_track(&self, track_id: SpotifyId, position: i64) -> Optio
             PlayerState::Invalid => panic!("invalid state"),
         }
     }
-        ```
+    ```
