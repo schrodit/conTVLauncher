@@ -110,7 +110,7 @@ class extApp {
      newInternApp(iUrl) {
         this.appWin = new BrowserWindow({
             modal: true,
-            frame: false,
+            //frame: false,
             fullscreen: true
         });       
         this.appWin.loadURL(url.format({

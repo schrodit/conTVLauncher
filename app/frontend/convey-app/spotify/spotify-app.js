@@ -36,10 +36,10 @@ class spotifyApp extends Polymer.Element {
         ipcRenderer.on('spotify-new-track', (event, arg) => {
             this.track = arg;
             this.setCover();
-            this.open = true;
         });
-        ipcRenderer.on('spotify-close', () => {
-            this.open = false;
+        ipcRenderer.on('spotify-new-status', (event, arg) => {
+            console.log(arg);
+            this.status = arg.status;
         });
 
         //check if track is already loaded
@@ -71,6 +71,16 @@ class spotifyApp extends Polymer.Element {
             artists += ', ' + artist.name;
         });
         return artists.substr(1);
+    }
+    getStatus() {
+        switch(this.status) {
+            case 'play':
+                return 'av:play-circle-outline';
+            case 'pause':
+                return 'av:pause-circle-outline';
+            default:
+             return 'av:play-circle-outline';
+        }
     }
     
 }

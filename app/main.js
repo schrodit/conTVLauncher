@@ -24,7 +24,7 @@ function createWindow () {
     });
 
     // register shortcuts
-    globalShortcut.register('Super+c', () => {
+    globalShortcut.register('CommandOrControl+Backspace', () => {
         if(app.extApp.appWin) app.extApp.appWin.close();
     });
     globalShortcut.register('F3', () => {

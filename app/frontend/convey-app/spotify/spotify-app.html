@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 
 <link rel="import" href="../../elements/ui-watch/ui-watch.html">
 
@@ -26,7 +28,7 @@
       }
 
       .cover {
-        margin-top: 12%;
+        margin-top: 8%;
         margin-right: auto;
         margin-left: auto;
         width: 55vh;
@@ -37,7 +39,7 @@
 
       .info {
         text-align: center;
-        padding: 24px;
+        padding: 0;
       }
 
       .text {
@@ -47,6 +49,17 @@
         width: 70vw;
         white-space: nowrap;
         overflow: hidden;
+      }
+
+      .player {
+        width: 55vh;
+        margin: auto auto;
+        padding: 14px;
+      }
+
+      .player-icon {
+        width: 50px;
+        height: 50px;
       }
 
       .title {
@@ -77,6 +90,7 @@
     <div class="content">
       <img class="cover" src$="{{cover}}" />
       <div class="info">
+        <div class="player"><iron-icon class="player-icon" icon$="{{getStatus(status)}}"></iron-icon></div>
         <div class="title text">{{getTitle(track)}}</div>
         <div class="album text">{{getAlbum(track)}}</div>
         <div class="artist text">{{getArtist(track)}}</div>

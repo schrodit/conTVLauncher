@@ -26,7 +26,7 @@ class spotify {
                 try {
                     let json = url.parse(req.url, true).query['t'];
                     let data = JSON.parse(json);
-                    if (data.action) {
+                    if (data.status) {
                         this.status = data;
                         this.sendStatus();
                     } else {
