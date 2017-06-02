@@ -14,7 +14,11 @@ class spotify {
         this.track = {};
         this.status = '';
 
-        this.convertBase();
+        this.connectWebAPI();
+        this.getNewAccessToken();
+        this.testTrack();
+        this.track.id = this.convertBase(this.track.id);
+        this.updateTrack();
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
@@ -92,6 +96,53 @@ class spotify {
             this.logger.info('Close web app ...');
             this.extApp.appWin = null;
         });
+    }
+
+    connectWebAPI() {
+        // Create the api object with the credentials
+        this.spotifyApi = new SpotifyWebApi({
+            clientId : '7d36823acef04cfc845c46d55cda553f',
+            clientSecret : '03df9850d7a948f291e8a1a75d83c34a'
+        });
+    }
+
+    getNewAccessToken(){
+        // Retrieve an access token.
+        let that = this;
+        this.spotifyApi.clientCredentialsGrant()
+        .then(function(data) {
+            console.log('The access token expires in ' + data.body['expires_in']);
+            console.log('The access token is ' + data.body['access_token']);
+
+            // Save the access token so that it's used in future calls
+            that.spotifyApi.setAccessToken(data.body['access_token']);
+        }, function(err) {
+                console.log('Something went wrong when retrieving an access token', err);
+        });
+    }
+
+    updateTrack() {
+        let that = this;
+        this.spotifyApi.clientCredentialsGrant()
+        .then(function(data) {
+            console.log('The access token expires in ' + data.body['expires_in']);
+            console.log('The access token is ' + data.body['access_token']);
+
+            // Save the access token so that it's used in future calls
+            that.spotifyApi.setAccessToken(data.body['access_token']);
+        }).then(() => {
+            console.log(that.track.id);
+            that.spotifyApi.getTrack(that.track.id)
+            .then(function(data) {
+                that.track.duration_ms = data.body.duration_ms;
+                that.sendTrack();
+            }).catch(function(error) {
+                console.error(error);
+            });
+        }).catch(function(error) {
+            console.error(error);
+        });
+        
     }
 
     testTrack() {

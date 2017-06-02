@@ -22,7 +22,8 @@
     "paper-button": "PolymerElements/paper-button#^2.0.0",
     "paper-input": "PolymerElements/paper-input#^2.0.0",
     "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.0",
-    "paper-item": "PolymerElements/paper-item#^2.0.0"
+    "paper-item": "PolymerElements/paper-item#^2.0.0",
+    "paper-progress": "PolymerElements/paper-progress#^2.0.0"
   },
   "resolutions": {
     "iron-flex-layout": "1 - 2",

@@ -25,6 +25,7 @@
   "dependencies": {
     "big-integer": "^1.6.23",
     "power-off": "1.1.2",
+    "spotify-web-api-node": "^2.4.0",
     "winston": "2.3.1"
   }
 }

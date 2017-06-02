@@ -2,6 +2,7 @@
 
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 
 <link rel="import" href="../../elements/ui-watch/ui-watch.html">
 
@@ -42,6 +43,8 @@
       }
 
       .player {
+        display: flex;
+        flex-direction: row;
         position: absolute;
         width: 60vh;
         top: calc(72vh - 50px);
@@ -56,6 +59,15 @@
         width: 50px;
         height: 50px;
         padding: 0 14px 0;
+        flex-grow: 0;
+      }
+      paper-progress {
+        flex-grow: 1;
+        padding-right: 14px;
+        align-self: center;
+      }
+      paper-progress.green {
+        --paper-progress-active-color: #1DB954;
       }
 
       .info {
@@ -100,7 +112,10 @@
     <div class="content">
       <div class="wrapper">
         <img class="cover" src$="{{cover}}" />
-        <div class="player"><iron-icon class="player-icon" icon$="{{getStatus(status)}}"></iron-icon></div>
+        <div class="player">
+          <iron-icon class="player-icon" icon$="{{getStatus(status)}}"></iron-icon>
+          <paper-progress value$="[[position]]" min="0" max$="[[track.duration_ms]]" class="green"></paper-progress>
+        </div>
       </div>
       <div class="info">
         <div class="title text">{{getTitle(track)}}</div>

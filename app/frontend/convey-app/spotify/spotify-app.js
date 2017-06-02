@@ -18,7 +18,8 @@ class spotifyApp extends Polymer.Element {
             },
             status: {
                 type: String,
-                value: ''
+                value: 'start',
+                observer: '_onStatus'
             }
         };
     }
@@ -73,6 +74,23 @@ class spotifyApp extends Polymer.Element {
             default:
              return 'av:queue-music';
         }
+    }
+
+    _onStatus() {   
+        switch(this.status) {
+            case 'start':
+                this.startProgress();
+                break;
+            case 'pause':
+                clearInterval(this.progressInterval);
+                break;
+        }
+    }
+
+    startProgress() {
+        this.progressInterval = setInterval(() => {
+            this.position = this.position + 500;
+        }, 500);
     }
     
 }
