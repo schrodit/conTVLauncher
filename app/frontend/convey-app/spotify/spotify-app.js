@@ -12,6 +12,10 @@ class spotifyApp extends Polymer.Element {
                 type: String,
                 value: 'img/Spotify_Icon_RGB_White.png'
             },
+            position: {
+                type: Number,
+                value: 0
+            },
             status: {
                 type: String,
                 value: ''
@@ -28,7 +32,8 @@ class spotifyApp extends Polymer.Element {
         });
         ipcRenderer.on('spotify-new-status', (event, arg) => {
             console.log(arg);
-            this.status = arg.status;
+            if(arg.status !== 'seek') this.status = arg.status;
+            if(arg.position > -1) this.position = position;
         });
 
         //check if track is already loaded

@@ -2,6 +2,8 @@ const {ipcMain, BrowserWindow} = require('electron');
 const http = require('http');
 const url = require('url');
 const path = require('path');
+const SpotifyWebApi = require('spotify-web-api-node');
+const bigInteger = require("big-integer");
 
 class spotify {
     constructor(app, win, extApp, winston) {
@@ -11,6 +13,8 @@ class spotify {
         this.extApp = extApp;
         this.track = {};
         this.status = '';
+
+        this.convertBase();
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
@@ -30,6 +34,7 @@ class spotify {
                     this.sendStatus();
                 } else {
                     this.track = data;
+                    this.track.id = this.convertBase(this.track.id);
                     this.sendTrack();
                 }
             } catch(err) {
@@ -93,6 +98,18 @@ class spotify {
         let test =  '{"album":{"cover":["ebfc209ba574ba05143f16bdd51d2b4988c21d18","d0dff35b4c4908f6429c76bae540aa1f4951e483","ad5f67e81158523b916d1981c9ae99684005d8d7"],"id":"f8533d8a681f4372902982e5774c1d16","name":"Narrenkoenig"},"artists":[{"id":"66e2807455334dfb97b5c7f3f65fe49b","name":"Schandmaul"}],"available":true,"id":"e067822a755e4c1385cde31fe8a35514","name":"Sonnenstrahl"}';
         this.track = JSON.parse(test);
     }
+
+    convertBase(base2) {
+        const rng = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        let a = bigInteger(base2, 16).toString(62);
+        a = a.replace(/<[1-9][1-9]>/g, (x) => {
+            return rng[x.replace(/<|>/g, '')];
+        });
+
+        return a;
+    }
+
+    
 
 }
 
