@@ -30,6 +30,18 @@ impl Httpplayer {
             url: String::from("http://127.0.0.1:33003?t=")
         }
     }
+    pub fn sendStatus(&self, status: String, position: i64) -> () {
+         let res = json!({
+            "status": &status,
+            "position": position,
+        });
+
+        let self_clone = self.clone();
+        thread::spawn(move || {
+            println!("thread started");
+            self_clone.sendJson(res.to_string());
+        });
+    }
     pub fn send(&self, session: Session, track: Track) -> () {
 
         let album = session.metadata().get::<Album>(track.album).wait().unwrap();
