@@ -1,6 +1,5 @@
-use std;
 use std::thread;
-use std::str::{self, FromStr};
+use std::str::{self};
 
 use std::io::{self, Write};
 
@@ -10,7 +9,7 @@ use futures::stream::Stream;
 use hyper::{self, Client};
 use tokio_core;
 
-use metadata::{Track, Album, Artist};
+use metadata::{Track};
 use session::Session;
 
 #[derive(Serialize, Deserialize)]
@@ -43,32 +42,31 @@ impl Httpplayer {
         });
     }
     pub fn send(&self, session: Session, track: Track) -> () {
-
-        let album = session.metadata().get::<Album>(track.album).wait().unwrap();
-        let mut covers: Vec<String> = Vec::new();
-        for cover in album.covers {
-            covers.push(cover.to_base16());
-        }
-        let mut artists: Vec<sArtist> = Vec::new();
-        for id in track.artists {
-            let artist = session.metadata().get::<Artist>(id).wait().unwrap();
-            let sartist = sArtist {
-                id: artist.id.to_base16(),
-                name: artist.name
-            };
-            artists.push(sartist);
-        }
+        // let album = session.metadata().get::<Album>(track.album).wait().unwrap();
+        // let mut covers: Vec<String> = Vec::new();
+        // for cover in album.covers {
+        //     covers.push(cover.to_base16());
+        // }
+        // let mut artists: Vec<sArtist> = Vec::new();
+        // for id in track.artists {
+        //     let artist = session.metadata().get::<Artist>(id).wait().unwrap();
+        //     let sartist = sArtist {
+        //         id: artist.id.to_base16(),
+        //         name: artist.name
+        //     };
+        //     artists.push(sartist);
+        // }
 
         let res = json!({
             "id": &track.id.to_base16(),
-            "name": &track.name,
-            "available": &track.available,
-            "album": {
-                    "id": &album.id.to_base16(),
-                    "name": &album.name,
-                    "cover": covers,
-            },
-            "artists": artists,
+            // "name": &track.name,
+            // "available": &track.available,
+            // "album": {
+            //         "id": &album.id.to_base16(),
+            //         "name": &album.name,
+            //         "cover": covers,
+            // },
+            // "artists": artists,
         });
 
         let self_clone = self.clone();
@@ -92,10 +90,6 @@ impl Httpplayer {
         paramurl = paramurl.replace(",", "%2C");
         paramurl = paramurl.replace("/", "%2F");
         paramurl = paramurl.replace("#", "%23");
-        paramurl = paramurl.replace("ä", "ae");
-        paramurl = paramurl.replace("ö", "oe");
-        paramurl = paramurl.replace("ü", "ue");
-        paramurl = paramurl.replace("ß", "%C3%9F%0D%0A");
         paramurl = paramurl.replace("&", "%26");
         paramurl = paramurl.replace(" ", "%20");
 
