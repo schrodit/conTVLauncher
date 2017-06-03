@@ -12,19 +12,17 @@ class spotify {
         this.win = win;
         this.extApp = extApp;
         this.track = {};
-        this.status = '';
+        this.status = {};
 
         this.connectWebAPI();
         this.getNewAccessToken();
-        this.testTrack();
-        this.track.id = this.convertBase(this.track.id);
-        this.updateTrack();
 
         ipcMain.on('spotify-open-menu', () => {
             this.openMenu();
         });
         ipcMain.on('spotify-get-track', () => {
             this.sendTrack();
+            this.sendStatus();
         });
     }
 
@@ -34,12 +32,23 @@ class spotify {
                 let json = url.parse(req.url, true).query['t'];
                 let data = JSON.parse(json);
                 if (data.status) {
-                    this.status = data;
+                    if(data.status !== 'seek') this.status.status = data.status;
+                    if (data.position > -1) this.status.position = data.position;
+                    else if(this.status.position === void 0) this.status.position = 0;
+                    switch (this.status.status) {
+                        case 'play':
+                            this.startProgress();
+                            break;
+                        case 'pause':
+                            clearInterval(this.progressInterval);
+                            break;
+                    }
                     this.sendStatus();
                 } else {
                     this.track = data;
                     this.track.id = this.convertBase(this.track.id);
-                    this.sendTrack();
+                    this.status.position = 0;
+                    this.updateTrack();
                 }
             } catch(err) {
                 this.logger.error(err.msg);
@@ -58,8 +67,73 @@ class spotify {
     }
     sendStatus() {
         if(this.extApp.appWin) this.extApp.appWin.webContents.send('spotify-new-status', this.status);
-        this.win.webContents.send('spotify-new-status', this.track);
+        this.win.webContents.send('spotify-new-status', this.status);
     }
+
+    connectWebAPI() {
+        // Create the api object with the credentials
+        this.spotifyApi = new SpotifyWebApi({
+            clientId : '7d36823acef04cfc845c46d55cda553f',
+            clientSecret : '03df9850d7a948f291e8a1a75d83c34a'
+        });
+    }
+
+    getNewAccessToken(){
+        // Retrieve an access token.
+        let that = this;
+        this.spotifyApi.clientCredentialsGrant()
+        .then(function(data) {
+            that.logger.info('The access token expires in ' + data.body['expires_in']);
+
+            // Save the access token so that it's used in future calls
+            that.spotifyApi.setAccessToken(data.body['access_token']);
+        }, function(err) {
+                that.logger.error('Something went wrong when retrieving an access token', err);
+        });
+    }
+
+    updateTrack() {
+        let that = this;
+        this.spotifyApi.clientCredentialsGrant()
+        .then(function(data) {
+            that.logger.info('The access token expires in ' + data.body['expires_in']);
+
+            // Save the access token so that it's used in future calls
+            that.spotifyApi.setAccessToken(data.body['access_token']);
+        }).then(() => {
+            that.spotifyApi.getTrack(that.track.id)
+            .then(function(data) {
+                that.track = data.body;
+                that.sendTrack();
+            }).catch(function(error) {
+                that.logger.error(error);
+            });
+        }).catch(function(error) {
+            that.logger.error(error);
+        });
+        
+    }
+
+    testTrack() {
+        let test =  '{"album":{"cover":["ebfc209ba574ba05143f16bdd51d2b4988c21d18","d0dff35b4c4908f6429c76bae540aa1f4951e483","ad5f67e81158523b916d1981c9ae99684005d8d7"],"id":"f8533d8a681f4372902982e5774c1d16","name":"Narrenkoenig"},"artists":[{"id":"66e2807455334dfb97b5c7f3f65fe49b","name":"Schandmaul"}],"available":true,"id":"e067822a755e4c1385cde31fe8a35514","name":"Sonnenstrahl"}';
+        this.track = JSON.parse(test);
+    }
+
+    convertBase(base2) {
+        const rng = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        let a = bigInteger(base2, 16).toString(62);
+        a = a.replace(/<[0-9][0-9]>/g, (x) => {
+            return rng[x.replace(/<|>/g, '')];
+        });
+        return a;
+    }
+
+    startProgress() {
+        this.progressInterval = setInterval(() => {
+            this.status.position= this.status.position + 1000;
+        }, 1000);
+    }
+
 
     openMenu () {
         this.extApp.appWin = new BrowserWindow({ 
@@ -97,66 +171,6 @@ class spotify {
             this.extApp.appWin = null;
         });
     }
-
-    connectWebAPI() {
-        // Create the api object with the credentials
-        this.spotifyApi = new SpotifyWebApi({
-            clientId : '7d36823acef04cfc845c46d55cda553f',
-            clientSecret : '03df9850d7a948f291e8a1a75d83c34a'
-        });
-    }
-
-    getNewAccessToken(){
-        // Retrieve an access token.
-        let that = this;
-        this.spotifyApi.clientCredentialsGrant()
-        .then(function(data) {
-            that.logger.info('The access token expires in ' + data.body['expires_in']);
-
-            // Save the access token so that it's used in future calls
-            that.spotifyApi.setAccessToken(data.body['access_token']);
-        }, function(err) {
-                that.logger.error('Something went wrong when retrieving an access token', err);
-        });
-    }
-
-    updateTrack() {
-        let that = this;
-        this.spotifyApi.clientCredentialsGrant()
-        .then(function(data) {
-            that.logger.info('The access token expires in ' + data.body['expires_in']);
-
-            // Save the access token so that it's used in future calls
-            that.spotifyApi.setAccessToken(data.body['access_token']);
-        }).then(() => {
-            that.spotifyApi.getTrack(that.track.id)
-            .then(function(data) {
-                that.track.duration_ms = data.body.duration_ms;
-                that.sendTrack();
-            }).catch(function(error) {
-                that.logger.error(error);
-            });
-        }).catch(function(error) {
-            that.logger.error(error);
-        });
-        
-    }
-
-    testTrack() {
-        let test =  '{"album":{"cover":["ebfc209ba574ba05143f16bdd51d2b4988c21d18","d0dff35b4c4908f6429c76bae540aa1f4951e483","ad5f67e81158523b916d1981c9ae99684005d8d7"],"id":"f8533d8a681f4372902982e5774c1d16","name":"Narrenkoenig"},"artists":[{"id":"66e2807455334dfb97b5c7f3f65fe49b","name":"Schandmaul"}],"available":true,"id":"e067822a755e4c1385cde31fe8a35514","name":"Sonnenstrahl"}';
-        this.track = JSON.parse(test);
-    }
-
-    convertBase(base2) {
-        const rng = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-        let a = bigInteger(base2, 16).toString(62);
-        a = a.replace(/<[1-9][1-9]>/g, (x) => {
-            return rng[x.replace(/<|>/g, '')];
-        });
-
-        return a;
-    }
-
     
 
 }

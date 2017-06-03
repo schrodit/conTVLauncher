@@ -49,18 +49,22 @@ class spotifyWidget extends Polymer.Element {
     }
 
     setCover() {
-        const spotify_imgurl = 'https://i.scdn.co/image/';
-        let covers = this.track.album.cover;
-        this.cover = spotify_imgurl + covers[0];
+        if (this.track.album === void 0 || this.track.album.images === void 0) return 'img/Spotify_Icon_RGB_White.png';
+        //const spotifyImgUrl = 'https://i.scdn.co/image/';
+        let covers = this.track.album.images;
+        this.cover = covers[1].url;
     }
 
     getTitle() {
+        if(Object.keys(this.track).length === 0 && this.track.constructor === Object) return 'Title';
         return this.track.name;
     }
     getAlbum() {
+        if (this.track.album === void 0) return 'Album';
         return this.track.album.name;
     }
     getArtist() {
+        if (this.track.artists === void 0) return 'Artist';
         let artists = '';
         this.track.artists.forEach( (artist) => {
             artists += ', ' + artist.name;

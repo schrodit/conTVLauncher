@@ -18,7 +18,7 @@ class spotifyApp extends Polymer.Element {
             },
             status: {
                 type: String,
-                value: 'start',
+                value: '',
                 observer: '_onStatus'
             }
         };
@@ -32,8 +32,8 @@ class spotifyApp extends Polymer.Element {
             this.setCover();
         });
         ipcRenderer.on('spotify-new-status', (event, arg) => {
-            if(arg.status !== 'seek') this.status = arg.status;
-            if(arg.position > -1) this.position = position;
+            this.status = arg.status;
+            this.position = arg.position;
         });
 
         //check if track is already loaded
@@ -42,10 +42,10 @@ class spotifyApp extends Polymer.Element {
     }
 
     setCover() {
-        if (this.track.album === void 0 || this.track.album.cover === void 0) return 'img/Spotify_Icon_RGB_White.png';
-        const spotifyImgUrl = 'https://i.scdn.co/image/';
-        let covers = this.track.album.cover;
-        this.cover = spotifyImgUrl + covers[0];
+        if (this.track.album === void 0 || this.track.album.images === void 0) return 'img/Spotify_Icon_RGB_White.png';
+        //const spotifyImgUrl = 'https://i.scdn.co/image/';
+        let covers = this.track.album.images;
+        this.cover = covers[0].url;
     }
 
     getTitle() {
@@ -54,7 +54,7 @@ class spotifyApp extends Polymer.Element {
     }
     getAlbum() {
         if (this.track.album === void 0) return 'Album';
-        return this.track.album.name | 'Album';
+        return this.track.album.name;
     }
     getArtist() {
         if (this.track.artists === void 0) return 'Artist';
@@ -77,7 +77,7 @@ class spotifyApp extends Polymer.Element {
 
     _onStatus() {   
         switch(this.status) {
-            case 'start':
+            case 'play':
                 this.startProgress();
                 break;
             case 'pause':
@@ -87,6 +87,7 @@ class spotifyApp extends Polymer.Element {
     }
 
     startProgress() {
+        clearInterval(this.progressInterval);
         this.progressInterval = setInterval(() => {
             this.position = this.position + 500;
         }, 500);
