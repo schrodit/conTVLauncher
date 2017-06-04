@@ -1,5 +1,6 @@
 'use strict';
 const gulp = require('gulp');
+const runSequence = require('run-sequence');
 const clean = require('gulp-clean');
 
 const ts = require('gulp-typescript');
@@ -56,12 +57,12 @@ gulp.task('clean', () => {
         .pipe(clean());
 });
 
-gulp.task('default', ['typescript', 'compress'], function () {
-    // This will only run if the lint task is successful... 
+gulp.task('default', function () {
+    runSequence('clean', 'typescript', 'compress'); 
 });
 
-gulp.task('dev', ['clean', 'typescript'], () => {
-
+gulp.task('dev',  () => {
+    runSequence('clean', 'typescript'); 
 });
 
 function isFixed(file) {
