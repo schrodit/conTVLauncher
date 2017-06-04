@@ -5,11 +5,11 @@ const powerOff = require('power-off');
 const exec = require('child_process').exec;
 
 class extApp {
-    constructor(app, win, cfg, logger) {
+    constructor(app) {
         this.app = app;
-        this.win = win;
-        this.cfg = cfg;
-        this.logger = logger;
+        this.win = app.win;
+        this.cfg = app.cfg;
+        this.logger = app.logger;
         this.home = this.app.getPath('home');
         this.type = String;
         this.cmd = String;
@@ -26,8 +26,11 @@ class extApp {
                 break;
             case 'shell':
                 this.cmd = app.cmd;
-                //if(app.title === 'Spotify') startSpotifyService();
                 this.openExtApp();
+                break;
+            case 'intern':
+                this.cmd = app.cmd;
+                this.newInternApp(this.cmd);
                 break;
             case 'sys':
                 this.cmd = app.cmd;
@@ -40,13 +43,7 @@ class extApp {
     }
     closeApp() {
         switch(this.type) {
-            case 'web':
-                this.appWin.close();
-                break;
-            case 'shell':
-                this.closeExtApp();
-                break;
-            case 'sys':
+            case 'web': case 'shell': case 'sys': case 'intern':
                 this.appWin.close();
                 break;
             default:
@@ -58,15 +55,23 @@ class extApp {
     }
     // new Web Window
     newWebApp(url) {
-        this.appWin = new BrowserWindow({
-            modal: true,
-            frame: false,
-            fullscreen: true,
-            webPreferences: {
-                plugins: true,
-                nodeIntegration: false
-            }
-        });
+        if (this.type === 'intern') {
+            this.appWin = new BrowserWindow({
+                modal: true,
+                frame: false,
+                fullscreen: true
+            });
+        } else { 
+            this.appWin = new BrowserWindow({
+                modal: true,
+                frame: false,
+                fullscreen: true,
+                webPreferences: {
+                    plugins: true,
+                    nodeIntegration: false
+                }
+            });
+        }        
         this.appWin.loadURL(url);
 
         // catch errors
@@ -102,6 +107,34 @@ class extApp {
         
     }
 
+     newInternApp(iUrl) {
+        this.appWin = new BrowserWindow({
+            modal: true,
+            frame: false,
+            fullscreen: true
+        });       
+        this.appWin.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.app.getAppPath(), 'frontend', iUrl)
+        }));
+        
+
+        this.appWin.once('ready-to-show', () => {
+            this.logger.info('Open new Internal App Window');
+            this.appWin.show();
+            this.open = true;
+        });
+
+        this.appWin.on('close', () => {
+            this.open = false;
+            this.type = '';
+            this.logger.info('Close web app ...');
+            this.appWin = null;
+        });
+        
+    }
+
 
 
     // open external programm
@@ -117,19 +150,10 @@ class extApp {
         this.cmd = '';
     }
 
-    // // spotify
-    // startSpotifyService() {
-    //     let cmd = app.getAppPath() + '/bin/spotify/librespot --name RaspTV --cache ' + app.getAppPath() +'/bin/spotify/cache';
-    //     require('child_process').spawn(cmd, {
-    //         detached: true
-    //     });
-    // }
-
 
     // systemControls
 
     execSysApp() {
-        this.type = 'sys';
         switch(this.cmd) {
             case 'close':
                 this.app.quit();
@@ -164,7 +188,7 @@ class extApp {
             event.returnValue = this.cfg.getCfg();
         });
         ipcMain.on('settings-close', () => {
-            this.appWin.close();
+            if(this.appWin) this.appWin.close();
         });
         ipcMain.on('settings-save-cfg', (event, arg) => {
             this.cfg.setCfg(arg);

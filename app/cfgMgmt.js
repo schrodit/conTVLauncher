@@ -95,15 +95,35 @@ class cfg {
     }
 
     removeSystemTiles(tiles) {
-        tiles.forEach((con, i1) => {
-            con.forEach((tile, i2) => {
-                if(tile.type === 'sys') {
-                    tiles.splice(i1, 1);
-                } else delete tiles[i1][i2].container;
-            });
-        });
+        let conCount = 0;
+        let conLength = tiles.length;
+        for(let i = 0; i < conLength;i++) {
+            let i1 = i - conCount;
+            let tileCount = 0;
+            let tilesLength = tiles[i1].length;
+            for (let ii = 0; ii < tilesLength; ii++) {
+                let i2 = ii - tileCount;
+                let tile = tiles[i1][i2];
+                if(tile.type === 'sys' && this.isSystemTile(tile.cmd)) {
+                    tiles[i1].splice(i2, 1);
+                    tileCount++;
+                    if(tiles[i1].length === 0) {
+                        tiles.splice(i1, 1);
+                        conCount++;
+                    }
+                } else if(tiles[i1][i2].container !== undefined ) delete tiles[i1][i2].container;
+            }
+        }
 
         return tiles;
+    }
+    isSystemTile(cmd) {
+        switch(cmd) {
+            case 'shutdown': case 'settings': case 'close':
+                return true;
+            default:
+                return false; 
+        }
     }
 
     restoreHiddenTiles(tiles) {

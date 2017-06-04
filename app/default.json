@@ -15,8 +15,8 @@
             {
                 "title": "Spotify",
                 "img": "img/spotifyTile.png",
-                "type": "shell",
-                "cmd": "",
+                "type": "intern",
+                "cmd": "spotify-app.html",
                 "show": false
             },
             {
@@ -25,7 +25,9 @@
                 "type": "shell",
                 "cmd": "kodi",
                 "show": false
-            },
+            }
+        ],
+        [
             {
                 "title": "Netflix",
                 "img": "img/netflixTile.png",
@@ -39,9 +41,7 @@
                 "type": "web",
                 "url": "https://www.twitch.tv",
                 "show": true
-            }
-        ],
-        [
+            },
             {
                 "title": "ZDF",
                 "img": "img/zdfTile.png",

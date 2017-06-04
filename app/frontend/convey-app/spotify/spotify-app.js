@@ -1,4 +1,4 @@
-
+const {ipcRenderer} = require('electron');
 class spotifyApp extends Polymer.Element {
     static get is() { return 'spotify-app'; }
 
@@ -6,9 +6,21 @@ class spotifyApp extends Polymer.Element {
         return {
             track: {
                 type: Array,
-                notify: true
+                notify: true,
             },
-            cover: String
+            cover: {
+                type: String,
+                value: 'img/Spotify_Icon_RGB_White.png'
+            },
+            position: {
+                type: Number,
+                value: 0
+            },
+            status: {
+                type: String,
+                value: '',
+                observer: '_onStatus'
+            }
         };
     }
 
@@ -18,36 +30,67 @@ class spotifyApp extends Polymer.Element {
         ipcRenderer.on('spotify-new-track', (event, arg) => {
             this.track = arg;
             this.setCover();
-            this.open = true;
         });
-        ipcRenderer.on('spotify-close', () => {
-            this.open = false;
+        ipcRenderer.on('spotify-new-status', (event, arg) => {
+            this.status = arg.status;
+            this.position = arg.position;
         });
+
+        //check if track is already loaded
+        ipcRenderer.send('spotify-get-track');
     
     }
 
-    openMenu() {
-        ipcRenderer.send('spotify-open-menu');
-    }
-
     setCover() {
-        const spotify_imgurl = 'https://i.scdn.co/image/';
-        let covers = this.track.album.cover;
-        this.cover = spotify_imgurl + covers[0];
+        if (this.track.album === void 0 || this.track.album.images === void 0) return 'img/Spotify_Icon_RGB_White.png';
+        //const spotifyImgUrl = 'https://i.scdn.co/image/';
+        let covers = this.track.album.images;
+        this.cover = covers[0].url;
     }
 
     getTitle() {
+        if(Object.keys(this.track).length === 0 && this.track.constructor === Object) return 'Title';
         return this.track.name;
     }
     getAlbum() {
+        if (this.track.album === void 0) return 'Album';
         return this.track.album.name;
     }
     getArtist() {
+        if (this.track.artists === void 0) return 'Artist';
         let artists = '';
         this.track.artists.forEach( (artist) => {
             artists += ', ' + artist.name;
         });
         return artists.substr(1);
+    }
+    getStatus() {
+        switch(this.status) {
+            case 'play':
+                return 'av:play-circle-outline';
+            case 'pause':
+                return 'av:pause-circle-outline';
+            default:
+             return 'av:queue-music';
+        }
+    }
+
+    _onStatus() {   
+        switch(this.status) {
+            case 'play':
+                this.startProgress();
+                break;
+            case 'pause':
+                clearInterval(this.progressInterval);
+                break;
+        }
+    }
+
+    startProgress() {
+        clearInterval(this.progressInterval);
+        this.progressInterval = setInterval(() => {
+            this.position = this.position + 500;
+        }, 500);
     }
     
 }
