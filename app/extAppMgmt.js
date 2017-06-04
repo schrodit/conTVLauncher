@@ -1,27 +1,22 @@
-const {BrowserWindow, ipcMain} = require('electron');
-const path = require('path');
-const url = require('url');
-const powerOff = require('power-off');
-const exec = require('child_process').exec;
-
-class extApp {
-    constructor(app) {
-        this.app = app;
-        this.win = app.win;
-        this.cfg = app.cfg;
-        this.logger = app.logger;
-        this.home = this.app.getPath('home');
-        this.type = String;
-        this.cmd = String;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var electron_1 = require("electron");
+var path = require("path");
+var url = require("url");
+var powerOff = require('power-off');
+var exec = require('child_process').exec;
+var extAppMgmt = (function () {
+    function extAppMgmt(aMgmt) {
+        this.aMgmt = aMgmt;
         this.open = false;
     }
-
-    openApp(app) {
-        if (this.open) this.closeApp();
+    extAppMgmt.prototype.openApp = function (app) {
+        if (this.open)
+            this.closeApp();
         this.type = app.type;
-        switch(this.type) {
+        switch (this.type) {
             case 'web':
-                this.cmd = app.url;
+                this.cmd = app.cmd;
                 this.newWebApp(this.cmd);
                 break;
             case 'shell':
@@ -39,124 +34,111 @@ class extApp {
             default:
                 throw new Error('Unknown application type');
         }
-        
-    }
-    closeApp() {
-        switch(this.type) {
-            case 'web': case 'shell': case 'sys': case 'intern':
-                this.appWin.close();
-                break;
-            default:
-                this.logger.error('Unkown application type ' + this.type);
-                this.type = '';
-                this.cmd = '';
-                break;
+    };
+    extAppMgmt.prototype.closeApp = function () {
+        if (!this.appWin.isDestroyed()) {
+            switch (this.type) {
+                case 'web':
+                case 'shell':
+                case 'sys':
+                case 'intern':
+                    this.appWin.close();
+                    break;
+                case 'ext':
+                    this.closeExtApp();
+                    break;
+                default:
+                    this.aMgmt.logger.error('Unkown application type ' + this.type);
+                    this.type = '';
+                    this.cmd = '';
+                    break;
+            }
         }
-    }
+    };
     // new Web Window
-    newWebApp(url) {
-        if (this.type === 'intern') {
-            this.appWin = new BrowserWindow({
-                modal: true,
-                frame: false,
-                fullscreen: true
-            });
-        } else { 
-            this.appWin = new BrowserWindow({
-                modal: true,
-                frame: false,
-                fullscreen: true,
-                webPreferences: {
-                    plugins: true,
-                    nodeIntegration: false
-                }
-            });
-        }        
+    extAppMgmt.prototype.newWebApp = function (url) {
+        var _this = this;
+        this.appWin = new electron_1.BrowserWindow({
+            modal: true,
+            frame: false,
+            show: false,
+            fullscreen: true,
+            webPreferences: {
+                plugins: true,
+                nodeIntegration: false
+            }
+        });
         this.appWin.loadURL(url);
-
         // catch errors
-        this.appWin.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+        this.appWin.webContents.on('did-fail-load', function (event, errorCode, errorDescription) {
             if (errorDescription === 'ERR_INTERNET_DISCONNECTED') {
                 throw Error('No Internet connection');
-            } else {
+            }
+            else {
                 throw Error('Failed connecting to ' + url);
             }
         });
-
-        this.appWin.on('app-command', (e, cmd) => {
-            if (cmd === 'browser-backward' && extApp.appWin.webContents.canGoBack()) {
-                this.appWin.webContents.goBack();
+        this.appWin.on('app-command', function (e, cmd) {
+            if (cmd === 'browser-backward' && _this.appWin.webContents.canGoBack()) {
+                _this.appWin.webContents.goBack();
             }
-            if (cmd === 'browser-backward' && !extApp.appWin.webContents.canGoBack()) {
-                this.appWin.close();
+            if (cmd === 'browser-backward' && !_this.appWin.webContents.canGoBack()) {
+                _this.appWin.close();
             }
         });
-
-        this.appWin.once('ready-to-show', () => {
-            this.logger.info('Open new Web Window with url: ' + url);
-            this.appWin.show();
-            this.open = true;
+        this.appWin.once('ready-to-show', function () {
+            _this.aMgmt.logger.info('Open new Web Window with url: ' + url);
+            _this.appWin.show();
+            _this.open = true;
         });
-
-        this.appWin.on('close', () => {
-            this.open = false;
-            this.type = '';
-            this.logger.info('Close web app ...');
-            this.appWin = null;
+        this.appWin.on('close', function () {
+            _this.open = false;
+            _this.type = '';
+            _this.aMgmt.logger.info('Close web app ...');
+            _this.appWin = null;
         });
-        
-    }
-
-     newInternApp(iUrl) {
-        this.appWin = new BrowserWindow({
+    };
+    extAppMgmt.prototype.newInternApp = function (iUrl) {
+        var _this = this;
+        this.appWin = new electron_1.BrowserWindow({
             modal: true,
             frame: false,
             fullscreen: true
-        });       
+        });
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.app.getAppPath(), 'frontend', iUrl)
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend', iUrl)
         }));
-        
-
-        this.appWin.once('ready-to-show', () => {
-            this.logger.info('Open new Internal App Window');
-            this.appWin.show();
-            this.open = true;
+        this.appWin.once('ready-to-show', function () {
+            _this.aMgmt.logger.info('Open new Internal App Window');
+            _this.appWin.show();
+            _this.open = true;
         });
-
-        this.appWin.on('close', () => {
-            this.open = false;
-            this.type = '';
-            this.logger.info('Close web app ...');
-            this.appWin = null;
+        this.appWin.on('close', function () {
+            _this.open = false;
+            _this.type = '';
+            _this.aMgmt.logger.info('Close web app ...');
+            _this.appWin = null;
         });
-        
-    }
-
-
-
+    };
     // open external programm
-    openExtApp() {
-        let cmd = this.app.getAppPath() + '/bin/startscript.sh start ' + (this.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
+    extAppMgmt.prototype.openExtApp = function () {
+        var cmd = this.aMgmt.app.getAppPath() + '/bin/startscript.sh start ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
         require('child_process').exec(cmd);
         this.open = true;
-    }
-    closeExtApp() {
-        let cmd = this.app.getAppPath() + '/bin/startscript.sh stop ' + (this.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
+    };
+    extAppMgmt.prototype.closeExtApp = function () {
+        var cmd = this.aMgmt.app.getAppPath() + '/bin/startscript.sh stop ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
         require('child_process').execSync(cmd);
         this.open = false;
         this.cmd = '';
-    }
-
-
+    };
     // systemControls
-
-    execSysApp() {
-        switch(this.cmd) {
+    extAppMgmt.prototype.execSysApp = function () {
+        switch (this.cmd) {
             case 'close':
-                this.app.quit();
+                this.aMgmt.app.quit();
                 break;
             case 'shutdown':
                 this.openPowerSettingsWin();
@@ -167,101 +149,98 @@ class extApp {
             default:
                 throw new Error('Unknown System App');
         }
-    }
-
-
-    openSettingsWin () {
-        this.appWin = new BrowserWindow({ parent: this.win, show: false, frame: false, width: 500, height: 300, modal: true });
+    };
+    extAppMgmt.prototype.openSettingsWin = function () {
+        var _this = this;
+        this.appWin = new electron_1.BrowserWindow({ parent: this.aMgmt.win, show: false, frame: false, width: 500, height: 300, modal: true });
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.app.getAppPath(), 'frontend/settings.html')
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/settings.html')
         }));
-
-        this.appWin.on('ready-to-show', () => {
-            this.logger.info('Open settings window');
-            this.appWin.show();
+        this.appWin.on('ready-to-show', function () {
+            _this.aMgmt.logger.info('Open settings window');
+            _this.appWin.show();
         });
-
         //register events
-        ipcMain.on('settings-get-cfg', (event) => {
-            event.returnValue = this.cfg.getCfg();
+        electron_1.ipcMain.on('settings-get-cfg', function (event) {
+            event.returnValue = _this.aMgmt.cfg.getCfg();
         });
-        ipcMain.on('settings-close', () => {
-            if(this.appWin) this.appWin.close();
+        electron_1.ipcMain.on('settings-close', function () {
+            if (_this.appWin)
+                _this.appWin.close();
         });
-        ipcMain.on('settings-save-cfg', (event, arg) => {
-            this.cfg.setCfg(arg);
+        electron_1.ipcMain.on('settings-save-cfg', function (event, arg) {
+            _this.aMgmt.cfg.setCfg(arg);
             // config functions   
-            this.cfg.writeCfg();
-            this.win.webContents.send('recieve-cfg', this.cfg.getCfg());
-            if(this.appWin) this.appWin.close();
+            _this.aMgmt.cfg.writeCfg();
+            _this.aMgmt.win.webContents.send('recieve-cfg', _this.aMgmt.cfg.getCfg());
+            if (_this.appWin)
+                _this.appWin.close();
         });
-        ipcMain.on('settings-restore-cfg', (event) => {
-            event.returnValue = this.cfg.restoreDefaultCfg();
+        electron_1.ipcMain.on('settings-restore-cfg', function (event) {
+            event.returnValue = _this.aMgmt.cfg.restoreDefaultCfg();
         });
-
-        this.appWin.on('close', () => {
-            this.open = false;
-            this.type = '';
-            this.logger.info('Close web app ...');
-            this.appWin = null;
+        this.appWin.on('close', function () {
+            _this.open = false;
+            _this.type = '';
+            _this.aMgmt.logger.info('Close web app ...');
+            _this.appWin = null;
         });
-    }
-
-    openPowerSettingsWin () {
-        this.appWin = new BrowserWindow({ 
-            parent: this.win, 
-            show: true, 
-            frame: false, 
-            width: 300, height: 346, 
-            'use-content-size': true,
-            modal: true 
+    };
+    extAppMgmt.prototype.openPowerSettingsWin = function () {
+        var _this = this;
+        this.appWin = new electron_1.BrowserWindow({
+            parent: this.aMgmt.win,
+            show: true,
+            frame: false,
+            width: 300, height: 346,
+            modal: true
         });
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.app.getAppPath(), 'frontend/powersettings.html')
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/powersettings.html')
         }));
-
-        ipcMain.on('power-shutdown', () => {
-            this.type = '';
-            this.cmd = '';
-            let that = this;
-            powerOff( (err, stderr, stdout) => {
-                if(!err && !stderr) {
-                    that.logger.info(stdout);
-                } else {
-                    throw new Error(stderr);
+        electron_1.ipcMain.on('power-shutdown', function () {
+            _this.type = '';
+            _this.cmd = '';
+            var that = _this;
+            powerOff(function (err, stderr, stdout) {
+                if (!err && !stderr) {
+                    that.aMgmt.logger.info(stdout.toString());
+                }
+                else {
+                    throw new Error(stderr.toString());
                 }
             });
         });
-        ipcMain.on('power-restart', () => {
-            exec('reboot', (err, stderr, stdout) => {
-                if(!err && !stderr) {
-                    that.logger.info(stdout);
-                } else {
-                    throw new Error(stderr);
+        electron_1.ipcMain.on('power-restart', function () {
+            var that = _this;
+            exec('reboot', function (err, stderr, stdout) {
+                if (!err && !stderr) {
+                    that.aMgmt.logger.info(stdout.toString());
+                }
+                else {
+                    throw new Error(stderr.toString());
                 }
             });
         });
-        ipcMain.on('power-reload', () => {
-            this.app.relaunch();
-            this.app.exit(0);
+        electron_1.ipcMain.on('power-reload', function () {
+            _this.aMgmt.app.relaunch();
+            _this.aMgmt.app.exit(0);
         });
-
-        this.appWin.on('ready-to-show', () => {
-            this.logger.info('Open power-settings window');
-            this.appWin.show();
+        this.appWin.on('ready-to-show', function () {
+            _this.aMgmt.logger.info('Open power-settings window');
+            _this.appWin.show();
         });
-
-        this.appWin.on('close', () => {
-            this.open = false;
-            this.type = '';
-            this.logger.info('Close web app ...');
-            this.appWin = null;
+        this.appWin.on('close', function () {
+            _this.open = false;
+            _this.type = '';
+            _this.aMgmt.logger.info('Close web app ...');
+            _this.appWin = null;
         });
-    }
-}
-
-module.exports = extApp;
+    };
+    return extAppMgmt;
+}());
+exports.extAppMgmt = extAppMgmt;

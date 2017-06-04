@@ -1,105 +1,76 @@
-'use strict';
-
-const {app, BrowserWindow, globalShortcut, ipcMain} = require('electron');
-const url = require('url');
-const path = require('path');
-const winston = require('winston');
-
-const cfgMgmt = require('./cfgMgmt.js');
-const extAppMgmt = require('./extAppMgmt.js');
-const spotifyApp = require('./spotifyApp.js');
-
-let home;
-
-function createWindow () {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var electron_1 = require("electron");
+var url = require("url");
+var path = require("path");
+var appMgmt_1 = require("./appMgmt");
+var aMgmt;
+function createWindow() {
     // Create the browser window.
-    app.win = new BrowserWindow({
+    aMgmt.win = new electron_1.BrowserWindow({
         frame: false,
         fullscreen: true,
-        show:false
+        show: false
     });
-   
-    app.win.once('ready-to-show', () => {
-        app.win.show();
+    aMgmt.win.once('ready-to-show', function () {
+        aMgmt.win.show();
     });
-
     // register shortcuts
-    globalShortcut.register('CommandOrControl+Backspace', () => {
-        if(app.extApp.appWin) app.extApp.appWin.close();
+    electron_1.globalShortcut.register('CommandOrControl+Backspace', function () {
+        if (aMgmt.extApp.appWin)
+            aMgmt.extApp.closeApp();
     });
-    globalShortcut.register('F3', () => {
-        if(app.extApp.appWin) app.extApp.appWin.close();
+    electron_1.globalShortcut.register('F3', function () {
+        if (aMgmt.extApp.appWin)
+            aMgmt.extApp.closeApp();
     });
-    globalShortcut.register('F4', () => {
-        app.quit();
+    electron_1.globalShortcut.register('F4', function () {
+        electron_1.app.quit();
     });
-
-
     //register events
-    ipcMain.on('get-cfg', (event) => {
-        event.returnValue = app.cfg.getCfg();
+    electron_1.ipcMain.on('get-cfg', function (event) {
+        event.returnValue = aMgmt.cfg.getCfg();
     });
-    ipcMain.on('open-App', (event, arg) => {
+    electron_1.ipcMain.on('open-App', function (event, arg) {
         try {
-            app.extApp.openApp(arg);
-        } catch (err) {
+            aMgmt.extApp.openApp(arg);
+        }
+        catch (err) {
             throwError(err.message);
         }
     });
-    ipcMain.on('close-launcher', () => {
-        app.quit();
+    electron_1.ipcMain.on('close-launcher', function () {
+        electron_1.app.quit();
     });
-    
-    app.win.loadURL(url.format({
+    aMgmt.win.loadURL(url.format({
         protocol: 'file',
         slashes: true,
-        pathname: path.join(app.getAppPath(), 'frontend/index.html')
+        pathname: path.join(electron_1.app.getAppPath(), 'frontend/index.html')
     }));
 }
-
-
-app.commandLine.appendSwitch('widevine-cdm-path', app.getAppPath() + '/bin/plugins/libwidevinecdmadapter.so'); //need to be changed
+electron_1.app.commandLine.appendSwitch('widevine-cdm-path', electron_1.app.getAppPath() + '/bin/plugins/libwidevinecdmadapter.so'); //need to be changed
 // The version of plugin can be got from `chrome://plugins` page in Chrome.
-app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.962'); // need to be changed
-
-app.on('ready', ()=> {
-    app.extApp;
-    app.cfg;
-    app.logger;
-    app.win;
-    //get home dir
-    home = app.getPath('home');
+electron_1.app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.962'); // need to be changed
+electron_1.app.on('ready', function () {
+    //init app aMgmt
+    aMgmt = new appMgmt_1.appMgmt(electron_1.app, electron_1.app.getPath('home'));
     //load winston logger
-    app.logger =  new winston.Logger({
-        transports: [
-            new (winston.transports.Console)(),
-            new (winston.transports.File)({
-                filename: home + '/.config/conTVLauncher/conTVLauncher.log',
-                formatter: (options) => {
-                    // Return string will be passed to logger. 
-                    return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (options.message ? options.message : '') +
-                    (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
-                } 
-            })
-        ]
-    });
+    aMgmt.initLogger();
     //load cfg
-    app.cfg = new cfgMgmt(home, app.logger);
-
-    app.logger.info('Creating MainWindow ...');
+    aMgmt.initCfg();
+    aMgmt.logger.info('Creating MainWindow ...');
     createWindow();
     //initialize extApp object
-    app.logger.info('Starting ExtApp service ...');
-    app.extApp = new extAppMgmt(app);
-    if (app.cfg.getCfg().enableSpotify) { 
-        app.logger.info('Starting Spotify service ...');
-        app.spotify = new spotifyApp(app, app.win, app.extApp, app.logger);
-        app.spotify.startServer();
+    aMgmt.logger.info('Starting ExtApp service ...');
+    aMgmt.initExtApp();
+    if (aMgmt.cfg.getCfg().enableSpotify) {
+        aMgmt.logger.info('Starting Spotify service ...');
+        aMgmt.initSpotify();
+        aMgmt.spotify.startServer();
     }
 });
-
 // connection to fontend
 function throwError(msg) {
-    app.logger.error(msg);
-    app.win.webContents.send('on-error' ,msg);
+    aMgmt.logger.error(msg);
+    aMgmt.win.webContents.send('on-error', msg);
 }
