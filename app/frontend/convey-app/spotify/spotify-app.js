@@ -20,6 +20,10 @@ class spotifyApp extends Polymer.Element {
                 type: String,
                 value: '',
                 observer: '_onStatus'
+            },
+            screensaverOpen: {
+                type: Boolean,
+                value: false
             }
         };
     }
@@ -30,10 +34,12 @@ class spotifyApp extends Polymer.Element {
         ipcRenderer.on('spotify-new-track', (event, arg) => {
             this.track = arg;
             this.setCover();
+            this.screensaverOpen = false;
         });
         ipcRenderer.on('spotify-new-status', (event, arg) => {
             this.status = arg.status;
             this.position = arg.position;
+            if(this.status !== 'stop') this.screensaverOpen = false;
         });
 
         //check if track is already loaded
@@ -82,6 +88,9 @@ class spotifyApp extends Polymer.Element {
                 break;
             case 'pause':
                 clearInterval(this.progressInterval);
+                break;
+            case 'stop':
+                this.screensaverOpen = true;
                 break;
         }
     }

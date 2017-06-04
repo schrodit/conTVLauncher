@@ -21,8 +21,10 @@ class spotify {
             this.openMenu();
         });
         ipcMain.on('spotify-get-track', () => {
-            this.sendTrack();
-            this.sendStatus();
+            if(Object.keys(this.track).length !== 0 && this.track.constructor !== Object) {
+                this.sendTrack();
+                this.sendStatus();
+            }
         });
     }
 
