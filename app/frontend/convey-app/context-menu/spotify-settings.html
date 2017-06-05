@@ -75,6 +75,9 @@
                   event.preventDefault();
                   this._onEnter();
                   break;
+              case 27:
+                ipcRenderer.send('close-App');
+                break;
               case 38:
                   event.preventDefault();
                   this._navTop();
