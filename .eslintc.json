@@ -20,7 +20,6 @@
         "no-eval": "error",
         "no-unused-vars": "warn",
         "block-spacing": "error",
-        "camelcase": "warn",
         "quotes": ["error", "single"]
     }
 }
