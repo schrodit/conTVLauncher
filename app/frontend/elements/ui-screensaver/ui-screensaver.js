@@ -11,6 +11,10 @@ class uiScreensaver extends Polymer.Element {
                 type: Boolean,
                 value: false,
                 observer: '_onOpen'
+            },
+            random: {
+                type: Boolean,
+                value: false
             }
         };
     }
@@ -19,8 +23,21 @@ class uiScreensaver extends Polymer.Element {
         this.style.backgroundImage = 'url("' + this.src + '")';
     }
     _onOpen() {
-        if(this.open) this.classList.add('open');
-        else this.classList.remove('open');
+        if(this.open) {
+            this.classList.add('open');
+            if(this.random) this.startRandom();
+        } else {
+            this.classList.remove('open');
+            if(this.random) clearInterval(this.randomInterval);
+        }
+    }
+
+    startRandom() {
+        this.randomInterval = setInterval(() => {
+            let r = Math.floor((Math.random() * 700) + 1);
+            let url = 'http://tv.convey.tk/img/' + r + '.jpg';
+            this.style.backgroundImage = 'url("' + url + '")';
+        }, 5000);
     }
 }
 

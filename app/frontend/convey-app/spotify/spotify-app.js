@@ -35,16 +35,23 @@ class spotifyApp extends Polymer.Element {
             this.track = arg;
             this.setCover();
             this.screensaverOpen = false;
+            this.stopScreensaverTimeout();
         });
         ipcRenderer.on('spotify-new-status', (event, arg) => {
             this.status = arg.status;
             this.position = arg.position;
             if(this.status !== 'stop') this.screensaverOpen = false;
+            this.stopScreensaverTimeout();
         });
 
         //check if track is already loaded
         ipcRenderer.send('spotify-get-track');
     
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        if (this.status === '') this.screensaverOpen = true;
     }
 
     setCover() {
@@ -81,13 +88,14 @@ class spotifyApp extends Polymer.Element {
         }
     }
 
-    _onStatus() {   
+    _onStatus() {
         switch(this.status) {
             case 'play':
                 this.startProgress();
                 break;
             case 'pause':
                 clearInterval(this.progressInterval);
+                this.startScreensaverTimeout();
                 break;
             case 'stop':
                 this.screensaverOpen = true;
@@ -100,6 +108,15 @@ class spotifyApp extends Polymer.Element {
         this.progressInterval = setInterval(() => {
             this.position = this.position + 500;
         }, 500);
+    }
+
+    startScreensaverTimeout() {
+        this.screensaverTimer = setTimeout(() => {
+            this.screensaverOpen = true;
+        }, 1000 * 60 * 3);
+    }
+    stopScreensaverTimeout() {
+        clearTimeout(this.screensaverTimer);
     }
     
 }
