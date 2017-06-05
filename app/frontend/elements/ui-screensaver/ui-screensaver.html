@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../ui-popup/ui-popup.html">
+<link rel="import" href="../ui-menu/ui-menu.html">
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="ui-screensaver">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: none;
+       position: fixed;
+       z-index: 9;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100vh;
+       background-size: cover;
+       background-repeat: no-repeat;
+     }
+
+     :host(.open) {
+       display: block;
+     }
+     
+    </style>
+
+  
+  </template>
+    
+
+  <script src="ui-screensaver.js"></script>
+</dom-module>
