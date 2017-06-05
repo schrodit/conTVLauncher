@@ -22,7 +22,10 @@ export class spotifyApp {
     constructor(aMgmt: appMgmt) {
         this.aMgmt = aMgmt;
         this.track = null;
-        this.status = null;
+        this.status = {
+            status: '',
+            position: 0
+        };
 
         this.connectWebAPI();
 
@@ -30,8 +33,10 @@ export class spotifyApp {
             this.openMenu();
         });
         ipcMain.on('spotify-get-track', () => {
-            this.sendTrack();
-            this.sendStatus();
+            if(this.track !== null) {
+                this.sendTrack();
+                this.sendStatus();
+            }
         });
     }
 

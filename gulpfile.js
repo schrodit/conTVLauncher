@@ -31,9 +31,10 @@ gulp.task('tslint', ['clean'], () =>
 gulp.task('typescript', ['tslint'], () => {
     return gulp.src('app/src/*.ts')
         .pipe(ts({
-            moduleResolution: 'node',
+            moduleResolution: 'Node',
+            module: 'CommonJS',
             noImplicitAny: true,
-            target: 'ES5',
+            target: 'ES6',
             allowJs: true
         }))
         .pipe(gulp.dest('app/'));
