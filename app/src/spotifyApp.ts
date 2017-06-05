@@ -106,10 +106,10 @@ export class spotifyApp {
                 that.track = data.body;
                 that.sendTrack();
             }).catch(function(error: any) {
-                that.aMgmt.logger.error(error);
+                that.aMgmt.logger.error('Cannot update track: ' + that.track.id + '; ' + error);
             });
         }).catch(function(error: any) {
-            that.aMgmt.logger.error(error);
+            that.aMgmt.logger.error('Cannot update Acces token' + error);
         });
         
     }
@@ -125,6 +125,11 @@ export class spotifyApp {
         a = a.replace(/<[0-9][0-9]>/g, (x: string) => {
             return rng[Number(x.replace(/<|>/g, ''))];
         });
+        if(a.length < 22) {
+            for(let i = 0; i <= 22 - a.length; i++) {
+                a = '0' + a;
+            }
+        }
         return a;
     }
 

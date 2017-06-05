@@ -28,7 +28,7 @@ gulp.task('tslint', ['clean'], () =>
         .pipe(tslint.report())
 );
 
-gulp.task('typescript', ['tslint'], () => {
+gulp.task('typescript', () => {
     return gulp.src('app/src/*.ts')
         .pipe(ts({
             moduleResolution: 'Node',
@@ -57,9 +57,13 @@ gulp.task('clean', () => {
     return gulp.src(['app/*.js'], {read: false})
         .pipe(clean());
 });
+gulp.task('clean-debug', () => {
+    return gulp.src(['app/*debug.js'], {read: false})
+        .pipe(clean());
+});
 
 gulp.task('default', function () {
-    runSequence('clean', 'typescript', 'compress'); 
+    runSequence('clean', 'tslint', 'typescript', 'compress', 'clean-debug'); 
 });
 
 gulp.task('dev',  () => {
