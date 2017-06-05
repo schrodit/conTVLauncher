@@ -9,7 +9,7 @@
                 "title": "Youtube",
                 "img": "img/youtubeTile.png",
                 "type": "web",
-                "url": "https://youtube.com/TV#/",
+                "cmd": "https://youtube.com/TV#/",
                 "show": true
             },
             {
@@ -32,28 +32,28 @@
                 "title": "Netflix",
                 "img": "img/netflixTile.png",
                 "type": "web",
-                "url": "https://www.netflix.com",
+                "cmd": "https://www.netflix.com",
                 "show": true
             },
             {
                 "title": "Twitch",
                 "img": "img/twitchTile.png",
                 "type": "web",
-                "url": "https://www.twitch.tv",
+                "cmd": "https://www.twitch.tv",
                 "show": true
             },
             {
                 "title": "ZDF",
                 "img": "img/zdfTile.png",
                 "type": "web",
-                "url": "https://www.zdf.de/",
+                "cmd": "https://www.zdf.de/",
                 "show": true
             },
             {
                 "title": "Erste",
                 "img": "img/dasersteTile.png",
                 "type": "web",
-                "url": "http://www.daserste.de/",
+                "cmd": "http://www.daserste.de/",
                 "show": true
             }
         ]

@@ -3,7 +3,7 @@ const http = require('http');
 const url = require('url');
 const path = require('path');
 const SpotifyWebApi = require('spotify-web-api-node');
-const bigInteger = require("big-integer");
+const bigInteger = require('big-integer');
 
 class spotify {
     constructor(app, win, extApp, winston) {
