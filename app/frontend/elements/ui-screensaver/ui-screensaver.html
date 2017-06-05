@@ -1,8 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 
-<link rel="import" href="../ui-popup/ui-popup.html">
-<link rel="import" href="../ui-menu/ui-menu.html">
+<link rel="import" href="../ui-watch/ui-watch.html">
 
 <link rel="import" href="../../styles/styles.html">
 
@@ -20,13 +19,24 @@
        height: 100vh;
        background-size: cover;
        background-repeat: no-repeat;
+       -webkit-transition: background-image 3s ease;
+       transition: background-image 3s ease;
      }
 
      :host(.open) {
        display: block;
      }
+
+     #preload {
+       display: none;
+     }
      
     </style>
+
+    <div id="preload"></div>
+    <template is="dom-if" if="{{watch}}">
+        <ui-watch></ui-watch>
+    </template>
 
   
   </template>

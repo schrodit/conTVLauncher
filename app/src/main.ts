@@ -22,7 +22,7 @@ function createWindow () {
     aMgmt.win.loadURL(url.format({
         protocol: 'file',
         slashes: true,
-        pathname: path.join(app.getAppPath(), 'frontend/index.html')
+        pathname: path.join(app.getAppPath(), 'frontend/wrapper/index.html')
     }));
 }
 
