@@ -13,6 +13,7 @@ export class appMgmt {
     app: app;
     win: BrowserWindow;
     appWin: BrowserWindow;
+    menu: Electron.Menu;
 
     extApp: extAppMgmt;
     cfg: cfgMgmt;
@@ -33,10 +34,16 @@ export class appMgmt {
         globalShortcut.register('F4', () => {
             this.app.quit();
         });
+        globalShortcut.register('CommandOrControl+L', () => {
+            this.extApp.openScreensaver();
+        });
 
         //register global events
         ipcMain.on('close-launcher', () => {
             this.app.quit();
+        });
+        ipcMain.on('close-screensaver', () => {
+            this.extApp.screensaver.close();
         });
     }
 

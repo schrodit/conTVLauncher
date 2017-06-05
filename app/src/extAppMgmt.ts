@@ -13,6 +13,7 @@ type BrowserWindow = Electron.BrowserWindow;
 export class extAppMgmt {
     aMgmt: appMgmt;
     appWin: BrowserWindow;
+    screensaver: BrowserWindow;
     type: string;
     cmd: string;
     open: boolean;
@@ -83,6 +84,7 @@ export class extAppMgmt {
     // new Web Window
     newWebApp(url: string) {
         this.appWin = new BrowserWindow({
+            parent: this.aMgmt.win,
             modal: true,
             frame: false,
             show: false,
@@ -129,6 +131,7 @@ export class extAppMgmt {
 
      newInternApp(iUrl: string) {
         this.appWin = new BrowserWindow({
+            parent: this.aMgmt.win,
             modal: true,
             frame: false,
             fullscreen: true
@@ -136,7 +139,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend', iUrl)
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend', 'wrapper', iUrl)
         }));
         
 
@@ -202,7 +205,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/settings.html')
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/settings.html')
         }));
 
         this.appWin.on('ready-to-show', () => {
@@ -247,7 +250,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/powersettings.html')
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/powersettings.html')
         }));
 
         ipcMain.on('power-shutdown', () => {
@@ -288,5 +291,35 @@ export class extAppMgmt {
             this.aMgmt.logger.info('Close web app ...');
             this.appWin = null;
         });
+    }
+
+    openScreensaver () {
+        this.screensaver = new BrowserWindow({ 
+            parent: this.aMgmt.win, 
+            show: true, 
+            frame: false, 
+            fullscreen: true,
+            modal: true 
+        });
+        this.screensaver.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/screensaver.html')
+        }));
+
+        this.screensaver.on('ready-to-show', () => {
+            this.aMgmt.win.hide();
+            if(this.open && this.type !== 'ext') this.appWin.hide();
+            this.aMgmt.logger.info('Open screensaver');
+            this.screensaver.show();
+        });
+
+        this.screensaver.on('close', () => {
+            this.aMgmt.win.show();
+            if(this.open) this.appWin.show();
+            this.aMgmt.logger.info('Open screensaver');
+            this.screensaver.show();
+        });
+
     }
 }

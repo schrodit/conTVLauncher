@@ -1,3 +1,5 @@
+const {ipcRenderer} = require('electron');
+
 class uiScreensaver extends Polymer.Element {
     static get is() { return 'ui-screensaver'; }
     static get properties() {
@@ -19,8 +21,21 @@ class uiScreensaver extends Polymer.Element {
             random: {
                 type: Boolean,
                 value: false
+            },
+            closable: {
+                type: Boolean,
+                value: false
             }
         };
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        if(this.closable) {
+            window.addEventListener('keydown', (event) => {
+                if(event.keyCode === 27) ipcRenderer.send('close-screensaver');
+            });
+        }
     }
 
     _onSrc(){

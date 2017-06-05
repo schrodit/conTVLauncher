@@ -1,4 +1,3 @@
-const {ipcRenderer} = require('electron');
 class spotifyApp extends Polymer.Element {
     static get is() { return 'spotify-app'; }
 
