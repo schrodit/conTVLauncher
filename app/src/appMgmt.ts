@@ -20,9 +20,13 @@ export class appMgmt {
     logger: winston.LoggerInstance;
     spotify: spotifyApp;
 
+    activeTime: number;
+    activeTimer: NodeJS.Timer;
+
     constructor(app:app, home:string) {
         this.app = app;
         this.home = home;
+        this.activeTime = 0;
 
         //register global shortcuts
         globalShortcut.register('CommandOrControl+Backspace', () => {
@@ -44,11 +48,22 @@ export class appMgmt {
         });
         ipcMain.on('close-screensaver', () => {
             this.extApp.screensaver.close();
+            this.startActive();
+        });
+        ipcMain.on('stop-active-time', () => {
+            this.startActive();
+        });
+        ipcMain.on('start-active-time', () => {
+            this.stopActive();
+        });
+        ipcMain.on('reset-active-time', () => {
+            this.activeTime = 0;
         });
     }
 
     public initCfg() {
         this.cfg = new cfgMgmt(this.home, this.logger);
+        this.startActive();
     }
 
     public initExtApp() {
@@ -78,5 +93,19 @@ export class appMgmt {
     public throwError(msg:string) {
         this.logger.error(msg);
         this.win.webContents.send('on-error' ,msg);
+    }
+
+    public startActive() {
+        this.logger.info('Start active time..');
+        this.activeTimer = setInterval(() => {
+            if(this.activeTime >= this.cfg.getCfg().screensaver * 60) {
+                this.extApp.openScreensaver();
+            } else this.activeTime = this.activeTime + 30;
+        }, 30000);
+    }
+    public stopActive() {
+        this.logger.info('Active time ended after ' + this.activeTime + 's ..');
+        this.activeTime = 0;
+        clearTimeout(this.activeTimer);
     }
 }

@@ -19,6 +19,7 @@ export interface config {
     enableSpotify: boolean;
     enableShutdown: boolean;
     prettyprint: boolean;
+    screensaver: number,
     tiles: Array<Array<tile>>;
 }
 

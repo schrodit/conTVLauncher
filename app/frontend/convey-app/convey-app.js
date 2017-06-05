@@ -48,6 +48,7 @@ class conveyApp extends Polymer.Element {
         // register navigation shortcuts
         this.enterCount = 0;
         window.addEventListener('keydown', (event) => {
+            ipcRenderer.send('reset-active-time');
             switch(event.keyCode) {
                 case 13:
                     event.preventDefault();

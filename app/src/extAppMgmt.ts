@@ -62,6 +62,7 @@ export class extAppMgmt {
             default:
                 throw new Error('Unknown application type');
         }
+        this.aMgmt.activeTime = 0;
         
     }
     closeApp() {
@@ -80,6 +81,7 @@ export class extAppMgmt {
                     break;
             }
         }
+        this.aMgmt.startActive();
     }
     // new Web Window
     newWebApp(url: string) {
@@ -126,6 +128,7 @@ export class extAppMgmt {
             this.aMgmt.logger.info('Close web app ...');
             this.appWin = null;
         });
+        this.aMgmt.stopActive();
         
     }
 
@@ -155,7 +158,7 @@ export class extAppMgmt {
             this.aMgmt.logger.info('Close web app ...');
             this.appWin = null;
         });
-        
+        this.aMgmt.stopActive();
     }
 
 
@@ -197,9 +200,9 @@ export class extAppMgmt {
         this.appWin = new BrowserWindow({ 
             parent: this.aMgmt.win, 
             show: false, 
-            //frame: false, 
+            frame: false, 
             width: 500, 
-            height: 300, 
+            useContentSize: true,
             modal: true 
         });
         this.appWin.loadURL(url.format({

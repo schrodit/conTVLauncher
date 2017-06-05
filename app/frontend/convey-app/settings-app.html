@@ -47,6 +47,9 @@
       <paper-input label="Zoom Factor" value="{{zoomFactor}}"></paper-input>
     </div>
     <div class="section">
+      <paper-input label="Screensaver after x minutes" value="{{screensaver}}"></paper-input>
+    </div>
+    <div class="section">
       <paper-checkbox checked="{{cfg.enableShutdown}}">Enable shutdown (requires restart)</paper-checkbox>
     </div>
     <div class="section">
@@ -74,6 +77,10 @@
         zoomFactor: {
           type: Number,
           notify: true
+        },
+        screensaver: {
+          type: Number,
+          notify: true
         }
       };
     }
@@ -82,6 +89,7 @@
       super();
        // register navigation shortcuts
       window.addEventListener('keydown', (event) => {
+          ipcRenderer.send('reset-active-time');
           switch(event.keyCode) {
               case 27:
                 ipcRenderer.send('close-App');
@@ -112,6 +120,7 @@
       super.connectedCallback();
       this.cfg = ipcRenderer.sendSync('settings-get-cfg');
       this.zoomFactor = this.cfg.zoomFactor;
+      this.screensaver = this.cfg.screensaver;
 
       // setup nav table
       this.selected = [0,-1];
@@ -137,6 +146,7 @@
 
     onSave() {
       this.cfg.zoomFactor = Number(this.zoomFactor);
+      this.cfg.screensaver = Number(this.screensaver);
       ipcRenderer.send('settings-save-cfg', this.cfg);
     }
 

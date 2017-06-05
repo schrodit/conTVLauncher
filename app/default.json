@@ -3,6 +3,7 @@
     "enableSpotify": false,
     "enableShutdown": false,
     "prettyprint": false,
+    "screensaver": 10,
     "tiles": [
         [
             {
