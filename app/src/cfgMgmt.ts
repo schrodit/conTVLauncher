@@ -1,3 +1,4 @@
+import {ipcMain} from 'electron';
 const fs = require('fs');
 const defaultCfg = require('./default.json');
 
@@ -37,6 +38,12 @@ export class cfgMgmt {
         this.logger = winston;
         this.hiddenTiles = [];
         this.config = this.readCfg();
+
+        //register events
+        ipcMain.on('get-cfg', (event: Electron.Event) => {
+            event.returnValue = this.getCfg();
+        });
+
     }
 
     getCfg() { return this.config; }
