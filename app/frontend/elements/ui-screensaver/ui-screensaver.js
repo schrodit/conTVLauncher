@@ -4,8 +4,12 @@ class uiScreensaver extends Polymer.Element {
         return {
             src: {
                 type: String,
-                value: 'img/DefaultTile.png',
+                value: 'img/screenSaverDefault.jpg',
                 observer: '_onSrc'
+            },
+            watch: {
+                type: Boolean,
+                value: false
             },
             open: {
                 type: Boolean,
@@ -32,12 +36,17 @@ class uiScreensaver extends Polymer.Element {
         }
     }
 
+    preload() {
+        let r = Math.floor((Math.random() * 700) + 1);
+        this.preUrl = 'http://tv.convey.tk/img/' + r + '.jpg';
+        this.shadowRoot.getElementById('preload').style.backgroundImage = 'url("' + this.preUrl + '")';
+    }
     startRandom() {
+        this.preload();
         this.randomInterval = setInterval(() => {
-            let r = Math.floor((Math.random() * 700) + 1);
-            let url = 'http://tv.convey.tk/img/' + r + '.jpg';
-            this.style.backgroundImage = 'url("' + url + '")';
-        }, 5000);
+            this.style.backgroundImage = 'url("' + this.preUrl + '")';
+            this.preload();
+        }, 10000);
     }
 }
 
