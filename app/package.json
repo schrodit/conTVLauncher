@@ -17,13 +17,16 @@
   },
   "homepage": "https://github.com/sp-convey/conTVLauncher#readme",
   "devDependencies": {
-    "electron": "1.6.7",
+    "electron": "1.6.10",
     "gulp": "3.9.1",
     "gulp-eslint": "3.0.1",
     "gulp-if": "2.0.2"
   },
   "dependencies": {
+    "@types/electron": "^1.4.38",
+    "@types/winston": "^2.3.3",
     "big-integer": "^1.6.23",
+    "install": "^0.10.1",
     "power-off": "1.1.2",
     "spotify-web-api-node": "^2.4.0",
     "winston": "2.3.1"
