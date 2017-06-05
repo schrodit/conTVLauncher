@@ -78,6 +78,32 @@
       };
     }
 
+    constructor() {
+      super();
+       // register navigation shortcuts
+      window.addEventListener('keydown', (event) => {
+          switch(event.keyCode) {
+              case 13:
+                  event.preventDefault();
+                  this._onEnter();
+                  break;
+              case 27:
+                ipcRenderer.send('close-App');
+                break;
+              case 38:
+                  event.preventDefault();
+                  this._navTop();
+                  break;
+              case 40:
+                  event.preventDefault();
+                  this._navDown();
+                  break;
+              default:
+                  break;
+          }
+      });
+    }
+
     connectedCallback() {
       super.connectedCallback();
       this.cfg = ipcRenderer.sendSync('settings-get-cfg');
