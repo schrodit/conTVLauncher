@@ -20,6 +20,22 @@ export class extAppMgmt {
     constructor(aMgmt: appMgmt) {
         this.aMgmt = aMgmt;
         this.open = false;
+
+        //register global events
+        ipcMain.on('open-App', (event: Electron.Event, arg: tile) => {
+            try {
+                this.openApp(arg);
+            } catch (err) {
+                this.aMgmt.throwError(err.message);
+            }
+        });
+        ipcMain.on('close-App', (event: Electron.Event) => {
+            try {
+                this.closeApp();
+            } catch (err) {
+                this.aMgmt.throwError(err.message);
+            }
+        });
     }
 
     openApp(app: tile) {
@@ -175,7 +191,14 @@ export class extAppMgmt {
 
 
     openSettingsWin () {
-        this.appWin = new BrowserWindow({ parent: this.aMgmt.win, show: false, frame: false, width: 500, height: 300, modal: true });
+        this.appWin = new BrowserWindow({ 
+            parent: this.aMgmt.win, 
+            show: false, 
+            //frame: false, 
+            width: 500, 
+            height: 300, 
+            modal: true 
+        });
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,

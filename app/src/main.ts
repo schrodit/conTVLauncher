@@ -18,33 +18,6 @@ function createWindow () {
     aMgmt.win.once('ready-to-show', () => {
         aMgmt.win.show();
     });
-
-    // register shortcuts
-    globalShortcut.register('CommandOrControl+Backspace', () => {
-        if(aMgmt.extApp.appWin) aMgmt.extApp.closeApp();
-    });
-    globalShortcut.register('F3', () => {
-        if(aMgmt.extApp.appWin) aMgmt.extApp.closeApp();
-    });
-    globalShortcut.register('F4', () => {
-        app.quit();
-    });
-
-
-    //register events
-    ipcMain.on('get-cfg', (event: Electron.Event) => {
-        event.returnValue = aMgmt.cfg.getCfg();
-    });
-    ipcMain.on('open-App', (event: Electron.Event, arg: tile) => {
-        try {
-            aMgmt.extApp.openApp(arg);
-        } catch (err) {
-            throwError(err.message);
-        }
-    });
-    ipcMain.on('close-launcher', () => {
-        app.quit();
-    });
     
     aMgmt.win.loadURL(url.format({
         protocol: 'file',
@@ -77,9 +50,3 @@ app.on('ready', ()=> {
         aMgmt.spotify.startServer();
     }
 });
-
-// connection to fontend
-function throwError(msg:string) {
-    aMgmt.logger.error(msg);
-    aMgmt.win.webContents.send('on-error' ,msg);
-}

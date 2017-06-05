@@ -83,17 +83,21 @@
        // register navigation shortcuts
       window.addEventListener('keydown', (event) => {
           switch(event.keyCode) {
-              case 13:
-                  event.preventDefault();
-                  this._onEnter();
-                  break;
               case 27:
                 ipcRenderer.send('close-App');
                 break;
+              case 37:
+                    event.preventDefault();
+                    this._navLeft();
+                    break;
               case 38:
                   event.preventDefault();
                   this._navTop();
                   break;
+              case 39:
+                    event.preventDefault();
+                    this._navRight();
+                    break;
               case 40:
                   event.preventDefault();
                   this._navDown();
@@ -108,6 +112,23 @@
       super.connectedCallback();
       this.cfg = ipcRenderer.sendSync('settings-get-cfg');
       this.zoomFactor = this.cfg.zoomFactor;
+
+      // setup nav table
+      this.selected = [0,-1];
+      this.navTbl = [];
+      let sectionElements = this.shadowRoot.querySelectorAll('.section > *');
+      let a = [];
+      sectionElements.forEach((item, i) => {
+        a = [];
+        a.push(item);
+        this.navTbl.push(a);
+      });
+      let actionElements = this.shadowRoot.querySelectorAll('.actions > *');
+      a = [];
+      actionElements.forEach((item) => {
+        a.push(item);
+      });
+      this.navTbl.push(a);
     }
 
     onRestoreDefaults() {
@@ -121,6 +142,37 @@
 
     onCancel() {
       ipcRenderer.send('settings-close', true);
+    }
+
+    _navTop() {
+      if(this.selected[1] > 0) {
+        this.selected[1] = this.selected[1] - 1;
+        if(this.navTbl[this.selected[1]].length <= this.selected[0]) this.selected[0] = this.navTbl[this.selected[1]].length - 1;
+        this.setSelected();
+      }
+    }
+    _navDown() {
+      if(this.navTbl.length > this.selected[1]) {
+        this.selected[1] = this.selected[1] + 1;
+        if(this.navTbl[this.selected[1]].length <= this.selected[0]) this.selected[0] = this.navTbl[this.selected[1]].length - 1;
+        this.setSelected();
+      }
+    }
+    _navLeft() {
+      if(this.selected[0] > 0) {
+        this.selected[0] = this.selected[0] - 1;
+        this.setSelected();
+      }
+    }
+    _navRight() {
+      if(this.navTbl[this.selected[1]].length > this.selected[0]) {
+        this.selected[0] = this.selected[0] + 1;
+        this.setSelected();
+      }
+    }
+
+    setSelected() {
+      this.navTbl[this.selected[1]][this.selected[0]].focus();
     }
   }
 
