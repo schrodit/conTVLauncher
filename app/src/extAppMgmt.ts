@@ -257,6 +257,7 @@ export class extAppMgmt {
         this.appWin.on('ready-to-show', () => {
             this.aMgmt.logger.info('Open tile editor window');
             this.appWin.show();
+            this.aMgmt.startActive();
         });
 
         this.appWin.on('close', () => {
