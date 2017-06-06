@@ -19,6 +19,10 @@ class tileEditor extends Polymer.Element {
             },
             selected: {
                 type: Array
+            },
+            openMenu: {
+                type: Boolean,
+                value: false
             }
         };
     }
@@ -42,7 +46,8 @@ class tileEditor extends Polymer.Element {
                     this.enterCount++;
                     if(this.enterCount === 1) {
                         setTimeout(() => {
-                            if(this.enterCount < 2 && this.editMode) this.saveTiles();
+                            if(this.enterCount < 2 && this.editMode && !this.openMenu) this.saveTiles();
+                            else if(this.enterCount < 2 && this.openMenu) this.selectMenu();
                             else if(!this.editMode) this.changeToEditMode();
                             this.enterCount = 0;
                         }, 700);
@@ -53,7 +58,8 @@ class tileEditor extends Polymer.Element {
                     this.enterCount++;
                     if(this.enterCount === 1) {
                         setTimeout(() => {
-                            if(this.enterCount < 2 && this.editMode) this.changeToNormalMode();
+                            if(this.enterCount < 2 && this.editMode && !this.openMenu) this.changeToNormalMode();
+                            else if(this.openMenu) this.closeTileSettings();
                             else this.closeEditor();
                             this.enterCount = 0;
                         }, 700);
@@ -62,21 +68,25 @@ class tileEditor extends Polymer.Element {
                 case 37:
                     event.preventDefault();
                     if(!this.editMode) this._navLeft();
+                    else if(this.openMenu) this._navMenuLeft();
                     else this._moveLeft();
                     break;
                 case 38:
                     event.preventDefault();
                     if(!this.editMode) this._navTop();
+                    else if(this.openMenu) this._navMenuTop();
                     else this._moveTop();
                     break;
                 case 39:
                     event.preventDefault();
                     if(!this.editMode) this._navRight();
+                    else if(this.openMenu) this.closeTileSettings();
                     else this._moveRight();
                     break;
                 case 40:
                     event.preventDefault();
                     if(!this.editMode) this._navDown();
+                    else if(this.openMenu) this._navMenuDown();
                     else this._moveDown();
                     break;
                 default:
@@ -126,10 +136,12 @@ class tileEditor extends Polymer.Element {
     }
     changeToEditMode() {
         this.tilesBak = JSON.parse(JSON.stringify(this.tiles));
+        this.selectedBak = JSON.parse(JSON.stringify(this.selected));
         this.editMode = true;
     }
     changeToNormalMode() {
         this.set('tiles', this.tilesBak);
+        this.set('selected', this.selectedBak);
         this.editMode = false;
     }
     closeEditor() {
@@ -151,7 +163,6 @@ class tileEditor extends Polymer.Element {
         //remove from old
         this.splice('tiles.' + y, x, 1);
         this.selected = aNewTile;
-        this._onEditMode();
     }
     moveToRight(aNewTile) {
         let x = this.selected[0], y = this.selected[1];
@@ -161,7 +172,6 @@ class tileEditor extends Polymer.Element {
         //remove from old
         this.splice('tiles.' + y, x, 1);
         this.selected = aNewTile;
-        this._onEditMode();
     }
     moveToLeft(aNewTile) {
         let x = this.selected[0], y = this.selected[1];
@@ -171,13 +181,14 @@ class tileEditor extends Polymer.Element {
         //remove from old
         this.splice('tiles.' + y, x - 1, 1);
         this.selected = aNewTile;
-        this._onEditMode();
     }
 
     _moveLeft() {
         let x = this.selected[0], y = this.selected[1];
         if(y > -1 && x > 0) {
             this.moveToLeft([x - 1, y]);
+        } else if(x === 0) {
+            this.openTileSettings();
         }
     }
     _moveRight() {
@@ -243,6 +254,57 @@ class tileEditor extends Polymer.Element {
             if (this.tiles[y].length - 1 < x) x = this.tiles[y].length - 1;
             this.goTo([x, y]);
         }
+    }
+
+
+    selectMenu() {
+        let x = this.selected[0], y = this.selected[1];
+        let item = this.shadowRoot.querySelector('#tileSettings > .selected');
+        switch (item.innerHTML) {
+            case 'Remove':
+                this.splice('tiles.' + y, x, 1);
+                this.closeTileSettings();
+                for(let i = 0; i < this.tiles.length; i++) {
+                    if(this.tiles[i].length > 0) {
+                        this.selected = [0, i];
+                        this.set('tiles.' + i + '.0.selected', true);
+                        this.saveTiles();
+                        break;
+                    }                    
+                }
+            break;
+        }
+    }
+    _navMenuLeft() {
+        return null;
+    }
+    _navMenuTop() {
+        let items = this.shadowRoot.querySelector('#tileSettings').querySelectorAll('ui-menu-item');
+        items.forEach((item, i) => {
+            if(item.classList.contains('selected') && i > 0) {
+                items[i-1].classList.add('selected');
+                items[i].classList.remove('selected');
+            }
+        });
+    }
+    _navMenuDown() {
+        let items = this.shadowRoot.querySelector('#tileSettings').querySelectorAll('ui-menu-item');
+        items.forEach((item, i) => {
+            if(item.classList.contains('selected') && i < items.length - 1) {
+                items[i+1].classList.add('selected');
+                items[i].classList.remove('selected');
+            }
+        });
+    }
+
+    openTileSettings() {
+        this.openMenu = true;
+        this.shadowRoot.querySelector('#tileSettings').querySelectorAll('ui-menu-item')[0].classList.add('selected');
+        this.shadowRoot.querySelector('ui-tile.selected').classList.add('contextMenuOpen');
+    }
+    closeTileSettings() {
+        this.openMenu = false;
+        this.shadowRoot.querySelector('ui-tile.selected').classList.remove('contextMenuOpen');
     }
 
     _onZoomFactor() {

@@ -244,7 +244,7 @@ export class extAppMgmt {
         this.appWin = new BrowserWindow({ 
             parent: this.aMgmt.win, 
             show: false, 
-            //frame: false,
+            frame: false,
             fullscreen: true,
             modal: true 
         });
@@ -271,6 +271,7 @@ export class extAppMgmt {
             let currentConfig = this.aMgmt.cfg.getCfg();
             currentConfig.tiles = args;
             this.aMgmt.cfg.writeCfg(currentConfig);
+            this.aMgmt.win.webContents.send('recieve-cfg', this.aMgmt.cfg.getCfg());
         });
     }
 

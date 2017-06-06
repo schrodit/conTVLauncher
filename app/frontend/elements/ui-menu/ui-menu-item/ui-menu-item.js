@@ -9,9 +9,6 @@ class uiMenuItem extends Polymer.Element {
                 type: Object,
                 notify: true
             },
-            red: {
-                type: Boolean
-            },
             icon: {
                 type: String,
                 notify: true
@@ -21,11 +18,10 @@ class uiMenuItem extends Polymer.Element {
 
     connectedCallback() {
         super.connectedCallback();
-        if(this.red !== undefined) this.setAttribute('class', 'red');
     }
 
     setIconClass(icon) {
-        return 'icon' + (icon !== undefined ? 'show' : 'hide');
+        return 'icon ' + (icon !== undefined ? 'show' : 'hide');
     }
 
 }

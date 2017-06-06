@@ -23,12 +23,14 @@
 
        padding: 16px 5px;
        min-width: 112px;
-       height: 28px;
-       line-height: 28px;
+       height: var(--menu-height, 28px);
+       line-height: var(--menu-height, 28px);
        background: var(--menu-bg);
        color: var(--menu-text);
+       font-size: var(--menu-font-size);
      }
-     :host(:hover) {
+     :host(:hover), :host(.selected) {
+        color: var(--menu-selected-text);
         background: var(--menu-selected-bg);
         cursor: pointer;
      }
@@ -41,16 +43,25 @@
      }
 
      .icon {
-       height: 28px;
-       width: 28px;
+       height: var(--menu-icon-size, 28px);
+       width: var(--menu-icon-size, 28px);
        padding-right: 16px;
        fill: var(--menu-text);
+       float: left;
      }
+     :host(.selected) > .icon {
+       fill: var(--menu-selected-text);
+     }
+     
      .show {
       display: block;
      }
      .hide {
        display: none;
+     }
+
+     ::slotted {
+       font-size: var(--menu-font-size);
      }
     </style>
 
