@@ -97,6 +97,7 @@ export class appMgmt {
 
     public startActive() {
         this.logger.info('Start active time..');
+        this.stopActive();
         this.activeTimer = setInterval(() => {
             if(this.activeTime >= this.cfg.getCfg().screensaver * 60) {
                 this.extApp.openScreensaver();
