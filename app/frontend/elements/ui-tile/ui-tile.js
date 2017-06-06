@@ -14,6 +14,10 @@ class uiTile extends Polymer.Element {
                 type: Boolean,
                 notify: true,
                 observer: 'onSelected'
+            },
+            editMode: {
+                type: Boolean,
+                observer: 'onEditMode'
             }
         };
     }
@@ -28,8 +32,14 @@ class uiTile extends Polymer.Element {
         if(this.selected) {
             this.onScrollY(this);
             this.onScrollX(this);
-        }
+            if(this.editMode) this.classList.remove('edited');
+        } else if(this.editMode) this.classList.add('edited');
     }
+    onEditMode() {
+        if(!this.editMode) this.classList.remove('edited');
+        else if(!this.selected) this.classList.add('edited');
+    }
+
     onScrollY(elem) {
         Element.prototype.documentOffsetTop = function () {
             return this.offsetTop + ( this.offsetParent ? this.offsetParent.documentOffsetTop() : 0 );

@@ -37,6 +37,9 @@ export class extAppMgmt {
                 this.aMgmt.throwError(err.message);
             }
         });
+        ipcMain.on('open-tile-editor', () => {
+            if(!this.open) this.openTileEditorWin();
+        })
     }
 
     openApp(app: tile) {
@@ -217,28 +220,57 @@ export class extAppMgmt {
         });
 
         //register events
-        ipcMain.on('settings-get-cfg', (event: Electron.Event) => {
-            event.returnValue = this.aMgmt.cfg.getCfg();
-        });
-        ipcMain.on('settings-close', () => {
-            if(this.appWin) this.appWin.close();
-        });
         ipcMain.on('settings-save-cfg', (event: Electron.Event, arg: config) => {
             this.aMgmt.cfg.setCfg(arg);
             // config functions   
             this.aMgmt.cfg.writeCfg();
             this.aMgmt.win.webContents.send('recieve-cfg', this.aMgmt.cfg.getCfg());
-            if(this.appWin) this.appWin.close();
-        });
-        ipcMain.on('settings-restore-cfg', (event: Electron.Event) => {
-            event.returnValue = this.aMgmt.cfg.restoreDefaultCfg();
+            if(this.appWin) this.closeApp();
         });
 
         this.appWin.on('close', () => {
+            ipcMain.removeAllListeners('settings-save-cfg');
             this.open = false;
             this.type = '';
             this.aMgmt.logger.info('Close web app ...');
             this.appWin = null;
+        });
+    }
+
+    openTileEditorWin () {
+        this.type = 'sys';
+        this.open = true;
+
+        this.appWin = new BrowserWindow({ 
+            parent: this.aMgmt.win, 
+            show: false, 
+            //frame: false,
+            fullscreen: true,
+            modal: true 
+        });
+        this.appWin.loadURL(url.format({
+            protocol: 'file',
+            slashes: true,
+            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/tileEditor.html')
+        }));
+
+        this.appWin.on('ready-to-show', () => {
+            this.aMgmt.logger.info('Open tile editor window');
+            this.appWin.show();
+        });
+
+        this.appWin.on('close', () => {
+            ipcMain.removeAllListeners('save-tiles');
+            this.open = false;
+            this.type = '';
+            this.aMgmt.logger.info('Close tile editor ...');
+            this.appWin = null;
+        });
+
+        ipcMain.on('save-tiles', (event: NodeJS.EventEmitter, args: Array<Array<tile>>) => {
+            let currentConfig = this.aMgmt.cfg.getCfg();
+            currentConfig.tiles = args;
+            this.aMgmt.cfg.writeCfg(currentConfig);
         });
     }
 

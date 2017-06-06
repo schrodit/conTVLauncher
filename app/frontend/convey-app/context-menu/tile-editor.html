@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+
+<link rel="import" href="../../elements/ui-tile-container/ui-tile-container.html">
+<link rel="import" href="../../elements/ui-tile/ui-tile.html">
+<link rel="import" href="../../elements/ui-icon-tile/ui-icon-tile.html">
+
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="tile-editor">
+  <template>
+    <style include="styles"></style>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+        padding: 27px 48px;
+        box-sizing: border-box;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        margin-top: 5%;
+      }
+
+      .bg {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: -10;
+        height: 100%;
+        width: 100%;
+        opacity: 0.6;
+
+        background-image: url('../../wrapper/img/Low-Poly-Mountain.jpg');
+        background-repeat: no-repeat;
+        background-position: left top;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+      
+    </style>
+
+    <div class="content">
+
+      <template is="dom-repeat" items="{{tiles}}" as="tileContainer">
+        <ui-tile-container>
+
+          <template is="dom-repeat" items="{{tileContainer}}" as="tile">
+            <template is="dom-if" if="{{checkTiles(tile)}}">
+              <ui-tile selected="{{tile.selected}}" edit-mode="{{editMode}}" title="[[tile.title]]" src="[[tile.img]]"></ui-tile>
+            </template>
+          </template>
+          
+        </ui-tile-container>
+      </template>
+    </div>
+    
+    <div class="bg"></div>
+
+
+  </template>
+
+  <script src="tile-editor.js"></script>
+</dom-module>

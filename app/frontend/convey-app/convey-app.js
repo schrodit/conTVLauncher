@@ -165,6 +165,9 @@ class conveyApp extends Polymer.Element {
     _openContextMenu() {
         if(this.selected[1] === -1) {
             this.shadowRoot.querySelector('spotify-widget').openMenu();
+        } else {
+            ipcRenderer.send('set-tiles', this.tiles);
+            ipcRenderer.send('open-tile-editor');
         }
     }
     

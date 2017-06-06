@@ -62,7 +62,7 @@ export class appMgmt {
     }
 
     public initCfg() {
-        this.cfg = new cfgMgmt(this.home, this.logger);
+        this.cfg = new cfgMgmt(this);
         this.startActive();
     }
 
