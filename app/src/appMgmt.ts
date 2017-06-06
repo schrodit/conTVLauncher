@@ -76,7 +76,7 @@ export class appMgmt {
                 new (winston.transports.Console)(),
                 new (winston.transports.File)({
                     filename: this.home + '/.config/conTVLauncher/conTVLauncher.log',
-                    formatter: (options) => {
+                    formatter: (options: any) => {
                         // Return string will be passed to logger. 
                         return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (options.message ? options.message : '') +
                         (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );

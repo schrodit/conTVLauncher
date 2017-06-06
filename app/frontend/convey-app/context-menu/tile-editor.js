@@ -15,8 +15,7 @@ class tileEditor extends Polymer.Element {
                 observer: '_onZoomFactor'
             },
             editMode: {
-                type: Boolean,
-                observer: '_onEditMode'
+                type: Boolean
             },
             selected: {
                 type: Array
@@ -255,9 +254,6 @@ class tileEditor extends Polymer.Element {
     }
     checkTiles(tile) {
         return tile.type !== 'sys' && tile.show ? true : false;
-    }
-
-    _onEditMode() {
     }
     
 }
