@@ -100,7 +100,12 @@ class conveyApp extends Polymer.Element {
 
     // execute App
     _onOpenApp() {
-        let selTile = this.tiles[this.selected[1]][this.selected[0]];
+        let selTile;
+        if(this.selected[1] === -1) selTile = {
+            type: 'intern',
+            cmd: 'spotify-app.html'
+        }
+        else selTile = this.tiles[this.selected[1]][this.selected[0]];
         ipcRenderer.send('open-App', selTile);
     }
 
@@ -165,6 +170,9 @@ class conveyApp extends Polymer.Element {
     _openContextMenu() {
         if(this.selected[1] === -1) {
             this.shadowRoot.querySelector('spotify-widget').openMenu();
+        } else {
+            ipcRenderer.send('set-tiles', this.tiles);
+            ipcRenderer.send('open-tile-editor');
         }
     }
     

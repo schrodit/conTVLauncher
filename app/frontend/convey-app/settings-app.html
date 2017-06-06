@@ -118,7 +118,7 @@
 
     connectedCallback() {
       super.connectedCallback();
-      this.cfg = ipcRenderer.sendSync('settings-get-cfg');
+      this.cfg = ipcRenderer.sendSync('get-cfg');
       this.zoomFactor = this.cfg.zoomFactor;
       this.screensaver = this.cfg.screensaver;
 
@@ -151,7 +151,7 @@
     }
 
     onCancel() {
-      ipcRenderer.send('settings-close', true);
+      ipcRenderer.send('close-App');
     }
 
     _navTop() {

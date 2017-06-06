@@ -3,6 +3,7 @@ const fs = require('fs');
 const defaultCfg = require('./default.json');
 
 import * as winston from 'winston';
+import {appMgmt} from './appMgmt';
 
 export interface tile {
     title: string;
@@ -26,6 +27,7 @@ export interface config {
 
 export class cfgMgmt {
     home: string;
+    aMgmt: appMgmt;
     logger: winston.LoggerInstance;
     hiddenTiles: Array<{
         container: number;
@@ -34,9 +36,10 @@ export class cfgMgmt {
     }>;
     config: config;
     
-    constructor(home: string, winston: winston.LoggerInstance) {
-        this.home = home;
-        this.logger = winston;
+    constructor(aMgmt: appMgmt) {
+        this.aMgmt = aMgmt;
+        this.home = this.aMgmt.home;
+        this.logger = this.aMgmt.logger;
         this.hiddenTiles = [];
         this.config = this.readCfg();
 
@@ -44,12 +47,24 @@ export class cfgMgmt {
         ipcMain.on('get-cfg', (event: Electron.Event) => {
             event.returnValue = this.getCfg();
         });
+        ipcMain.on('save-cfg', (event: Electron.Event, arg: config) => {
+            this.setCfg(arg);
+            // config functions   
+            this.writeCfg();
+            this.aMgmt.win.webContents.send('recieve-cfg', this.aMgmt.cfg.getCfg());
+        });
+        ipcMain.on('settings-restore-cfg', (event: Electron.Event) => {
+            event.returnValue = this.restoreDefaultCfg();
+        });
+        ipcMain.on('set-tiles', (event: NodeJS.EventEmitter, args: Array<Array<tile>>) => {
+            this.config.tiles = args;
+        });
 
     }
 
     getCfg() { return this.config; }
     setCfg(cfg: config) {
-        this.config = cfg;
+        if(this.checkConfig(cfg)) this.config = deepCp(cfg);
     }
 
     readCfg() {
@@ -70,10 +85,18 @@ export class cfgMgmt {
 
     writeCfg(cfg?: config) {
         this.logger.info('Writing config to ' + this.home + '/.config/conTVLauncher/config.json' + ' ...');
-        let config = (cfg === undefined) ? JSON.parse(JSON.stringify(this.config)) : cfg;
-        config.tiles = this.restoreHiddenTiles(config.tiles);
-        config.tiles = this.removeSystemTiles(config.tiles);
-        fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', config.prettyprint ? JSON.stringify(config, null, 1) : JSON.stringify(config));
+        let config;
+        if(cfg === undefined) {
+            config = deepCp(this.config);
+        } else {
+            config = cfg;
+            this.setCfg(cfg);
+        }
+        if(this.checkConfig(config)) {
+            config.tiles = this.restoreHiddenTiles(config.tiles);
+            config.tiles = this.removeSystemTiles(config.tiles);
+            fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', config.prettyprint ? JSON.stringify(config, null, 1) : JSON.stringify(config));
+        } else this.aMgmt.logger.error('Cannot write config, check config: \n' + JSON.stringify(config, null, 1));
     };
 
     setupTiles(cfg: config) {
@@ -166,11 +189,12 @@ export class cfgMgmt {
 
     restoreHiddenTiles(tiles: Array<Array<tile>>) {
         this.hiddenTiles.forEach((tile) => {
-
             if(tiles[tile.container] !== undefined && 
                 tiles[tile.container].length > 0 && 
-                tiles[tile.container][0].container === tile.container) tiles[tile.container].splice(tile.tile, 0, tile.data);
-            else {
+                tiles[tile.container][0].container === tile.container) {
+                    if(tile.data.type === 'sys') tiles[tiles.length-1].splice(tile.tile, 0, tile.data);
+                    else tiles[tile.container].splice(tile.tile, 0, tile.data);
+            } else {
                 tiles.splice(tile.container, 0, [null]);
                 tiles[tile.container].splice(tile.tile, 0, tile.data);
             }
@@ -183,6 +207,14 @@ export class cfgMgmt {
         config.tiles = this.setupTiles(defaultCfg);
         return config;
     };
+
+    checkConfig(cfg: config) {
+        if (cfg === void 0) return false;
+
+        if(Object.keys(cfg).length < 6 || cfg.constructor !== Object) return false;
+
+        return true;
+    }
 
 
 }

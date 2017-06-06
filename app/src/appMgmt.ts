@@ -62,7 +62,7 @@ export class appMgmt {
     }
 
     public initCfg() {
-        this.cfg = new cfgMgmt(this.home, this.logger);
+        this.cfg = new cfgMgmt(this);
         this.startActive();
     }
 
@@ -76,7 +76,7 @@ export class appMgmt {
                 new (winston.transports.Console)(),
                 new (winston.transports.File)({
                     filename: this.home + '/.config/conTVLauncher/conTVLauncher.log',
-                    formatter: (options) => {
+                    formatter: (options: any) => {
                         // Return string will be passed to logger. 
                         return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (options.message ? options.message : '') +
                         (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
@@ -97,6 +97,7 @@ export class appMgmt {
 
     public startActive() {
         this.logger.info('Start active time..');
+        this.stopActive();
         this.activeTimer = setInterval(() => {
             if(this.activeTime >= this.cfg.getCfg().screensaver * 60) {
                 this.extApp.openScreensaver();
