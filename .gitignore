@@ -41,4 +41,5 @@ jspm_packages
 
 #ingnore generated files
 app/*.js
+build
 
