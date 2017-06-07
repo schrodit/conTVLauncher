@@ -4,6 +4,7 @@ const gutil = require('gulp-util');
 const runSequence = require('run-sequence');
 const clean = require('gulp-clean');
 const gulpCopy = require('gulp-copy');
+const install = require('gulp-install');
 
 const packager = require('electron-packager');
 
@@ -19,12 +20,16 @@ gulp.task('default', function () {
     runSequence('clean', 'tslint', 'typescript', 'compress', 'clean-debug'); 
 });
 
+gulp.task('dev',  () => {
+    runSequence('clean', 'typescript'); 
+});
+
 gulp.task('build', () => {
-    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'package'); 
+    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'install-app', 'install-bower', 'package'); 
 });
 
 gulp.task('copy-build', ['clean-build'],  () => {
-    return gulp.src(['app/*', '!app/*debug.js', 'app/node_modules/**/*', 'app/frontend/**/*', 'app/bin/**/*'])
+    return gulp.src(['app/*', '!app/*debug.js', 'app/frontend/**/*', '!app/frontend/bower_components', 'app/bin/**/*'])
         .pipe(gulpCopy('./build'));
 });
 
@@ -104,9 +109,18 @@ gulp.task('clean-build', () => {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('dev',  () => {
-    runSequence('clean', 'typescript'); 
+gulp.task('install-app', () => {
+    return gulp.src(['build/app/package.json'])
+        .pipe(gulp.dest('./build/app'))
+        .pipe(install());
 });
+gulp.task('install-bower', () => {
+    return gulp.src(['build/app/frontend/bower.json'])
+        .pipe(gulp.dest('./build/app/frontend'))
+        .pipe(install());
+});
+
+
 
 function isFixed(file) {
 	// Has ESLint fixed the file contents?
