@@ -65,7 +65,7 @@ export class extAppMgmt {
             default:
                 throw new Error('Unknown application type');
         }
-        this.aMgmt.activeTime = 0;
+        this.aMgmt.stopActive();
         
     }
     closeApp() {
@@ -131,8 +131,7 @@ export class extAppMgmt {
             this.aMgmt.logger.info('Close web app ...');
             this.appWin = null;
         });
-        this.aMgmt.stopActive();
-        
+        this.aMgmt.stopActive();  
     }
 
      newInternApp(iUrl: string) {
@@ -257,7 +256,6 @@ export class extAppMgmt {
         this.appWin.on('ready-to-show', () => {
             this.aMgmt.logger.info('Open tile editor window');
             this.appWin.show();
-            this.aMgmt.startActive();
         });
 
         this.appWin.on('close', () => {
@@ -274,6 +272,7 @@ export class extAppMgmt {
             this.aMgmt.cfg.writeCfg(currentConfig);
             this.aMgmt.win.webContents.send('recieve-cfg', this.aMgmt.cfg.getCfg());
         });
+        this.aMgmt.stopActive();
     }
 
     openPowerSettingsWin () {

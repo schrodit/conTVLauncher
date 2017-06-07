@@ -29,12 +29,6 @@ class tileEditor extends Polymer.Element {
 
     constructor() {
         super();
-        //register electron events
-        ipcRenderer.on('on-error', (event, arg) => {
-            this.set('toast.type', 'error');
-            this.set('toast.msg', arg);
-            this.set('toast.open', 'true');
-        });
         
         // register navigation shortcuts
         this.enterCount = 0;

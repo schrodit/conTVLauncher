@@ -107,6 +107,6 @@ export class appMgmt {
     public stopActive() {
         this.logger.info('Active time ended after ' + this.activeTime + 's ..');
         this.activeTime = 0;
-        clearTimeout(this.activeTimer);
+        if(this.activeTimer) clearInterval(this.activeTimer);
     }
 }
