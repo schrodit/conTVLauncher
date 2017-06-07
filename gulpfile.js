@@ -25,7 +25,7 @@ gulp.task('dev',  () => {
 });
 
 gulp.task('build', () => {
-    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'install-app', 'install-bower', 'package'); 
+    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'compress-frontend', 'install-app', 'install-bower', 'package'); 
 });
 
 gulp.task('copy-build', ['clean-build'],  () => {
@@ -82,6 +82,19 @@ gulp.task('typescript', () => {
 
 gulp.task('compress', ['lint'], () => {
   gulp.src('app/*.js')
+    .pipe(minify({
+        noSource: true,
+        ext:{
+            min:'.js'
+        },
+        exclude: ['tasks'],
+        ignoreFiles: ['.combo.js', '-min.js']
+    }))
+    .pipe(gulp.dest('app/'));
+});
+
+gulp.task('compress-frontend', () => {
+  gulp.src('build/app/frontend/**/*.js')
     .pipe(minify({
         noSource: true,
         ext:{
