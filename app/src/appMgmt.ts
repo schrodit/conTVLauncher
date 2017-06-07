@@ -105,8 +105,10 @@ export class appMgmt {
         }, 30000);
     }
     public stopActive() {
-        this.logger.info('Active time ended after ' + this.activeTime + 's ..');
         this.activeTime = 0;
-        if(this.activeTimer) clearInterval(this.activeTimer);
+        if(this.activeTimer) {
+            clearInterval(this.activeTimer);
+            this.logger.info('Active timer stopped  ..');
+        }
     }
 }
