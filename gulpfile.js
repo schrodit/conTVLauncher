@@ -17,7 +17,7 @@ const eslint = require('gulp-eslint');
 const minify = require('gulp-minify');
 
 gulp.task('default', function () {
-    runSequence('clean', 'tslint', 'typescript', 'compress', 'clean-debug'); 
+    runSequence('clean', 'tslint', 'typescript', 'compress'); 
 });
 
 gulp.task('dev',  () => {
