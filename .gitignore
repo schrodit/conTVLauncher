@@ -16,6 +16,9 @@ conTVLauncher-linux*
 # Coverage directory used by tools like istanbul
 coverage
 
+#vscode
+.vscode
+
 # nyc test coverage
 .nyc_output
 
@@ -42,6 +45,5 @@ jspm_packages
 #ingnore generated files
 app/*.js
 build
-
 
 *.gz
