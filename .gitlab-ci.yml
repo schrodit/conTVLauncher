@@ -1,7 +1,7 @@
 image: node:6.9.1
 
 before_script:
-  - npm i -g bower gulp
+  - npm i -g gulp
 
 stages:
   - build
