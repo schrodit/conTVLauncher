@@ -1,4 +1,4 @@
-# conTVLauncher [![Build Status](https://travis-ci.org/sp-convey/conTVLauncher.svg?branch=master)](https://travis-ci.org/sp-convey/conTVLauncher)
+# conTVLauncher [![build status](https://gitlab.com/schrodit/conTVLauncher/badges/master/build.svg)](https://gitlab.com/schrodit/conTVLauncher/commits/master)
 
 Mainly build with https://electron.atom.io/ and https://www.polymer-project.org/ in Frontend.
 
