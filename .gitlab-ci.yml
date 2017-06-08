@@ -2,6 +2,7 @@ image: node:6.9.1
 
 before_script:
   - npm i -g gulp bower
+  - bower install --config.interactive=false
 
 stages:
   - build
