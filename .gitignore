@@ -43,3 +43,5 @@ jspm_packages
 app/*.js
 build
 
+
+*.gz

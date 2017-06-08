@@ -56,6 +56,9 @@ export class spotifyApp {
                         case 'pause':
                             clearInterval(this.progressInterval);
                             break;
+                        case 'stop':
+                            this.aMgmt.win.webContents.send('spotify-close');
+                            break;
                     }
                     this.sendStatus();
                 } else {
