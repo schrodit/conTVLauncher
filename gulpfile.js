@@ -130,7 +130,9 @@ gulp.task('install-app', () => {
 gulp.task('install-bower', () => {
     return gulp.src(['build/app/frontend/bower.json'])
         .pipe(gulp.dest('./build/app/frontend'))
-        .pipe(install());
+        .pipe(install({
+            bower: {allowRoot: true}
+        }));
 });
 
 
