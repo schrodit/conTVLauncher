@@ -49,6 +49,19 @@
       ui-sidemenu {
         font-size: 20px;
       }
+
+      .addTileIcon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        fill: #ffffff;
+
+        position: fixed;
+        right: 0;
+        left: 0;
+        bottom: 14px;
+        margin: auto auto;
+      }
       
     </style>
 
@@ -66,6 +79,10 @@
         </ui-tile-container>
       </template>
     </div>
+
+    <template is="dom-if" if="{{!editMode}}">
+      <iron-icon class="addTileIcon" icon="icons:add"></iron-icon>
+    </template>
     
 
     <ui-sidemenu id="tileSettings" open="{{openMenu}}">

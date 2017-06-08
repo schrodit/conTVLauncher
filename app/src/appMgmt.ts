@@ -21,7 +21,7 @@ export class appMgmt {
     spotify: spotifyApp;
 
     activeTime: number;
-    activeTimer: NodeJS.Timer;
+    activeTimer: boolean;
 
     constructor(app:app, home:string) {
         this.app = app;
@@ -62,8 +62,9 @@ export class appMgmt {
     }
 
     public initCfg() {
+
         this.cfg = new cfgMgmt(this);
-        this.startActive();
+        this.startActiveInterval();
     }
 
     public initExtApp() {
@@ -97,16 +98,24 @@ export class appMgmt {
 
     public startActive() {
         this.logger.info('Start active time..');
-        this.stopActive();
-        this.activeTimer = setInterval(() => {
-            if(this.activeTime >= this.cfg.getCfg().screensaver * 60) {
-                this.extApp.openScreensaver();
-            } else this.activeTime = this.activeTime + 30;
-        }, 30000);
+        this.activeTimer = true;
+        this.activeTime = 0;
     }
     public stopActive() {
-        this.logger.info('Active time ended after ' + this.activeTime + 's ..');
         this.activeTime = 0;
-        clearTimeout(this.activeTimer);
+        if(this.activeTimer) {
+            this.activeTimer = false;
+            this.logger.info('Active timer stopped  ..');
+        }
+    }
+
+    private startActiveInterval() {
+        this.startActive();
+        setInterval(() => {
+            if(this.activeTime >= (this.cfg.getCfg().screensaver * 60) && this.activeTimer) {
+                this.extApp.openScreensaver();
+                this.activeTimer = false;
+            } else this.activeTime = this.activeTime + 30;
+        }, 30000);
     }
 }

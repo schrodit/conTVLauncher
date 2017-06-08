@@ -35,9 +35,6 @@ class spotifyWidget extends Polymer.Element {
                 this.open = true;
             }
         });
-        ipcRenderer.on('spotify-new-status', (event, arg) => {
-            if(arg.status === 'stop') this.open = false;
-        });
         ipcRenderer.on('spotify-close', () => {
             this.open = false;
         });

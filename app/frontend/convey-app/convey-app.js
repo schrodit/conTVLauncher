@@ -104,7 +104,7 @@ class conveyApp extends Polymer.Element {
         if(this.selected[1] === -1) selTile = {
             type: 'intern',
             cmd: 'spotify-app.html'
-        }
+        };
         else selTile = this.tiles[this.selected[1]][this.selected[0]];
         ipcRenderer.send('open-App', selTile);
     }

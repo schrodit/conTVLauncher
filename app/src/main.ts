@@ -42,7 +42,6 @@ app.on('ready', ()=> {
     aMgmt.logger.info('Creating MainWindow ...');
     createWindow();
     //initialize extApp object
-    aMgmt.logger.info('Starting ExtApp service ...');
     aMgmt.initExtApp();
     if (aMgmt.cfg.getCfg().enableSpotify) { 
         aMgmt.logger.info('Starting Spotify service ...');
