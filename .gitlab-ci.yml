@@ -1,0 +1,11 @@
+before_script:
+  - apt-get install nodejs npm
+
+stages:
+  - build
+
+build_all:
+  stage: build
+  script:
+    - npm install
+    - gulp build
