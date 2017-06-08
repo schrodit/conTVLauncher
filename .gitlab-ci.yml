@@ -1,0 +1,13 @@
+image: node:6.9.1
+
+before_script:
+  - npm i -g bower
+
+stages:
+  - build
+
+build_all:
+  stage: build
+  script:
+    - npm install
+    - gulp build
