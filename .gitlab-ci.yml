@@ -1,5 +1,7 @@
+image: node:6.9.1
+
 before_script:
-  - apt-get install nodejs npm
+  - npm i -g bower
 
 stages:
   - build
