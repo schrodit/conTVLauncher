@@ -20,6 +20,6 @@ deploy_staging:
   script:
     - echo "Deploy to staging server"
   environment:
-    name: staging
+    name: Staging
   only:
   - master
