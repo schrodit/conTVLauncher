@@ -330,6 +330,7 @@ export class extAppMgmt {
     }
 
     openScreensaver () {
+        if(this.screensaver !== void 0 && this.screensaver !== null) this.screensaver.close();
         this.screensaver = new BrowserWindow({ 
             parent: this.aMgmt.win, 
             show: true, 
@@ -353,8 +354,8 @@ export class extAppMgmt {
         this.screensaver.on('close', () => {
             this.aMgmt.win.show();
             if(this.open) this.appWin.show();
-            this.aMgmt.logger.info('Open screensaver');
-            this.screensaver.show();
+            this.aMgmt.logger.info('Close screensaver');
+            this.screensaver = null;
         });
 
     }
