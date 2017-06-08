@@ -5,6 +5,7 @@ before_script:
 
 stages:
   - build
+  - deploy
 
 build_all:
   stage: build
@@ -12,3 +13,13 @@ build_all:
     - npm install
     - gulp
     - gulp build
+
+
+deploy_staging:
+  stage: deploy
+  script:
+    - echo "Deploy to staging server"
+  environment:
+    name: Staging
+  only:
+  - master
