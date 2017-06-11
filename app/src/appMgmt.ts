@@ -40,6 +40,7 @@ export class appMgmt {
         });
         globalShortcut.register('CommandOrControl+L', () => {
             this.extApp.openScreensaver();
+            this.stopActive();
         });
 
         //register global events
@@ -103,10 +104,8 @@ export class appMgmt {
     }
     public stopActive() {
         this.activeTime = 0;
-        if(this.activeTimer) {
-            this.activeTimer = false;
-            this.logger.info('Active timer stopped  ..');
-        }
+        this.activeTimer = false;
+        this.logger.info('Active timer stopped  ..');
     }
 
     private startActiveInterval() {

@@ -29,6 +29,35 @@ class spotifyApp extends Polymer.Element {
 
     constructor() {
         super();
+
+        //register key events
+        window.addEventListener('keydown', (event) => {
+          ipcRenderer.send('reset-active-time');
+          switch(event.keyCode) {
+              case 27:
+                ipcRenderer.send('close-App');
+                break;
+            //   case 37:
+            //         event.preventDefault();
+            //         this._navLeft();
+            //         break;
+            //   case 38:
+            //       event.preventDefault();
+            //       this._navTop();
+            //       break;
+            //   case 39:
+            //         event.preventDefault();
+            //         this._navRight();
+            //         break;
+            //   case 40:
+            //       event.preventDefault();
+            //       this._navDown();
+            //       break;
+              default:
+                  break;
+          }
+      });
+
         //register electron events
         ipcRenderer.on('spotify-new-track', (event, arg) => {
             this.track = arg;
