@@ -57,6 +57,15 @@
                 "cmd": "http://www.daserste.de/",
                 "show": true
             }
+        ],
+        [
+            {
+                "title": "OnePiece",
+                "img": "img/onepieceTile.png",
+                "type": "web",
+                "cmd": "http://onepiece-tube.com/folge",
+                "show": false
+            }
         ]
     ]
 }

@@ -1,5 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
 
 <link rel="import" href="../../elements/ui-tile-container/ui-tile-container.html">
 <link rel="import" href="../../elements/ui-tile/ui-tile.html">
@@ -88,6 +91,16 @@
     <ui-sidemenu id="tileSettings" open="{{openMenu}}">
       <ui-menu-item icon="icons:delete">Remove</ui-menu-item>
     </ui-sidemenu>
+
+    <paper-dialog id="newTile" modal>
+      <paper-input label="Name" ></paper-input>
+      <paper-input label="Type" ></paper-input>
+      <paper-input label="Url/Command" ></paper-input>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Close</paper-button>
+        <paper-button dialog-confirm autofocus>Save</paper-button>
+      </div>
+    </paper-dialog>
 
     <div class="bg"></div>
 
