@@ -1,5 +1,6 @@
 import {ipcMain} from 'electron';
 const fs = require('fs');
+const crypto = require('crypto');
 const defaultCfg = require('./default.json');
 
 import * as winston from 'winston';
@@ -24,9 +25,17 @@ export interface config {
     tiles: Array<Array<tile>>;
 }
 
+interface rawTile {
+    title: string;
+    img: File;
+    type: string;
+    cmd: string;
+}
+
 
 export class cfgMgmt {
     home: string;
+    cfgPath: string;
     aMgmt: appMgmt;
     logger: winston.LoggerInstance;
     hiddenTiles: Array<{
@@ -39,6 +48,7 @@ export class cfgMgmt {
     constructor(aMgmt: appMgmt) {
         this.aMgmt = aMgmt;
         this.home = this.aMgmt.home;
+        this.cfgPath = this.home + '/.config/conTVLauncher';
         this.logger = this.aMgmt.logger;
         this.hiddenTiles = [];
         this.config = this.readCfg();
@@ -51,7 +61,7 @@ export class cfgMgmt {
             this.setCfg(arg);
             // config functions   
             this.writeCfg();
-            this.aMgmt.win.webContents.send('recieve-cfg', this.aMgmt.cfg.getCfg());
+            this.aMgmt.win.webContents.send('recieve-cfg', this.config);
         });
         ipcMain.on('settings-restore-cfg', (event: Electron.Event) => {
             event.returnValue = this.restoreDefaultCfg();
@@ -59,6 +69,10 @@ export class cfgMgmt {
         ipcMain.on('set-tiles', (event: NodeJS.EventEmitter, args: Array<Array<tile>>) => {
             this.config.tiles = args;
         });
+
+        ipcMain.on('save-new-tile', (event: Electron.Event, arg: rawTile) => {
+            this.addNewTile(arg);
+        })
 
     }
 
@@ -98,6 +112,53 @@ export class cfgMgmt {
             fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', config.prettyprint ? JSON.stringify(config, null, 1) : JSON.stringify(config));
         } else this.aMgmt.logger.error('Cannot write config, check config: \n' + JSON.stringify(config, null, 1));
     };
+
+    addNewTile(tile: rawTile) {
+        // create hash over title for image name
+        try {
+            let hash = crypto.createHash('md5');
+            let imgName = hash.update(tile.title).digest('hex') + '.' + tile.img.name.split('.').pop();
+            let imgPath = tile.img !== null ? this.saveImg(imgName, tile.img.path): '';
+            
+            let nTile:tile = {
+                title: tile.title,
+                cmd: tile.cmd,
+                type: tile.type,
+                img: imgPath,
+                container: 0,
+                show: true,
+                selected: true
+            }
+            this.config.tiles[0].splice(0, 0, nTile);
+            
+            //remove selected tile
+            for (let i = 0; i < this.config.tiles.length; i++) {
+                for(let y = 0; y < this.config.tiles[i].length; y++) {
+                    if(this.config.tiles[i][y].selected) this.config.tiles[i][y].selected = false;
+                }
+            }
+
+            this.writeCfg();
+            this.aMgmt.win.webContents.send('recieve-cfg', this.config);
+            this.aMgmt.extApp.appWin.webContents.send('recieve-cfg', this.config);
+        } catch(err) { this.logger.error(err); };
+    }
+
+    saveImg(name: string, url:string): string {
+        //check img path
+        try {
+            let path = this.cfgPath + '/img';
+            if(!fs.existsSync(path)) fs.mkdirSync(path);
+            let imageFile = fs.readFileSync(url);
+            path = path + '/' + name
+            fs.writeFileSync(path, imageFile);
+            return path;
+        } catch(err) {
+            this.aMgmt.throwError(err);
+        }
+
+        throw new Error('Cannot write file');
+    }
 
     setupTiles(cfg: config) {
         let tiles = cfg.tiles;

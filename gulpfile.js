@@ -28,6 +28,10 @@ gulp.task('build', () => {
     runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'compress-frontend', 'install-app', 'install-bower', 'package'); 
 });
 
+gulp.task('test', () => {
+    runSequence('clean', 'tslint', 'typescript'); 
+})
+
 gulp.task('copy-build', ['clean-build'],  () => {
     return gulp.src(['app/*', '!app/*debug.js', 'app/frontend/**/*', '!app/frontend/bower_components', 'app/bin/**/*'])
         .pipe(gulpCopy('./build'));
