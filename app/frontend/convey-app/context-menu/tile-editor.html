@@ -6,8 +6,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
-
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../../elements/ui-tile-container/ui-tile-container.html">
 <link rel="import" href="../../elements/ui-tile/ui-tile.html">
@@ -65,6 +64,11 @@
       }
       ui-sidemenu > .info.title {
         font-size: 28px;
+      }
+      .hide-toggle-button {
+        height: 30px;
+        --paper-toggle-button-checked-button-color: var(--Green-400);
+        --paper-toggle-button-checked-bar-color: var(--Green-500);
       }
 
       .addTileIcon {
@@ -148,7 +152,8 @@
       <paper-item slot="head" class="info title">[[getSelectedTitle(selected)]]</paper-item>
       <paper-item slot="head" class="info">TYPE: [[getSelectedType(selected)]]</paper-item>
       <paper-item slot="head" class="info">[[getSelectedCmd(selected)]]</paper-item>
-      <ui-menu-item slot="content" icon="icons:delete">Remove</ui-menu-item>
+      <ui-menu-item id="remove" slot="content" icon="icons:delete">Remove</ui-menu-item>
+      <ui-menu-item id="show" slot="content" icon="icons:visibility"><paper-toggle-button class="hide-toggle-button" checked$="[[getSelectedShow(selected)]]"></paper-toggle-button></ui-menu-item>
     </ui-sidemenu>
 
     <paper-dialog id="newTile" modal>

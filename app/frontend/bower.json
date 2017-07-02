@@ -27,7 +27,7 @@
     "paper-dialog": "PolymerElements/paper-dialog#2.0.0",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
-    "vaadin-upload": "2.0.0-beta1"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
   },
   "resolutions": {
     "iron-flex-layout": "1 - 2",

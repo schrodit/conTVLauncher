@@ -223,8 +223,8 @@ class tileEditor extends Polymer.Element {
     selectMenu() {
         let x = this.selected[0], y = this.selected[1];
         let item = this.shadowRoot.querySelector('#tileSettings > .selected');
-        switch (item.innerHTML) {
-            case 'Remove':
+        switch (item.id) {
+            case 'remove':
                 this.splice('tiles.' + y, x, 1);
                 this.closeTileSettings();
                 for(let i = 0; i < this.tiles.length; i++) {
@@ -236,6 +236,12 @@ class tileEditor extends Polymer.Element {
                     }                    
                 }
             break;
+            case 'show':
+                this.set('tiles.' + y + '.' + x + '.show', !this.tiles[y][x].show);
+                item.querySelector('paper-toggle-button').checked = this.tiles[y][x].show;
+                break;
+            default:
+                break;
         }
     }
     _navMenuLeft() {
@@ -269,6 +275,9 @@ class tileEditor extends Polymer.Element {
     getSelectedCmd(selected) {
         return this.tiles[this.selected[1]][this.selected[0]].cmd;
     }
+    getSelectedShow(selected) {
+        return this.tiles[this.selected[1]][this.selected[0]].show;
+    }
 
     openTileSettings() {
         this.openMenu = true;
@@ -278,6 +287,7 @@ class tileEditor extends Polymer.Element {
     closeTileSettings() {
         this.openMenu = false;
         this.shadowRoot.querySelector('ui-tile.selected').classList.remove('contextMenuOpen');
+        this.shadowRoot.querySelector('#tileSettings > ui-menu-item.selected').classList.remove('selected');
     }
 
     _onZoomFactor() {
