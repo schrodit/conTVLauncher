@@ -27,20 +27,29 @@
         display: block;
      }
 
-     ui-menu {
-       font-size: 18px;
-       color: var(--normal-text-light);
+     .header {
        margin-top: 84px;
      }
 
+     ui-menu {
+       font-size: 18px;
+       color: var(--normal-text-light);
+       margin-top: 20px;
+     }
 
+     hr {
+       margin-top: 25px;
+       height: 12px;
+       border: 0;
+       box-shadow: inset 0 12px 12px -12px rgba(0, 0, 0, 0.5);
+     }
 
-     
     </style>
 
-      <ui-menu><slot></slot></ui-menu>
+      <div class="header"><slot name="head"></slot></div>
+      <hr />
+      <ui-menu><slot name="content"></slot></ui-menu>
 
-  
   </template>
     
 
