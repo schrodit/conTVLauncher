@@ -94,6 +94,7 @@ class conveyApp extends Polymer.Element {
         this.zoomFactor = cfg.zoomFactor;
         this.spotify = cfg.enableSpotify;
         this.tiles = cfg.tiles;
+        // TODO: check if some tile already selected
         this.selected = [0, 0];
         this.tiles[0][0].selected = true;
     }

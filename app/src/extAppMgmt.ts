@@ -243,7 +243,7 @@ export class extAppMgmt {
         this.appWin = new BrowserWindow({ 
             parent: this.aMgmt.win, 
             show: false, 
-            frame: false,
+            //frame: false,
             fullscreen: true,
             modal: true 
         });
