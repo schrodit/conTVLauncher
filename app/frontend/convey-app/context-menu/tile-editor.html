@@ -58,6 +58,15 @@
         font-size: 20px;
       }
 
+      ui-sidemenu > .info {
+        font-size: 18px;
+        color: var(--normal-text-light);
+        padding-left: 15px;
+      }
+      ui-sidemenu > .info.title {
+        font-size: 28px;
+      }
+
       .addTileIcon {
         width: 70px;
         height: 70px;
@@ -136,7 +145,10 @@
     
 
     <ui-sidemenu id="tileSettings" open="{{openMenu}}">
-      <ui-menu-item icon="icons:delete">Remove</ui-menu-item>
+      <paper-item slot="head" class="info title">[[getSelectedTitle(selected)]]</paper-item>
+      <paper-item slot="head" class="info">TYPE: [[getSelectedType(selected)]]</paper-item>
+      <paper-item slot="head" class="info">[[getSelectedCmd(selected)]]</paper-item>
+      <ui-menu-item slot="content" icon="icons:delete">Remove</ui-menu-item>
     </ui-sidemenu>
 
     <paper-dialog id="newTile" modal>

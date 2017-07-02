@@ -218,6 +218,8 @@ class tileEditor extends Polymer.Element {
     }
 
 
+
+    //sidemenu operations
     selectMenu() {
         let x = this.selected[0], y = this.selected[1];
         let item = this.shadowRoot.querySelector('#tileSettings > .selected');
@@ -256,6 +258,16 @@ class tileEditor extends Polymer.Element {
                 items[i].classList.remove('selected');
             }
         });
+    }
+
+    getSelectedTitle(selected) {
+        return this.tiles[this.selected[1]][this.selected[0]].title;
+    }
+    getSelectedType(selected) {
+        return this.tiles[this.selected[1]][this.selected[0]].type;
+    }
+    getSelectedCmd(selected) {
+        return this.tiles[this.selected[1]][this.selected[0]].cmd;
     }
 
     openTileSettings() {
