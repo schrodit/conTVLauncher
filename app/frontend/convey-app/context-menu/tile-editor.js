@@ -66,6 +66,10 @@ class tileEditor extends Polymer.Element {
         this.changeToEditMode();
     }
 
+    getTileClass(show) {
+        return show ? '' : 'hidden';
+    }
+
     // Editor Operations
     saveTiles() {
         //remove empty container
