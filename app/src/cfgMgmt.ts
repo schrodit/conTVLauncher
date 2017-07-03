@@ -57,6 +57,7 @@ export class cfgMgmt {
         ipcMain.on('get-cfg', (event: Electron.Event) => {
             event.returnValue = this.getCfg();
         });
+        
         ipcMain.on('save-cfg', (event: Electron.Event, arg: config) => {
             this.setCfg(arg);
             // config functions   
@@ -70,9 +71,12 @@ export class cfgMgmt {
             this.config.tiles = args;
         });
 
+        ipcMain.on('get-hidden-tiles', (event: Electron.Event) => {
+            event.returnValue = this.restoreHiddenTiles(this.getCfg().tiles);
+        });
         ipcMain.on('save-new-tile', (event: Electron.Event, arg: rawTile) => {
             this.addNewTile(arg);
-        })
+        });
 
     }
 

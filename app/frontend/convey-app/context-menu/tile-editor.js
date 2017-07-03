@@ -45,7 +45,7 @@ class tileEditor extends Polymer.Element {
     _setConfig(cfg) {
         this.zoomFactor = cfg.zoomFactor;
         this.spotify = cfg.enableSpotify;
-        this.set('tiles', cfg.tiles);
+        this.set('tiles', ipcRenderer.sendSync('get-hidden-tiles'));
         
         for (let y = 0; y < this.tiles.length; y++) {
             for (let x = 0; x < this.tiles[y].length; x++) {
@@ -302,7 +302,7 @@ class tileEditor extends Polymer.Element {
         return tile.type === 'sys' && tile.show ? true : false;
     }
     checkTiles(tile) {
-        return tile.type !== 'sys' && tile.show ? true : false;
+        return tile.type !== 'sys' ? true : false;
     }
 
     //dialog functions

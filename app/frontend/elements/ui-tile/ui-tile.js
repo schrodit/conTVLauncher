@@ -18,7 +18,11 @@ class uiTile extends Polymer.Element {
             editMode: {
                 type: Boolean,
                 observer: 'onEditMode'
-            }
+            },
+            hidden: {
+                type: Boolean,
+                value: false
+            },
         };
     }
 

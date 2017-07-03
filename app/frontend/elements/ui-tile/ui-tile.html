@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 
 <link rel="import" href="../ui-popup/ui-popup.html">
 <link rel="import" href="../ui-menu/ui-menu.html">
@@ -59,12 +60,20 @@
        color: var(--normal-text-light);
      }
 
+     .tileBadge {
+       --paper-badge-width: 50px;
+       --paper-badge-height: 50px;
+       --paper-badge-background: var(--White-100);
+       --paper-badge-text-color: var(--Black-087);
+     }
+
 
 
      
     </style>
 
-      <img class="tileImage" alt="[[title]]" src="[[src]]" />
+      <img id="tileImage" class="tileImage" alt="[[title]]" src="[[src]]" />
+      <template is="dom-if" if="{{hidden}}"><paper-badge class="tileBadge" for="tileImage" icon="icons:visibility-off"></paper-badge></template>
       <template is="dom-if" if="{{showTitle()}}" as="tile"><span class="tileTitle">[[title]]</span></template>
 
   

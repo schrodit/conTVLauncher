@@ -135,7 +135,7 @@
 
           <template is="dom-repeat" items="{{tileContainer}}" as="tile">
             <template is="dom-if" if="{{checkTiles(tile)}}">
-              <ui-tile selected="{{tile.selected}}" edit-mode="{{editMode}}" title="[[tile.title]]" src="[[tile.img]]" class="[[getTileClass(tile.show)]]"></ui-tile>
+              <ui-tile selected="{{tile.selected}}" edit-mode="{{editMode}}" title="[[tile.title]]" src="[[tile.img]]" class$="[[getTileClass(tile.show)]]" hidden="[[!tile.show]]"></ui-tile>
             </template>
           </template>
           
