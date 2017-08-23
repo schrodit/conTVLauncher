@@ -36,6 +36,7 @@
     "gulp-typescript": "^3.1.7",
     "gulp-util": "^3.0.8",
     "run-sequence": "^1.2.2",
+    "spectron": "^3.7.2",
     "tslint": "^5.4.2",
     "typescript": "2.4.2"
   },
