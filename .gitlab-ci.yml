@@ -20,6 +20,6 @@ deploy_staging:
     - sh release.sh
   artifacts:
     paths:
-    - conTVLauncher-linux-x64.tar.gz
+    - conTVLauncher-linux-x64*.tar.gz
   only:
   - master
