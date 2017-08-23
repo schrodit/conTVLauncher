@@ -1,6 +1,7 @@
 image: node:8.3.0
 
 before_script:
+  - sudo npm i -g bower
 
 stages:
   - build
@@ -16,8 +17,9 @@ build_all:
 deploy_staging:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: Staging
+    - sh release.sh
+  artifacts:
+    paths:
+    - conTVLauncher-linux-x64.tar.gz
   only:
   - master

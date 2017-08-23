@@ -107,7 +107,7 @@ gulp.task('compress-frontend', () => {
         exclude: ['tasks'],
         ignoreFiles: ['.combo.js', '-min.js']
     }))
-    .pipe(gulp.dest('src/'));
+    .pipe(gulp.dest('build/src/frontend'));
 });
 
 gulp.task('clean',['clean-debug', 'clean-build'], () => {
@@ -136,7 +136,7 @@ gulp.task('install-app', () => {
 });
 gulp.task('install-bower', () => {
     return gulp.src(['build/src/frontend/bower.json'])
-        .pipe(gulp.dest('./build/src/frontend'))
+        .pipe(gulp.dest('build/src/frontend'))
         .pipe(install({
             bower: {allowRoot: true}
         }));
