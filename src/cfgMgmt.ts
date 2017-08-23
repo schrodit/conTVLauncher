@@ -109,7 +109,6 @@ export class cfgMgmt {
             }
             if(this.checkConfig(config)) {
                 config.tiles = this.restoreHiddenTiles(config.tiles);
-                            console.log(JSON.stringify(config.tiles, null, 1));
                 config.tiles = this.removeSystemTiles(config.tiles);
                 fs.writeFileSync(this.home + '/.config/conTVLauncher/config.json', config.prettyprint ? JSON.stringify(config, null, 1) : JSON.stringify(config));
             } else this.aMgmt.logger.error('Cannot write config, check config: \n' + JSON.stringify(config, null, 1));

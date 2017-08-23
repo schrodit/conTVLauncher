@@ -24,7 +24,6 @@ export class extAppMgmt {
 
         //register global events
         ipcMain.on('open-App', (event: Electron.Event, arg: tile) => {
-            console.log(arg);
             try {
                 this.openApp(arg);
             } catch (err) {
@@ -92,7 +91,7 @@ export class extAppMgmt {
         this.appWin = new BrowserWindow({
             parent: this.aMgmt.win,
             modal: true,
-            frame: true,
+            frame: false,
             show: false,
             fullscreen: true,
             webPreferences: {

@@ -11,8 +11,8 @@ let aMgmt: appMgmt;
 function createWindow () {
     // Create the browser window.
     aMgmt.win = new BrowserWindow({
-        frame: true,
-        fullscreen: false,
+        frame: false,
+        fullscreen: true,
         show:false
     });
    
