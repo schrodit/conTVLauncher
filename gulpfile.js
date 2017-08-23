@@ -17,40 +17,40 @@ const eslint = require('gulp-eslint');
 const minify = require('gulp-minify');
 
 gulp.task('default', function () {
-    runSequence('clean', 'tslint', 'typescript', 'compress'); 
+    runSequence('clean-debug', 'tslint', 'typescript', 'compress'); 
 });
 
 gulp.task('dev',  () => {
-    runSequence('clean', 'typescript'); 
+    runSequence('clean-debug', 'typescript'); 
 });
 
 gulp.task('build', () => {
-    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'compress-frontend', 'install-app', 'install-bower', 'package'); 
+    runSequence('clean', 'tslint', 'typescript', 'compress', 'copy-build', 'compress-frontend', 'install-app', 'install-bower', 'package', 'clean-build'); 
 });
 
 gulp.task('test', () => {
-    runSequence('clean', 'tslint', 'typescript'); 
-})
+    runSequence('clean-debug', 'tslint', 'typescript'); 
+});
 
 gulp.task('copy-build', ['clean-build'],  () => {
-    return gulp.src(['app/*', '!app/*debug.js', 'app/frontend/**/*', '!app/frontend/bower_components', 'app/bin/**/*'])
+    return gulp.src(['src/**/*', '!src/*.ts', '!src/*debug.js', '!src/frontend/bower_components', 'package.json', 'package-lock.json'])
         .pipe(gulpCopy('./build'));
 });
 
 gulp.task('package', (cb) => {
     return packager({
-        dir: './build/app',
+        dir: './build/',
         name: 'conTVLauncher',
         overwrite: true,
         packageManager: 'npm',
         platform: 'linux',
         arch: 'x64',
-        out: './build'
+        out: './'
     }, function done_callback (err, appPaths) { 
         if(err instanceof Error) throw err;
         else {
             gutil.log(appPaths);
-             cb();
+            cb();
         }
      });
 });
@@ -63,8 +63,8 @@ gulp.task('lint', () => {
         .pipe(gulpIf(isFixed, gulp.dest('./')));
 });
 
-gulp.task('tslint', ['clean'], () =>
-    gulp.src('app/src/*.ts')
+gulp.task('tslint', () =>
+    gulp.src('src/*.ts')
         .pipe(tslint({
             configuration: 'tslint.json',
             formatter: 'verbose'
@@ -73,7 +73,7 @@ gulp.task('tslint', ['clean'], () =>
 );
 
 gulp.task('typescript', () => {
-    return gulp.src('app/src/*.ts')
+    return gulp.src('src/*.ts')
         .pipe(ts({
             moduleResolution: 'Node',
             module: 'CommonJS',
@@ -81,11 +81,11 @@ gulp.task('typescript', () => {
             target: 'ES6',
             allowJs: true
         }))
-        .pipe(gulp.dest('app/'));
+        .pipe(gulp.dest('src/'));
 });
 
 gulp.task('compress', ['lint'], () => {
-  gulp.src('app/*.js')
+  gulp.src('src/*.js')
     .pipe(minify({
         noSource: true,
         ext:{
@@ -94,11 +94,11 @@ gulp.task('compress', ['lint'], () => {
         exclude: ['tasks'],
         ignoreFiles: ['.combo.js', '-min.js']
     }))
-    .pipe(gulp.dest('app/'));
+    .pipe(gulp.dest('src/'));
 });
 
 gulp.task('compress-frontend', () => {
-  gulp.src('build/app/frontend/**/*.js')
+  gulp.src('build/src/frontend/**/*.js')
     .pipe(minify({
         noSource: true,
         ext:{
@@ -107,33 +107,36 @@ gulp.task('compress-frontend', () => {
         exclude: ['tasks'],
         ignoreFiles: ['.combo.js', '-min.js']
     }))
-    .pipe(gulp.dest('app/'));
+    .pipe(gulp.dest('src/'));
 });
 
-gulp.task('clean', () => {
-    return gulp.src(['build'], {read: false})
+gulp.task('clean',['clean-debug', 'clean-build'], () => {
+    return gulp.src(['conTVLauncher*'], {read: false})
         .pipe(clean())
         .pipe(gulp.dest('./'));
 });
+
 gulp.task('clean-debug', () => {
-    return gulp.src(['app/*debug.js'], {read: false})
+    return gulp.src(['src/*.js'], {read: false})
         .pipe(clean())
         .pipe(gulp.dest('./'));
 });
 gulp.task('clean-build', () => {
-    return gulp.src(['build/app/**/*'], {read: true})
+    return gulp.src(['build'], {read: true})
         .pipe(clean())
         .pipe(gulp.dest('./'));
 });
 
 gulp.task('install-app', () => {
-    return gulp.src(['build/app/package.json'])
-        .pipe(gulp.dest('./build/app'))
-        .pipe(install());
+    return gulp.src(['build/package.json'])
+        .pipe(gulp.dest('build/'))
+        .pipe(install({
+            npm: '--production'
+        }));
 });
 gulp.task('install-bower', () => {
-    return gulp.src(['build/app/frontend/bower.json'])
-        .pipe(gulp.dest('./build/app/frontend'))
+    return gulp.src(['build/src/frontend/bower.json'])
+        .pipe(gulp.dest('./build/src/frontend'))
         .pipe(install({
             bower: {allowRoot: true}
         }));

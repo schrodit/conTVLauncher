@@ -1,7 +1,6 @@
-image: node:6.9.1
+image: node:8.3.0
 
 before_script:
-  - npm i -g gulp bower
 
 stages:
   - build
@@ -11,8 +10,7 @@ build_all:
   stage: build
   script:
     - npm install
-    - gulp
-    - gulp build
+    - npm run build
 
 
 deploy_staging:

@@ -1,0 +1,33 @@
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+body {
+    margin: 0;
+    padding: 0;
+    cursor: none;
+}
+
+body ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: rgba(0,0,0,.12);
+    border-radius: 3px;
+}
+body ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.38);
+    border-radius: 3px;
+}
+
+html ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: rgba(0,0,0,.12);
+    border-radius: 3px;
+}
+html ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.38);
+    border-radius: 3px;
+}

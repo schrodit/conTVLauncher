@@ -2,9 +2,12 @@
   "name": "contvlauncher",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typescript": "gulp typescript",
+    "build": "gulp build",
+    "start": "electron src/main.js"
   },
   "repository": {
     "type": "git",
@@ -17,8 +20,11 @@
   },
   "homepage": "https://github.com/sp-convey/conTVLauncher#readme",
   "devDependencies": {
-    "electron": "^1.6.7",
-    "electron-packager": "^8.7.1",
+    "@types/electron": "^1.6.10",
+    "@types/node": "^8.0.24",
+    "@types/winston": "2.3.5",
+    "electron": "1.7.5",
+    "electron-packager": "8.7.2",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.0",
@@ -31,7 +37,12 @@
     "gulp-util": "^3.0.8",
     "run-sequence": "^1.2.2",
     "tslint": "^5.4.2",
-    "typescript": "^2.3.4"
+    "typescript": "2.4.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "big-integer": "1.6.24",
+    "power-off": "1.1.2",
+    "spotify-web-api-node": "2.4.0",
+    "winston": "2.3.1"
+  }
 }

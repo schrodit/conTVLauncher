@@ -1,0 +1,181 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
+
+
+<link rel="import" href="../../elements/ui-tile-container/ui-tile-container.html">
+<link rel="import" href="../../elements/ui-tile/ui-tile.html">
+<link rel="import" href="../../elements/ui-icon-tile/ui-icon-tile.html">
+<link rel="import" href="../../elements/ui-sidemenu/ui-sidemenu.html">
+
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="tile-editor">
+  <template>
+    <style include="styles"></style>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+        padding: 27px 48px;
+        box-sizing: border-box;
+        -webkit-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        margin-top: 5%;
+      }
+
+      .bg {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: -10;
+        height: 100%;
+        width: 100%;
+        opacity: 0.6;
+
+        background-image: url('../../wrapper/img/Low-Poly-Mountain.jpg');
+        background-repeat: no-repeat;
+        background-position: left top;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+
+      ui-sidemenu {
+        font-size: 20px;
+      }
+
+      ui-sidemenu > .info {
+        font-size: 18px;
+        color: var(--normal-text-light);
+        padding-left: 15px;
+      }
+      ui-sidemenu > .info.title {
+        font-size: 28px;
+      }
+
+      .addTileIcon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        fill: #ffffff;
+
+        position: fixed;
+        right: 0;
+        left: 0;
+        bottom: 14px;
+        margin: auto auto;
+      }
+      .addTileIcon.selected {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+      }
+      #newTile {
+        padding: 24px;
+        min-width: 30vw;
+      }
+
+      #newTile > .buttons {
+        font-size: 16px;
+      }
+
+      .button-action {
+        background: var(--Blue-800);
+        padding: 16px;
+        color: var(--normal-text-light);
+      }
+      .button-action:focus {
+        background: var(--Blue-600);
+      }
+      #tileImageUpload {
+        display: none;
+      }
+
+      .thumb {
+        width: 350px;
+        display:none;
+      }
+
+      .close {
+        @apply --red-button;
+      }
+      .close:focus {
+        @apply --red-button-focus;
+      }
+      .save {
+        @apply --green-button;
+      }
+      .save:focus {
+        @apply --green-button-focus;
+      }
+      
+    </style>
+
+    <div class="content">
+
+      <template is="dom-repeat" items="{{tiles}}" as="tileContainer">
+        <ui-tile-container>
+
+          <template is="dom-repeat" items="{{tileContainer}}" as="tile">
+            <template is="dom-if" if="{{checkTiles(tile)}}">
+              <ui-tile selected="{{tile.selected}}" edit-mode="{{editMode}}" title="[[tile.title]]" src="[[tile.img]]"></ui-tile>
+            </template>
+          </template>
+          
+        </ui-tile-container>
+      </template>
+    </div>
+
+    <template is="dom-if" if="{{!editMode}}">
+      <iron-icon class="addTileIcon" icon="icons:add"></iron-icon>
+    </template>
+    
+
+    <ui-sidemenu id="tileSettings" open="{{openMenu}}">
+      <paper-item slot="head" class="info title">[[getSelectedTitle(selected)]]</paper-item>
+      <paper-item slot="head" class="info">TYPE: [[getSelectedType(selected)]]</paper-item>
+      <paper-item slot="head" class="info">[[getSelectedCmd(selected)]]</paper-item>
+      <ui-menu-item slot="content" icon="icons:delete">Remove</ui-menu-item>
+    </ui-sidemenu>
+
+    <paper-dialog id="newTile" modal>
+      <paper-input required id="newTile-title" autofocus label="Title" ></paper-input>
+      <paper-dropdown-menu id="newTile-type" label="Type">
+        <paper-listbox slot="dropdown-content" class="dropdown-content">
+          <paper-item>web</paper-item>
+          <paper-item>shell</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
+      <paper-input required id="newTile-cmd" label="Url/Command" ></paper-input>
+      <paper-button class='button-action' on-click="_openImageUpload" >
+        Upload Image
+        <input id="tileImageUpload" accept="image/*" name="tileImageUpload" type="file" on-change="_onImageUplodChange" />
+      </paper-button> (350px x 250px)
+      <img class="thumb" />
+
+      <div class="buttons">
+        <paper-button class="close" on-click="_closeNewTileDialog" >Close</paper-button>
+        <paper-button class="save" on-click="_saveNewTile">Save</paper-button>
+      </div>
+    </paper-dialog>
+
+    <div class="bg"></div>
+
+
+  </template>
+
+  <script src="tile-editor.js"></script>
+</dom-module>
