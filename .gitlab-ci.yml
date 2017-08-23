@@ -1,7 +1,7 @@
 image: node:8.3.0
 
 before_script:
-  - sudo npm i -g bower
+  - npm i -g bower
 
 stages:
   - build
