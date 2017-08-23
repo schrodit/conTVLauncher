@@ -9,6 +9,9 @@ stages:
 
 build_all:
   stage: build
+  cache:
+    paths:
+    - conTVLauncher-linux-x64/
   script:
     - npm install
     - npm run build
