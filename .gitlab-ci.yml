@@ -3,23 +3,26 @@ image: node:8.3.0
 before_script:
   - npm i -g bower
 
+cache:
+  paths:
+  - conTVLauncher-linux-x64/
+
 stages:
   - build
   - deploy
 
 build_all:
   stage: build
-  cache:
-    paths:
-    - conTVLauncher-linux-x64/
   script:
     - npm install
     - npm run build
+    - ls
 
 
 deploy_staging:
   stage: deploy
   script:
+    - ls
     - sh release.sh
   artifacts:
     paths:
