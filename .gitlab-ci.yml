@@ -23,6 +23,8 @@ deploy_staging:
     - "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g')"
     - now="$(date +'%Y%m%d%H%M%S')"
     - sh release.sh $now
+    - ls
+    - echo "Deploy to jFrog at $PACKAGE_VERSION/conTVLauncher-linux-x64-$now.tar.gz"
     - curl -u gitlab:$jfrogPass -T conTVLauncher-linux-x64-$now.tar.gz "http://jfrog.silvermine-productions.com/artifactory/conTVLauncher/$PACKAGE_VERSION/conTVLauncher-linux-x64-$now.tar.gz"
   artifacts:
     paths:
