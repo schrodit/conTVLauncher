@@ -3,7 +3,7 @@
 mkdir release
 cp -r installation release/
 cp -r conTVLauncher-linux-x64 release/
-tar -czvf conTVLauncher-linux-x64-$now.tar.gz release/*
+tar -czvf conTVLauncher-linux-x64-$1.tar.gz release/*
 rm -r release
 
 
