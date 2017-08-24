@@ -1,7 +1,5 @@
 #! /bin/bash
 
-now="$(date +'%Y%m%d%H%M%S')"
-
 mkdir release
 cp -r installation release/
 cp -r conTVLauncher-linux-x64 release/

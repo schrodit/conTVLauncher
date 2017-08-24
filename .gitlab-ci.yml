@@ -16,14 +16,14 @@ build_all:
   script:
     - npm install
     - npm run build
-    - ls
-
-
+    
 deploy_staging:
   stage: deploy
   script:
-    - ls
+    - PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g')
+    - now="$(date +'%Y%m%d%H%M%S')"
     - sh release.sh
+    - curl -ugitlab:$jfrogPass -T conTVLauncher-linux-x64-$now.tar.gz "http://jfrog.silvermine-productions.com/artifactory/conTVLauncher/$PACKAGE_VERSION/conTVLauncher-linux-x64-$now.tar.gz"
   artifacts:
     paths:
     - conTVLauncher-linux-x64*.tar.gz
