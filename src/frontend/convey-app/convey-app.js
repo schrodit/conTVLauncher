@@ -48,7 +48,7 @@ class conveyApp extends Polymer.Element {
                             if(this.enterCount < 2) this._onOpenApp();
                             else this._openContextMenu();
                             this.enterCount = 0;
-                        }, 700);
+                        }, 1000);
                     }
                     break;
                 case 37:
@@ -85,8 +85,10 @@ class conveyApp extends Polymer.Element {
         this.spotify = cfg.enableSpotify;
         this.tiles = cfg.tiles;
         // TODO: check if some tile already selected
-        this.selected = [0, 0];
-        this.tiles[0][0].selected = true;
+        if(!this.selected || !this.tiles[this.selected[1]][this.selected[0]].selected) {
+            this.selected = [0, 0];
+            this.tiles[0][0].selected = true;
+        }
     }
 
     // execute App
