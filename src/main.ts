@@ -40,7 +40,7 @@ app.on('ready', ()=> {
 
     //catch all uncaught exceptions
     process.on('uncaughtException', (err: Error) => {
-        aMgmt.logger.error('Caught exception: ' + err);
+        aMgmt.throwError('Caught exception: ' + err);
     });
 
     //load cfg

@@ -154,7 +154,7 @@ export class spotifyApp {
         this.aMgmt.extApp.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/spotify-settings.html')
+            pathname: path.join(__dirname, 'frontend/wrapper/spotify-settings.html')
         }));
 
         ipcMain.on('spotify-action-close', () => {

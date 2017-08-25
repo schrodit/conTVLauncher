@@ -20,11 +20,6 @@ class conveyApp extends Polymer.Element {
             },
             selected: {
                 type: Array
-            },
-            toast: {
-                type: Object,
-                notify: true,
-                value: {open: false}
             }
         };
     }
@@ -34,11 +29,6 @@ class conveyApp extends Polymer.Element {
         //register electron events
         ipcRenderer.on('recieve-cfg', (event, cfg) => {
             this._setConfig(cfg);
-        });
-        ipcRenderer.on('on-error', (event, arg) => {
-            this.set('toast.type', 'error');
-            this.set('toast.msg', arg);
-            this.set('toast.open', 'true');
         });
         ipcRenderer.on('spotify-close', () => {
             this.selected = [0, 0];

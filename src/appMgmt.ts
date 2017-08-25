@@ -7,6 +7,7 @@ type BrowserWindow = Electron.BrowserWindow;
 import {cfgMgmt} from './cfgMgmt';
 import {extAppMgmt} from './extAppMgmt';
 import {spotifyApp} from './spotifyApp';
+import {Notification} from './notification';
 
 export class appMgmt {
     home: string;
@@ -60,6 +61,9 @@ export class appMgmt {
         ipcMain.on('reset-active-time', () => {
             this.activeTime = 0;
         });
+        ipcMain.on('on-error', (e: EventTarget, msg: string) => {
+            this.throwError(msg)
+        });
     }
 
     public initCfg() {
@@ -94,7 +98,7 @@ export class appMgmt {
 
     public throwError(msg:string) {
         this.logger.error(msg);
-        this.win.webContents.send('on-error' ,msg);
+        new Notification(this, 'error', msg);
     }
 
     public startActive() {

@@ -144,7 +144,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend', 'wrapper', iUrl)
+            pathname: path.join(__dirname, 'frontend', 'wrapper', iUrl)
         }));
         
 
@@ -167,12 +167,12 @@ export class extAppMgmt {
 
     // open external programm
     openExtApp() {
-        let cmd = this.aMgmt.app.getAppPath() + '/bin/startscript.sh start ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
+        let cmd = __dirname + '/bin/startscript.sh start ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
         require('child_process').exec(cmd);
         this.open = true;
     }
     closeExtApp() {
-        let cmd = this.aMgmt.app.getAppPath() + '/bin/startscript.sh stop ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
+        let cmd = __dirname + '/bin/startscript.sh stop ' + (this.aMgmt.home + '/.config/conTVLauncher/extApp.pid ') + this.cmd;
         require('child_process').execSync(cmd);
         this.open = false;
         this.cmd = '';
@@ -210,7 +210,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/settings.html')
+            pathname: path.join(__dirname, 'frontend/wrapper/settings.html')
         }));
 
         this.appWin.on('ready-to-show', () => {
@@ -243,14 +243,14 @@ export class extAppMgmt {
         this.appWin = new BrowserWindow({ 
             parent: this.aMgmt.win, 
             show: false, 
-            //frame: false,
+            frame: false,
             fullscreen: true,
             modal: true 
         });
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/tileEditor.html')
+            pathname: path.join(__dirname, 'frontend/wrapper/tileEditor.html')
         }));
 
         this.appWin.on('ready-to-show', () => {
@@ -286,7 +286,7 @@ export class extAppMgmt {
         this.appWin.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/powersettings.html')
+            pathname: path.join(__dirname, 'frontend/wrapper/powersettings.html')
         }));
 
         ipcMain.on('power-shutdown', () => {
@@ -341,7 +341,7 @@ export class extAppMgmt {
         this.screensaver.loadURL(url.format({
             protocol: 'file',
             slashes: true,
-            pathname: path.join(this.aMgmt.app.getAppPath(), 'frontend/wrapper/screensaver.html')
+            pathname: path.join(__dirname, 'frontend/wrapper/screensaver.html')
         }));
 
         this.screensaver.on('ready-to-show', () => {
