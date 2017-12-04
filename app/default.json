@@ -1,4 +1,10 @@
 {
+    "credentials": {
+        "spotify": {
+            "clientId": "your client id",
+            "clientSecret": "your secret"
+        }
+    },
     "zoomFactor": 0.75,
     "enableSpotify": false,
     "enableShutdown": false,

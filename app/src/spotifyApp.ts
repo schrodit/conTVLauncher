@@ -6,6 +6,7 @@ const SpotifyWebApi = require('spotify-web-api-node');
 const bigInteger = require('big-integer');
 
 import {appMgmt} from './appMgmt';
+import { Exception } from 'winston';
 
 interface tStatus {
     status: string;
@@ -89,10 +90,15 @@ export class spotifyApp {
 
     connectWebAPI() {
         // Create the api object with the credentials
-        this.spotifyApi = new SpotifyWebApi({
-            clientId : '7d36823acef04cfc845c46d55cda553f',
-            clientSecret : '03df9850d7a948f291e8a1a75d83c34a'
-        });
+        try {
+            this.spotifyApi = new SpotifyWebApi({
+                clientId : this.aMgmt.cfg.getCfg().credetials.spotify.clientId,
+                clientSecret : this.aMgmt.cfg.getCfg().credetials.spotify.clientSecret
+            });
+         } catch(e) {
+             this.aMgmt.logger.error(e.message);
+             throw new Error('Check your Credentials');             
+         }
     }
 
     updateTrack() {

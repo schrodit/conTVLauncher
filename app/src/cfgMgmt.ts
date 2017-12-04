@@ -17,12 +17,20 @@ export interface tile {
 }
 
 export interface config {
+    credetials: credetials
     zoomFactor: number;
     enableSpotify: boolean;
     enableShutdown: boolean;
     prettyprint: boolean;
     screensaver: number,
     tiles: Array<Array<tile>>;
+}
+
+interface credetials {
+    spotify: {
+        clientId: string;
+        clientSecret: string;
+    }
 }
 
 interface rawTile {

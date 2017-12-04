@@ -30,7 +30,7 @@ gulp.task('build', () => {
 
 gulp.task('test', () => {
     runSequence('clean', 'tslint', 'typescript'); 
-})
+});
 
 gulp.task('copy-build', ['clean-build'],  () => {
     return gulp.src(['app/*', '!app/*debug.js', 'app/frontend/**/*', '!app/frontend/bower_components', 'app/bin/**/*'])

@@ -332,7 +332,7 @@ class tileEditor extends Polymer.Element {
             img: imgFile,
             type: type,
             cmd: cmd
-        }
+        };
         this._closeNewTileDialog();
         ipcRenderer.send('save-new-tile', tile);
     }
@@ -341,7 +341,7 @@ class tileEditor extends Polymer.Element {
         return {
             path: file.path,
             name: file.name
-        }
+        };
     }
 
     _closeNewTileDialog() {
