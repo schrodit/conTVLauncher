@@ -1,0 +1,46 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+
+<link rel="import" href="../ui-watch/ui-watch.html">
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="ui-screensaver">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: none;
+       position: fixed;
+       z-index: 9;
+       top: 0;
+       left: 0;
+       width: 100%;
+       height: 100vh;
+       background-size: cover;
+       background-repeat: no-repeat;
+       -webkit-transition: background-image 3s ease;
+       transition: background-image 3s ease;
+     }
+
+     :host(.open) {
+       display: block;
+     }
+
+     #preload {
+       display: none;
+     }
+     
+    </style>
+
+    <div id="preload"></div>
+    <template is="dom-if" if="{{watch}}">
+        <ui-watch></ui-watch>
+    </template>
+
+  
+  </template>
+    
+
+  <script src="ui-screensaver.js"></script>
+</dom-module>

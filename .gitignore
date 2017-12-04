@@ -43,7 +43,7 @@ jspm_packages
 .node_repl_history
 
 #ingnore generated files
-app/*.js
+src/*.js
 build
 
 *.gz

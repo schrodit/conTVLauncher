@@ -1,0 +1,143 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="spotify-settings">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: block;
+       font-size: 30px;
+       margin: 50px 0;
+     }
+
+     paper-item {
+       padding: 16px 24px;
+     }
+
+     .icon {
+       width: 40px;
+       height: 40px;
+       padding: 5px;
+       border-radius: 50%;
+       margin-right: 18px;
+     }
+
+     .green {
+       background: var(--positive-action);
+     }
+
+     .blue {
+       background: var(--Indigo-500);
+     }
+
+     .red {
+       background: var(--Red-500);
+     }
+
+    </style>
+
+    
+    <div role="listbox">
+      <paper-item id="close">
+        <iron-icon class="icon" icon="icons:close"></iron-icon>
+        Close spotify widget
+      </paper-item>
+      <paper-item id="disable">
+        <iron-icon class="icon" icon="av:not-interested"></iron-icon>
+        Close spotify widget
+      </paper-item>
+    </div>
+  
+  </template>
+
+  <script>
+  const {ipcRenderer} = require('electron');
+  class spotifySettings extends Polymer.Element {
+    static get is() { return 'spotify-settings'; }
+    static get properties() {
+      return {
+        selected: Number
+      };
+    }
+
+    constructor() {
+      super();
+      // register navigation shortcuts
+      window.addEventListener('keydown', (event) => {
+          switch(event.keyCode) {
+              case 13:
+                  event.preventDefault();
+                  this._onEnter();
+                  break;
+              case 27:
+                ipcRenderer.send('close-App');
+                break;
+              case 38:
+                  event.preventDefault();
+                  this._navTop();
+                  break;
+              case 40:
+                  event.preventDefault();
+                  this._navDown();
+                  break;
+              default:
+                  break;
+          }
+      });
+    }
+
+    _navTop() {
+      this.setPreviousElem(this.selected);
+    }
+    _navDown() {
+      this.setNextElem(this.selected);
+    }
+
+    _onEnter() {
+      let id = this.shadowRoot.querySelectorAll('paper-item')[this.selected].id;
+      switch(id) {
+        case 'close':
+          ipcRenderer.send('spotify-action-close');
+          break;
+        case 'disable':
+          ipcRenderer.send('spotify-action-disable');
+          break;
+      }
+    }
+
+    onSave() {
+      this.cfg.zoomFactor = Number(this.zoomFactor);
+      ipcRenderer.send('settings-save-cfg', this.cfg);
+    }
+
+    onCancel() {
+      ipcRenderer.send('settings-close', true);
+    }
+
+    setNextElem(selected) {
+      let items = this.shadowRoot.querySelectorAll('paper-item');
+      if (selected === undefined || selected === items.length -1) this.focusElem(0, items[0]);
+      else this.focusElem(selected+1, items[selected+1]);
+    }
+    setPreviousElem(selected) {
+      let items = this.shadowRoot.querySelectorAll('paper-item');
+      if (selected === undefined || selected === 0) this.focusElem(items.length - 1, items[items.length-1]);
+      else this.focusElem(selected-1, items[selected-1]);
+    }
+
+    focusElem(id, elem) {
+      this.selected = id;
+      elem.focus();
+    };
+      
+  }
+
+  window.customElements.define(spotifySettings.is, spotifySettings);
+  </script>
+</dom-module>

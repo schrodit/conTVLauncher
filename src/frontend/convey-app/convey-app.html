@@ -1,0 +1,82 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+
+<link rel="import" href="../elements/ui-tile-container/ui-tile-container.html">
+<link rel="import" href="../elements/ui-tile/ui-tile.html">
+<link rel="import" href="../elements/ui-icon-tile/ui-icon-tile.html">
+<link rel="import" href="../elements/ui-watch/ui-watch.html">
+
+<link rel="import" href="spotify/spotify-widget.html">
+
+<link rel="import" href="../styles/styles.html">
+
+<dom-module id="convey-app">
+  <template>
+    <style include="styles"></style>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+        padding: 27px 48px;
+        box-sizing: border-box;
+      }
+
+      .content {
+        position: relative;
+        z-index: 2;
+        margin-top: 5%;
+      }
+
+      .bg {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: -10;
+        height: 100%;
+        width: 100%;
+        opacity: 0.6;
+
+        background-image: url("../wrapper/img/20.jpg");
+        background-repeat: no-repeat;
+        background-position: left top;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+      
+    </style>
+
+    <div class="content">
+
+      <template is="dom-if" if="{{spotify}}">
+        <spotify-widget></spotify-widget>
+      </template>
+      <template is="dom-repeat" items="{{tiles}}" as="tileContainer">
+        <ui-tile-container>
+
+          <template is="dom-repeat" items="{{tileContainer}}" as="tile">
+            <template is="dom-if" if="{{checkTiles(tile)}}">
+              <ui-tile selected="{{tile.selected}}" title="[[tile.title]]" src="[[tile.img]]"></ui-tile>
+            </template>
+          </template>
+
+          <template is="dom-repeat" items="{{tileContainer}}" as="tile">
+            <template is="dom-if" if="{{checkSysTiles(tile)}}">
+              <ui-icon-tile selected="{{tile.selected}}" title="[[tile.title]]" icon="[[tile.img]]"></ui-icon-tile>
+            </template>
+          </template>
+          
+        </ui-tile-container>
+      </template>
+    </div>
+    
+    <div class="bg"></div>
+
+    <ui-watch></ui-watch>
+
+
+  </template>
+
+  <script src="convey-app.js"></script>
+</dom-module>

@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../../styles/styles.html">
+
+<dom-module id="ui-toast">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: flex;
+       direction: column;
+       color: var(--normal-text-light);
+
+       transition: 1s ease-out;
+       position: absolute;
+       left: -45vw;
+       bottom: 10%;
+
+       z-index: var(--zindex-popup);
+     }
+     :host(.open) {
+       left: 0 !important;
+     }
+
+     :host(.sticky) .wrapper {
+       padding: 24px 24px 24px 10px;
+       width: calc(45vw - 34px);
+     }
+
+     .wrapper {
+       background: var(--Green-500);
+       padding: 24px;
+       width: calc(45vw - 48px);
+     }
+     .triangle {
+       width: 0;
+       height: 0;
+       border-style: solid;
+       border-color: var(--Green-500) transparent transparent transparent;
+     }
+
+     .closeIcon {
+       cursor: pointer;
+       fill: var(--negative-action);
+       margin-right: 10px;
+     }
+    </style>
+
+    <div class="wrapper">
+      <template is="dom-if" if="{{stick}}">
+        <iron-icon class="icon closeIcon" icon="icons:highlight-off" on-click="onClose"></iron-icon>
+      </template>
+      <iron-icon class="icon" icon="{{setIcon(type)}}"></iron-icon>
+      <slot></slot>
+    </div>
+    <div class="triangle"></div>
+  
+  </template>
+
+  <script src="ui-toast.js"></script>
+</dom-module>

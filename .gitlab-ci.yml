@@ -1,7 +1,11 @@
-image: node:6.9.1
+image: node:8.3.0
 
 before_script:
-  - npm i -g gulp bower
+  - npm i -g bower
+
+cache:
+  paths:
+  - conTVLauncher-linux-x64/
 
 stages:
   - build
@@ -11,15 +15,19 @@ build_all:
   stage: build
   script:
     - npm install
-    - gulp
-    - gulp build
-
+    - npm run build
 
 deploy_staging:
   stage: deploy
   script:
-    - echo "Deploy to staging server"
-  environment:
-    name: Staging
+    - "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g')"
+    - now="$(date +'%Y%m%d%H%M%S')"
+    - sh release.sh $now
+    - ls
+    - echo "Deploy to jFrog at $PACKAGE_VERSION/conTVLauncher-linux-x64-$now.tar.gz"
+    - curl -u gitlab:$jfrogPass -T conTVLauncher-linux-x64-$now.tar.gz "http://jfrog.silvermine-productions.com/artifactory/conTVLauncher/$PACKAGE_VERSION/conTVLauncher-linux-x64-$now.tar.gz"
+  artifacts:
+    paths:
+    - conTVLauncher-linux-x64*.tar.gz
   only:
   - master

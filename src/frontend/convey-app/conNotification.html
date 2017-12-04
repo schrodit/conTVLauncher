@@ -1,0 +1,90 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="../styles/styles.html">
+
+<dom-module id="con-notification">
+  <template>
+    <style include="styles"></style>
+    <style>
+     :host {
+       display: flex;
+       padding: 14px;
+       max-width: 500px;
+       height: 60px;
+       align-items: center
+     }
+
+     .message {
+       font-size: 18px;
+       width: auto;
+     }
+
+     .icon {
+       width: 40px;
+       height: 40px;
+       padding: 5px;
+       border-radius: 50%;
+       margin-right: 18px;
+     }
+
+
+     .actions {
+       position: absolute;
+       bottom: 0;
+       margin-bottom: 24px;
+     }
+
+
+     .green {
+       fill: var(--positive-action);
+     }
+
+     .red {
+       fill: var(--negative-action);
+     }
+
+    </style>
+    <iron-icon class$="[[iconClass]]" icon="icons:[[icon]]"></iron-icon>
+    <div class="message">[[message]]</div>
+  
+  </template>
+
+  <script>
+  class conNotification extends Polymer.Element {
+    static get is() { return 'con-notification'; }
+    static get properties() {
+      return {
+        message: {
+          type: String
+        },
+        icon: String,
+        iconClass: String
+      };
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      let url = new URL(window.location.href);
+      this.message = url.searchParams.get('message');
+      switch(url.searchParams.get('type')) {
+        case 'info':
+          this.iconClass = 'icon green';
+          this.icon = 'info-outline';
+          break;
+        case 'error':
+          this.iconClass = 'icon red';
+          this.icon = 'error-outline';
+          break;
+        default:
+          this.iconClass = 'icon green';
+          this.icon = 'info-outline';
+          break;
+      }
+    }
+  }
+
+  window.customElements.define(conNotification.is, conNotification);
+</script>
+</dom-module>
